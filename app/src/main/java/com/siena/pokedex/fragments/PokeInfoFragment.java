@@ -25,7 +25,7 @@ public class PokeInfoFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_poke_info_listview, container, false);
-    ButterKnife.inject(rootView);
+    ButterKnife.inject(this, rootView);
     Pokemon poke = new Pokemon(1, "bulbasaur");
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;

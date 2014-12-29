@@ -2,22 +2,25 @@ package com.siena.pokedex.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.siena.pokedex.DataAdapter;
+import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
+import com.siena.pokedex.bus.ShowPokemonInfoEvent;
 import com.siena.pokedex.models.Pokemon;
+import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 import static com.siena.pokedex.PokemonUtil.formatId;
 import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
@@ -31,9 +34,11 @@ public class PokemonListAdapter extends BaseAdapter {
   private List<Pokemon> pokemon;
   private Context context;
   private final int POKEMON_ROW = 100;
+  @Inject Bus bus;
 
   public PokemonListAdapter(Context context) {
     this.context = context;
+    PokedexApp.getInstance().inject(this);
 
     DataAdapter mDbHelper = new DataAdapter(context);
     mDbHelper.createDatabase();
@@ -43,7 +48,7 @@ public class PokemonListAdapter extends BaseAdapter {
 
     for (int i = 0; i < 200; i++ ) {
       Pokemon poke = new Pokemon(testdata.getInt(0), testdata.getString(1));
-      rows.add(new PokeRow(POKEMON_ROW, poke, context));
+      rows.add(new PokeRow(POKEMON_ROW, poke, context, bus));
       testdata.moveToNext();
     }
 
@@ -79,12 +84,14 @@ public class PokemonListAdapter extends BaseAdapter {
     private int rowType;
     private Context context;
     private Picasso picasso;
+    private Bus bus;
 
-    public PokeRow(int rowType, Pokemon pokemon, Context context) {
+    public PokeRow(int rowType, Pokemon pokemon, Context context, Bus bus) {
       this.pokemon = pokemon;
       this.rowType = rowType;
       this.context = context;
       this.picasso = Picasso.with(context);
+      this.bus = bus;
     }
 
     @Override public int getType() {
@@ -100,6 +107,13 @@ public class PokemonListAdapter extends BaseAdapter {
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
+
+      viewHolder.container.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View v) {
+          bus.post(new ShowPokemonInfoEvent(pokemon.getId()));
+        }
+      });
+
       viewHolder.pokeId.setText(formatId(pokemon));
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
 
@@ -113,13 +127,10 @@ public class PokemonListAdapter extends BaseAdapter {
       @InjectView(R.id.row_poke_id) TextView pokeId;
       @InjectView(R.id.row_poke_name) TextView pokeName;
       @InjectView(R.id.row_poke_image) ImageView pokeImage;
+      @InjectView(R.id.poke_row) RelativeLayout container;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
-      }
-
-      @OnClick(R.id.poke_row) public void onRowClicked(View view) {
-        Log.v("hey", "you clicked a pokemon");
       }
     }
   }

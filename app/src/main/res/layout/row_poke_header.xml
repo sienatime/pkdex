@@ -27,6 +27,7 @@
       android:layout_height="wrap_content"
       style="@style/pokemon_type"
       android:layout_toRightOf="@id/pokemon_type_1"
+      android:layout_alignTop="@id/pokemon_type_1"
       android:text="poison"
       android:id="@+id/pokemon_type_2"/>
 
@@ -34,7 +35,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginLeft="16dp"
-      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
       android:id="@+id/header_poke_image"/>
 
   </RelativeLayout>
