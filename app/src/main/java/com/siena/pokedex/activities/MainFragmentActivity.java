@@ -1,12 +1,13 @@
 package com.siena.pokedex.activities;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.siena.pokedex.PokedexApp;
+import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.bus.ShowPokemonInfoEvent;
 import com.siena.pokedex.fragments.PokeInfoFragment;
@@ -15,7 +16,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
-public class MainFragmentActivity extends ActionBarActivity {
+public class MainFragmentActivity extends Activity {
   @Inject Bus bus;
 
   @Override
@@ -44,9 +45,10 @@ public class MainFragmentActivity extends ActionBarActivity {
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
       return true;
+    } else if (id == android.R.id.home) {
+      getFragmentManager().popBackStack();
     }
 
     return super.onOptionsItemSelected(item);
@@ -64,10 +66,18 @@ public class MainFragmentActivity extends ActionBarActivity {
 
   @Subscribe public void onShowInfoEvent(ShowPokemonInfoEvent event) {
     Fragment fragment = new PokeInfoFragment();
+    Bundle bundle = new Bundle();
+    bundle.putInt(PokemonUtil.POKEMON_ID_KEY, event.getId());
+    fragment.setArguments(bundle);
     FragmentTransaction transaction =
         getFragmentManager().beginTransaction().replace(R.id.container, fragment);
     transaction.setCustomAnimations(R.anim.slide_right, R.anim.slide_left);
     transaction.addToBackStack(null);
     transaction.commit();
+  }
+
+  @Override public void onBackPressed() {
+    super.onBackPressed();
+    getFragmentManager().popBackStack();
   }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonInfoAdapter;
 import com.siena.pokedex.models.Pokemon;
@@ -26,7 +27,9 @@ public class PokeInfoFragment extends Fragment {
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_poke_info_listview, container, false);
     ButterKnife.inject(this, rootView);
-    Pokemon poke = new Pokemon(1, "bulbasaur");
+    getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+    int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
+    Pokemon poke = new Pokemon(id, "bulbasaur");
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;
   }

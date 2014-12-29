@@ -22,6 +22,7 @@ public class PokeListFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_pokemon_listview, container, false);
     ((ListView) rootView.findViewById(R.id.poke_listview)).setAdapter(
         new PokemonListAdapter(getActivity()));
+    getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
     return rootView;
   }
 }

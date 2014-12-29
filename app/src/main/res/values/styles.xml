@@ -1,8 +1,23 @@
 <resources>
 
   <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="AppTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+    <item name="android:actionBarStyle">@style/ActionBar.Solid.Pokedex</item>
     <!-- Customize your theme here. -->
+  </style>
+
+  <style name="ActionBar.Solid.Pokedex" parent="@android:style/Widget.Holo.ActionBar">
+    <!--TODO add top & bottom padding of 4dp each -->
+    <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
+    <!-- Robolectric does not handle icon that is set to android:color/transparent -->
+    <item name="android:icon">@drawable/transparent</item>
+    <item name="android:background">@color/dark_blue</item>
+    <item name="android:titleTextStyle">@style/ActionBar.Title.Text.Pokedex</item>
+  </style>
+
+  <style name="ActionBar.Title.Text.Pokedex"
+      parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <item name="android:textColor">@android:color/white</item>
   </style>
 
   <style name="pokemon_type">

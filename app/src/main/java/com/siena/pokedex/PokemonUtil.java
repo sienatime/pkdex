@@ -10,6 +10,7 @@ public class PokemonUtil {
   private static final PokedexApp APP = PokedexApp.getInstance();
   private static final String PACKAGE_NAME = APP.getPackageName();
   private static final Resources RES = APP.getResources();
+  public static final String POKEMON_ID_KEY = "pokemonId";
 
   public static int getPokemonImageId(Pokemon pokemon) {
     return RES.getIdentifier(pokemon.getImageName(), "drawable", PACKAGE_NAME);
