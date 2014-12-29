@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.Pokemon;
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,11 +74,13 @@ public class PokemonListAdapter extends BaseAdapter {
     private Pokemon pokemon;
     private int rowType;
     private Context context;
+    private Picasso picasso;
 
     public PokeRow(int rowType, Pokemon pokemon, Context context) {
       this.pokemon = pokemon;
       this.rowType = rowType;
       this.context = context;
+      this.picasso = Picasso.with(context);
     }
 
     @Override public int getType() {
@@ -93,13 +96,18 @@ public class PokemonListAdapter extends BaseAdapter {
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
-      viewHolder.pokeId.setText(Integer.toString(pokemon.getId()));
-      viewHolder.pokeName.setText(pokemon.getName());
-      //picasso.load(me.getAvatarUrl())
-      //    .fit()
-      //    .centerCrop()
-      //    .placeholder(R.drawable.missing)
-      //    .into(viewHolder.profileHeaderAvatar);
+      viewHolder.pokeId.setText(String.format(context.getString(R.string.number_format), pokemon.getId()));
+
+      int nameId = context.getResources().getIdentifier(pokemon.nameToKey(), "string", context.getPackageName());
+      String pokemonName = context.getResources().getString(nameId);
+      viewHolder.pokeName.setText(pokemonName);
+
+      int imageId = context.getResources()
+          .getIdentifier(pokemon.getImageName(), "drawable", context.getPackageName());
+
+      picasso.load(imageId)
+          .into(viewHolder.pokeImage);
+
       return convertView;
     }
 

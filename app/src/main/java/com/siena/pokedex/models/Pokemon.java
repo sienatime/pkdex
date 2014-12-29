@@ -20,4 +20,12 @@ public class Pokemon {
   public String getName() {
     return name;
   }
+
+  public String nameToKey() {
+    return name.replace("-", "_");
+  }
+
+  public String getImageName() {
+    return "sprite_" + Integer.toString(id);
+  }
 }
