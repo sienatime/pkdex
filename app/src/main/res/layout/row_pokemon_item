@@ -6,6 +6,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
         android:id="@+id/row_poke_image"/>
 
   <TextView
@@ -13,6 +14,7 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/row_poke_image"
       android:layout_alignTop="@id/row_poke_image"
+      android:layout_marginTop="16dp"
       android:id="@+id/row_poke_id"/>
 
   <TextView
@@ -20,6 +22,8 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/row_poke_image"
       android:layout_below="@id/row_poke_id"
+      android:textSize="24dp"
+      android:textStyle="bold"
       android:id="@+id/row_poke_name"/>
 
 </RelativeLayout>
