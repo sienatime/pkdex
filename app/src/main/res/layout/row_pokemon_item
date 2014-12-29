@@ -5,9 +5,10 @@
     android:id="@+id/poke_row">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
         android:id="@+id/row_poke_image"/>
 
   <TextView
@@ -24,7 +25,7 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/row_poke_image"
       android:layout_below="@id/row_poke_id"
-      android:textSize="24dp"
+      android:textSize="16dp"
       android:textStyle="bold"
       android:textColor="@color/default_gray"
       android:id="@+id/row_poke_name"/>

@@ -2,6 +2,7 @@ package com.siena.pokedex.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ public class PokemonListAdapter extends BaseAdapter {
 
     Cursor testdata = mDbHelper.getPokemonData();
 
-    for (int i = 0; i < 200; i++ ) {
+    for (int i = 0; i < 719; i++ ) {
       Pokemon poke = new Pokemon(testdata.getInt(0), testdata.getString(1));
       rows.add(new PokeRow(POKEMON_ROW, poke, context, bus));
       testdata.moveToNext();
@@ -117,8 +118,15 @@ public class PokemonListAdapter extends BaseAdapter {
       viewHolder.pokeId.setText(formatId(pokemon));
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
 
-      picasso.load(getPokemonImageId(pokemon))
-          .into(viewHolder.pokeImage);
+      int imageId = getPokemonImageId(pokemon);
+      if (imageId > 0) {
+        viewHolder.pokeImage.setVisibility(View.VISIBLE);
+        picasso.load(getPokemonImageId(pokemon))
+            .into(viewHolder.pokeImage);
+      } else {
+        Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
+        viewHolder.pokeImage.setVisibility(View.INVISIBLE);
+      }
 
       return convertView;
     }

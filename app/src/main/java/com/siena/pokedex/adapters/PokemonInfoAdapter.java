@@ -1,6 +1,7 @@
 package com.siena.pokedex.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,8 +87,15 @@ public class PokemonInfoAdapter extends BaseAdapter {
       }
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
 
-      picasso.load(getPokemonImageId(pokemon))
-          .into(viewHolder.pokeImage);
+      int imageId = getPokemonImageId(pokemon);
+      if (imageId > 0) {
+        viewHolder.pokeImage.setVisibility(View.VISIBLE);
+        picasso.load(getPokemonImageId(pokemon))
+            .into(viewHolder.pokeImage);
+      } else {
+        Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
+        viewHolder.pokeImage.setVisibility(View.INVISIBLE);
+      }
 
       return convertView;
     }

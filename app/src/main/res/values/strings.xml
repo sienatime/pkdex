@@ -497,7 +497,7 @@
   <string name="phione">Phione</string>
   <string name="manaphy">Manaphy</string>
   <string name="darkrai">Darkrai</string>
-  <string name="shaymin_land">Shaymin_Land</string>
+  <string name="shaymin_land">Shaymin</string>
   <string name="arceus">Arceus</string>
   <string name="victini">Victini</string>
   <string name="snivy">Snivy</string>
@@ -715,8 +715,8 @@
   <string name="klefki">Klefki</string>
   <string name="phantump">Phantump</string>
   <string name="trevenant">Trevenant</string>
-  <string name="pumpkaboo_average">Pumpkaboo_Average</string>
-  <string name="gourgeist_average">Gourgeist_Average</string>
+  <string name="pumpkaboo_average">Pumpkaboo</string>
+  <string name="gourgeist_average">Gourgeist</string>
   <string name="bergmite">Bergmite</string>
   <string name="avalugg">Avalugg</string>
   <string name="noibat">Noibat</string>
