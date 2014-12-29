@@ -18,6 +18,7 @@ import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
+import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
  * Created by Siena Aguayo on 12/27/14.
@@ -93,10 +94,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       if (numberOfTypes > 0) {
         viewHolder.type1.setText(pokemon.getTypes().get(0).getLocalizedName());
+        viewHolder.type1.setBackgroundColor(getTypeColor(pokemon.getTypes().get(0).getId()));
 
         if (numberOfTypes == 2) {
           viewHolder.type2.setVisibility(View.VISIBLE);
           viewHolder.type2.setText(pokemon.getTypes().get(1).getLocalizedName());
+          viewHolder.type2.setBackgroundColor(getTypeColor(pokemon.getTypes().get(1).getId()));
         } else {
           viewHolder.type2.setVisibility(View.GONE);
         }
