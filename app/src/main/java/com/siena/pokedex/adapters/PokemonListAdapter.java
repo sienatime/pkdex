@@ -45,7 +45,7 @@ public class PokemonListAdapter extends BaseAdapter {
     mDbHelper.createDatabase();
     mDbHelper.open();
 
-    Cursor testdata = mDbHelper.getPokemonData();
+    Cursor testdata = mDbHelper.getAllPokemonData();
 
     for (int i = 0; i < 719; i++ ) {
       Pokemon poke = new Pokemon(testdata.getInt(0), testdata.getString(1));

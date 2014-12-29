@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonInfoAdapter;
 import com.siena.pokedex.models.Pokemon;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Siena Aguayo on 12/28/14.
@@ -29,7 +32,19 @@ public class PokeInfoFragment extends Fragment {
     ButterKnife.inject(this, rootView);
     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
-    Pokemon poke = new Pokemon(id, "bulbasaur");
+
+    DataAdapter mDbHelper = new DataAdapter(getActivity());
+    mDbHelper.createDatabase();
+    mDbHelper.open();
+    String name = mDbHelper.getIdentifierById(id);
+    List<Integer> types = mDbHelper.getPokemonTypeData(id);
+    ArrayList<String> typeNames = new ArrayList<>();
+    for (Integer type : types) {
+      typeNames.add(mDbHelper.getTypeById(type));
+    }
+
+    Pokemon poke = new Pokemon(id, name);
+    poke.setTypes(typeNames);
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;
   }

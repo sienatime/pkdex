@@ -6,12 +6,15 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Siena Aguayo on 12/28/14.
  */
 public class DataAdapter {
   protected static final String TAG = "DataAdapter";
+  private final String ENGLISH_ID = "9";
 
   private final Context mContext;
   private SQLiteDatabase mDb;
@@ -48,18 +51,54 @@ public class DataAdapter {
     mDbHelper.close();
   }
 
-  public Cursor getPokemonData() {
+  public Cursor getData(String sql) {
     try {
-      String sql = "SELECT * FROM pokemon";
-
       Cursor mCur = mDb.rawQuery(sql, null);
       if (mCur != null) {
         mCur.moveToNext();
       }
       return mCur;
     } catch (SQLException mSQLException) {
-      Log.e(TAG, "getPokemonData >>" + mSQLException.toString());
+      Log.e(TAG, "getData >>" + mSQLException.toString());
       throw mSQLException;
     }
+  }
+
+  public Cursor getAllPokemonData() {
+    return getData("SELECT * FROM pokemon");
+  }
+
+  public List<Integer> getPokemonTypeData(int id) {
+    String intString = Integer.toString(id);
+
+    Cursor cursor = getData(
+        "SELECT type_id FROM pokemon_types WHERE pokemon_id = " + intString + " ORDER BY slot");
+    cursor.moveToFirst();
+    ArrayList<Integer> types = new ArrayList<Integer>();
+    while(!cursor.isAfterLast()) {
+      types.add(cursor.getInt(0));
+      cursor.moveToNext();
+    }
+    cursor.close();
+
+    return types;
+  }
+
+  public String getTypeById(Integer id) {
+    Cursor cursor = getData("SELECT name FROM type_names WHERE local_language_id = "
+        + ENGLISH_ID
+        + " AND type_id = "
+        + id);
+    String result = cursor.getString(0);
+    cursor.close();
+    return result;
+  }
+
+  public String getIdentifierById(int id) {
+    String intString = Integer.toString(id);
+    Cursor cursor = getData("SELECT identifier FROM pokemon WHERE _id = " + intString);
+    String result = cursor.getString(0);
+    cursor.close();
+    return result;
   }
 }

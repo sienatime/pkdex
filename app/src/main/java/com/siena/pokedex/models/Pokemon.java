@@ -1,5 +1,7 @@
 package com.siena.pokedex.models;
 
+import java.util.List;
+
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
@@ -7,6 +9,7 @@ public class Pokemon {
   private int id;
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   private String name;
+  private List<String> types; //localized
 
   public Pokemon(int id, String name) {
     this.id = id;
@@ -21,6 +24,14 @@ public class Pokemon {
     return name;
   }
 
+  public List<String> getTypes() {
+    return types;
+  }
+
+  public void setTypes(List<String> types) {
+    this.types = types;
+  }
+
   public String nameToKey() {
     return name.replace("-", "_");
   }
@@ -28,4 +39,6 @@ public class Pokemon {
   public String getImageName() {
     return "sprite_" + Integer.toString(id);
   }
+
+
 }
