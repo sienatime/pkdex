@@ -4,4 +4,5 @@
   <color name="accent_blue">#4D95A1</color>
   <color name="default_gray">#444841</color>
   <color name="medium_gray">#969996</color>
+  <color name="shadow_gray">#80000000</color>
 </resources>

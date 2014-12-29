@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/header_poke_name"/>
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/header_poke_name"
+      android:text="@string/desc_format"
+      android:id="@+id/header_poke_desc"/>
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/pokemon_type"
+      android:layout_below="@id/header_poke_desc"
+      android:text="grass"
+      android:id="@+id/pokemon_type_1"/>
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      style="@style/pokemon_type"
+      android:layout_toRightOf="@id/pokemon_type_1"
+      android:text="poison"
+      android:id="@+id/pokemon_type_2"/>
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="16dp"
+      android:layout_alignParentLeft="true"
+      android:id="@+id/header_poke_image"/>
+
+  </RelativeLayout>

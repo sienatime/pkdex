@@ -4,14 +4,19 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeListFragment;
+import com.squareup.otto.Bus;
+import javax.inject.Inject;
 
 public class MainFragmentActivity extends ActionBarActivity {
+  @Inject Bus bus;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    PokedexApp.getInstance().inject(this);
     setContentView(R.layout.activity_main_fragment);
     if (savedInstanceState == null) {
       getFragmentManager().beginTransaction()
@@ -40,5 +45,10 @@ public class MainFragmentActivity extends ActionBarActivity {
     }
 
     return super.onOptionsItemSelected(item);
+  }
+
+  @Override protected void onResume() {
+    super.onResume();
+    bus.register(this);
   }
 }

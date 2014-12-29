@@ -5,4 +5,17 @@
     <!-- Customize your theme here. -->
   </style>
 
+  <style name="pokemon_type">
+    <item name="android:textSize">12sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textColor">@android:color/white</item>
+    <item name="android:shadowColor">@color/shadow_gray</item>
+    <item name="android:shadowDx">0</item>
+    <item name="android:shadowDy">2</item>
+    <item name="android:shadowRadius">4</item>
+    <item name="android:background">@color/accent_blue</item>
+
+  </style>
+
 </resources>
