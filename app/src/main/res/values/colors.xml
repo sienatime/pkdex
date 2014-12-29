@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="background_blue">#EAF1F2</color>
+  <color name="accent_blue">#4D95A1</color>
+  <color name="default_gray">#444841</color>
+  <color name="medium_gray">#969996</color>
+</resources>

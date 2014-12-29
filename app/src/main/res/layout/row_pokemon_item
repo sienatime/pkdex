@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/item_selected_state"
     android:id="@+id/poke_row">
 
     <ImageView
@@ -15,6 +16,7 @@
       android:layout_toRightOf="@id/row_poke_image"
       android:layout_alignTop="@id/row_poke_image"
       android:layout_marginTop="16dp"
+      android:textColor="@color/default_gray"
       android:id="@+id/row_poke_id"/>
 
   <TextView
@@ -24,6 +26,7 @@
       android:layout_below="@id/row_poke_id"
       android:textSize="24dp"
       android:textStyle="bold"
+      android:textColor="@color/default_gray"
       android:id="@+id/row_poke_name"/>
 
 </RelativeLayout>
