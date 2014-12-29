@@ -75,7 +75,7 @@ public class DataAdapter {
         "SELECT type_id FROM pokemon_types WHERE pokemon_id = " + intString + " ORDER BY slot");
     cursor.moveToFirst();
     ArrayList<Integer> types = new ArrayList<Integer>();
-    while(!cursor.isAfterLast()) {
+    while (!cursor.isAfterLast()) {
       types.add(cursor.getInt(0));
       cursor.moveToNext();
     }
@@ -97,6 +97,18 @@ public class DataAdapter {
   public String getIdentifierById(int id) {
     String intString = Integer.toString(id);
     Cursor cursor = getData("SELECT identifier FROM pokemon WHERE _id = " + intString);
+    String result = cursor.getString(0);
+    cursor.close();
+    return result;
+  }
+
+  public String getGenusById(int id) {
+    // select * from pokemon_species_names where local_language_id = 9 and pokemon_species_id = 1;
+    String intString = Integer.toString(id);
+    Cursor cursor = getData("SELECT genus FROM pokemon_species_names WHERE pokemon_species_id = "
+        + intString
+        + " AND local_language_id = "
+        + ENGLISH_ID);
     String result = cursor.getString(0);
     cursor.close();
     return result;

@@ -5,7 +5,7 @@
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
   <string name="number_format">#%d</string>
-  <string name="desc_format">Seed Pokémon</string>
+  <string name="genus_format">%s Pokémon</string>
 
   <string name="bulbasaur">Bulbasaur</string>
   <string name="ivysaur">Ivysaur</string>

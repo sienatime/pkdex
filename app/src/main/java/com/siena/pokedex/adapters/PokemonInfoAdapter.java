@@ -86,6 +86,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
+      viewHolder.pokeGenus.setText(
+          String.format(context.getString(R.string.genus_format), pokemon.getGenus()));
 
       int numberOfTypes = pokemon.getTypes().size();
 
@@ -103,8 +105,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       int imageId = getPokemonImageId(pokemon);
       if (imageId > 0) {
         viewHolder.pokeImage.setVisibility(View.VISIBLE);
-        picasso.load(getPokemonImageId(pokemon))
-            .into(viewHolder.pokeImage);
+        picasso.load(getPokemonImageId(pokemon)).into(viewHolder.pokeImage);
       } else {
         Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
         viewHolder.pokeImage.setVisibility(View.INVISIBLE);
@@ -115,7 +116,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     static class ViewHolder {
       @InjectView(R.id.header_poke_name) TextView pokeName;
-      @InjectView(R.id.header_poke_desc) TextView pokeDesc;
+      @InjectView(R.id.header_poke_genus) TextView pokeGenus;
       @InjectView(R.id.pokemon_type_1) TextView type1;
       @InjectView(R.id.pokemon_type_2) TextView type2;
       @InjectView(R.id.header_poke_image) ImageView pokeImage;
