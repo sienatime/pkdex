@@ -38,14 +38,15 @@ public class PokeInfoFragment extends Fragment {
     mDbHelper.open();
     String name = mDbHelper.getIdentifierById(id);
     String genus = mDbHelper.getGenusById(id);
-    List<Integer> types = mDbHelper.getPokemonTypeData(id);
-    ArrayList<String> typeNames = new ArrayList<>();
-    for (Integer type : types) {
-      typeNames.add(mDbHelper.getTypeById(type));
+    List<Integer> typeIds = mDbHelper.getPokemonTypeData(id);
+    ArrayList<Pokemon.Type> types = new ArrayList<>();
+    for (Integer typeId : typeIds) {
+      Pokemon.Type type = new Pokemon.Type(typeId, mDbHelper.getTypeById(typeId));
+      types.add(type);
     }
 
     Pokemon poke = new Pokemon(id, name);
-    poke.setTypes(typeNames);
+    poke.setTypes(types);
     poke.setGenus(genus);
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;

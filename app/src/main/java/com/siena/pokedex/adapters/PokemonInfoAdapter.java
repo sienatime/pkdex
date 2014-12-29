@@ -92,11 +92,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
       int numberOfTypes = pokemon.getTypes().size();
 
       if (numberOfTypes > 0) {
-        viewHolder.type1.setText(pokemon.getTypes().get(0));
+        viewHolder.type1.setText(pokemon.getTypes().get(0).getLocalizedName());
 
         if (numberOfTypes == 2) {
           viewHolder.type2.setVisibility(View.VISIBLE);
-          viewHolder.type2.setText(pokemon.getTypes().get(1));
+          viewHolder.type2.setText(pokemon.getTypes().get(1).getLocalizedName());
         } else {
           viewHolder.type2.setVisibility(View.GONE);
         }

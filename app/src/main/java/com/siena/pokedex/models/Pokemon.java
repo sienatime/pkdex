@@ -10,7 +10,7 @@ public class Pokemon {
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   private String name;
   private String genus;
-  private List<String> types; //localized
+  private List<Type> types; //localized
 
   public Pokemon(int id, String name) {
     this.id = id;
@@ -25,11 +25,11 @@ public class Pokemon {
     return name;
   }
 
-  public List<String> getTypes() {
+  public List<Type> getTypes() {
     return types;
   }
 
-  public void setTypes(List<String> types) {
+  public void setTypes(List<Type> types) {
     this.types = types;
   }
 
@@ -53,4 +53,21 @@ public class Pokemon {
     return "sprite_" + Integer.toString(id);
   }
 
+  public static class Type {
+    private Integer id;
+    private String localizedName;
+
+    public Type(Integer id, String localizedName) {
+      this.id = id;
+      this.localizedName = localizedName;
+    }
+
+    public Integer getId() {
+      return id;
+    }
+
+    public String getLocalizedName() {
+      return localizedName;
+    }
+  }
 }
