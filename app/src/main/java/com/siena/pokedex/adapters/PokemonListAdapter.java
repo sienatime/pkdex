@@ -19,6 +19,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.siena.pokedex.PokemonUtil.formatId;
+import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
+import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
+
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
@@ -96,16 +100,10 @@ public class PokemonListAdapter extends BaseAdapter {
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
-      viewHolder.pokeId.setText(String.format(context.getString(R.string.number_format), pokemon.getId()));
+      viewHolder.pokeId.setText(formatId(pokemon));
+      viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
 
-      int nameId = context.getResources().getIdentifier(pokemon.nameToKey(), "string", context.getPackageName());
-      String pokemonName = context.getResources().getString(nameId);
-      viewHolder.pokeName.setText(pokemonName);
-
-      int imageId = context.getResources()
-          .getIdentifier(pokemon.getImageName(), "drawable", context.getPackageName());
-
-      picasso.load(imageId)
+      picasso.load(getPokemonImageId(pokemon))
           .into(viewHolder.pokeImage);
 
       return convertView;

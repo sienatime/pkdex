@@ -3,6 +3,7 @@
     package="com.siena.pokedex" >
 
     <application
+        android:name=".PokedexApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
