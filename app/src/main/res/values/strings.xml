@@ -6,6 +6,11 @@
   <string name="action_settings">Settings</string>
   <string name="number_format">#%d</string>
   <string name="genus_format">%s Pokémon</string>
+  <string name="type_effectiveness">Type Effectiveness</string>
+  <string name="weak_to">Weak to</string>
+  <string name="normal_damage">Damaged normally by</string>
+  <string name="resistant_to">Resistant to</string>
+  <string name="immune_to">Immune to</string>
 
   <string name="bulbasaur">Bulbasaur</string>
   <string name="ivysaur">Ivysaur</string>

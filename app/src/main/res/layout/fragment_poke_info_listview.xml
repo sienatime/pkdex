@@ -3,4 +3,5 @@
     android:id="@+id/poke_info_listview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_blue"
     android:listSelector="@drawable/item_selected_state"/>

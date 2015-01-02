@@ -32,7 +32,13 @@
     <item name="android:background">@color/accent_blue</item>
     <item name="android:padding">4dp</item>
     <item name="android:layout_marginRight">8dp</item>
+  </style>
 
+  <style name="basic_padding">
+    <item name="android:paddingTop">8dp</item>
+    <item name="android:paddingBottom">8dp</item>
+    <item name="android:paddingRight">16dp</item>
+    <item name="android:paddingLeft">16dp</item>
   </style>
 
 </resources>

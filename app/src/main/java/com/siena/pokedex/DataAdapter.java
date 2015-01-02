@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.siena.pokedex.models.AllTypeEfficacy;
+import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.SingleTypeEfficacy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,11 @@ import java.util.List;
 public class DataAdapter {
   protected static final String TAG = "DataAdapter";
   private final String ENGLISH_ID = "9";
+  private final String Y_ID = "24";
+  private final String BLACK_2_ID = "21";
+  private final String BLACK_ID = "17";
+  private final String HEART_GOLD_ID = "15";
+  private final String DIAMOND_ID = "12";
 
   private final Context mContext;
   private SQLiteDatabase mDb;
@@ -112,5 +120,55 @@ public class DataAdapter {
     String result = cursor.getString(0);
     cursor.close();
     return result;
+  }
+
+  public AllTypeEfficacy getTypeEfficacy(List<Pokemon.Type> types) {
+    Integer id = types.get(0).getId();
+    Cursor cursor = getData(
+        "SELECT * FROM type_efficacy WHERE target_type_id = " + id + " ORDER BY damage_type_id");
+
+    cursor.moveToFirst();
+    ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<SingleTypeEfficacy>();
+    while (!cursor.isAfterLast()) {
+      SingleTypeEfficacy efficacy =
+          new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2));
+      efficacies.add(efficacy);
+      cursor.moveToNext();
+    }
+    cursor.close();
+
+    List<Pokemon.Type> weakTo = new ArrayList<>();
+    List<Pokemon.Type> immuneTo = new ArrayList<>();
+    List<Pokemon.Type> resistantTo = new ArrayList<>();
+    List<Pokemon.Type> damagedNormallyBy = new ArrayList<>();
+
+    for (SingleTypeEfficacy efficacy : efficacies) {
+      int damageTypeId = efficacy.getDamageTypeId();
+      switch (efficacy.getDamageFactor()) {
+        case 0:
+          immuneTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        case 25:
+          resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        case 50:
+          resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        case 100:
+          damagedNormallyBy.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        case 200:
+          weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        case 400:
+          weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+          break;
+        default:
+          Log.v("type efficacy",
+              "unknown damage factor: " + Integer.toString(efficacy.getDamageFactor()));
+      }
+    }
+
+    return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
   }
 }

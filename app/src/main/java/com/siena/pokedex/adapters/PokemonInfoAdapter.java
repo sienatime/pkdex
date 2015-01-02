@@ -10,7 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.siena.pokedex.DataAdapter;
+import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
+import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -27,13 +30,30 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private List<Row> rows = new ArrayList<>();
   private Pokemon pokemon;
   private final int HEADER_ROW = 100;
+  private final int SECTION_HEADER_ROW = 101;
+  private final int TYPE_EFFICACY_ROW = 102;
   private Context context;
 
   public PokemonInfoAdapter(Context context, Pokemon pokemon) {
     this.pokemon = pokemon;
     this.context = context;
+    setupRows();
+  }
 
+  private void setupRows() {
     rows.add(new HeaderRow(HEADER_ROW, pokemon, context));
+    rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.type_effectiveness));
+
+    DataAdapter mDbHelper = new DataAdapter(context);
+    mDbHelper.createDatabase();
+    mDbHelper.open();
+    AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
+    mDbHelper.close();
+
+    addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
+    addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
+    addTypeEfficacy(typeEfficacy.getResistantTo(), R.string.resistant_to);
+    addTypeEfficacy(typeEfficacy.getImmuneTo(), R.string.immune_to);
   }
 
   @Override public int getCount() {
@@ -57,7 +77,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   @Override public int getViewTypeCount() {
-    return 1;
+    return 3;
   }
 
   public static class HeaderRow implements Row {
@@ -93,13 +113,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
       int numberOfTypes = pokemon.getTypes().size();
 
       if (numberOfTypes > 0) {
-        viewHolder.type1.setText(pokemon.getTypes().get(0).getLocalizedName());
-        viewHolder.type1.setBackgroundColor(getTypeColor(pokemon.getTypes().get(0).getId()));
+        setType(viewHolder.type1, pokemon.getTypes().get(0));
 
         if (numberOfTypes == 2) {
           viewHolder.type2.setVisibility(View.VISIBLE);
-          viewHolder.type2.setText(pokemon.getTypes().get(1).getLocalizedName());
-          viewHolder.type2.setBackgroundColor(getTypeColor(pokemon.getTypes().get(1).getId()));
+          setType(viewHolder.type2, pokemon.getTypes().get(1));
         } else {
           viewHolder.type2.setVisibility(View.GONE);
         }
@@ -127,6 +145,103 @@ public class PokemonInfoAdapter extends BaseAdapter {
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
       }
+    }
+  }
+
+  public static class SectionHeaderRow implements Row {
+    private int rowType;
+    private int titleId;
+
+    public SectionHeaderRow(int rowType, int titleId) {
+      this.rowType = rowType;
+      this.titleId = titleId;
+    }
+
+    @Override public int getType() {
+      return rowType;
+    }
+
+    @Override public View getView(View convertView, ViewGroup parent) {
+      ViewHolder viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(PokedexApp.getInstance())
+            .inflate(R.layout.row_section_header, parent, false);
+        viewHolder = new ViewHolder(convertView);
+        convertView.setTag(viewHolder);
+      } else {
+        viewHolder = (ViewHolder) convertView.getTag();
+      }
+
+      viewHolder.sectionHeaderTextView.setText(titleId);
+
+      return convertView;
+    }
+
+    static class ViewHolder {
+      @InjectView(R.id.section_header) TextView sectionHeaderTextView;
+
+      public ViewHolder(View source) {
+        ButterKnife.inject(this, source);
+      }
+    }
+  }
+
+  public static class TypeEfficacyRow implements Row {
+    private int rowType;
+    private int titleId;
+    private List<Pokemon.Type> types;
+
+    public TypeEfficacyRow(int rowType, int titleId, List<Pokemon.Type> types) {
+      this.rowType = rowType;
+      this.titleId = titleId;
+      this.types = types;
+    }
+
+    @Override public int getType() {
+      return rowType;
+    }
+
+    @Override public View getView(View convertView, ViewGroup parent) {
+      ViewHolder viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(PokedexApp.getInstance())
+            .inflate(R.layout.row_type_efficacy, parent, false);
+        viewHolder = new ViewHolder(convertView);
+        convertView.setTag(viewHolder);
+      } else {
+        viewHolder = (ViewHolder) convertView.getTag();
+      }
+
+      viewHolder.typeEfficacyLevel.setText(titleId);
+
+      String typeString = "";
+      for (Pokemon.Type type : types) {
+        typeString += type.getLocalizedName() + ", ";
+      }
+
+      viewHolder.typeAnchor.setText(typeString);
+
+      return convertView;
+    }
+
+    static class ViewHolder {
+      @InjectView(R.id.type_efficacy_level) TextView typeEfficacyLevel;
+      @InjectView(R.id.type_anchor) TextView typeAnchor;
+
+      public ViewHolder(View source) {
+        ButterKnife.inject(this, source);
+      }
+    }
+  }
+
+  private static void setType(TextView textView, Pokemon.Type type) {
+    textView.setText(type.getLocalizedName());
+    textView.setBackgroundColor(getTypeColor(type.getId()));
+  }
+
+  private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
+    if (types.size() > 0) {
+      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
     }
   }
 }
