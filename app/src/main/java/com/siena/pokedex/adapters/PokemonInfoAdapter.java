@@ -1,6 +1,10 @@
 package com.siena.pokedex.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,6 +111,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
+      // this worked for some reason:
+      //String name = getLocalizedPokeName(pokemon);
+      //SpannableString spannableString = new SpannableString(name);
+      //spannableString.setSpan(new BackgroundColorSpan(R.color.shadow_gray), 0, name.length() / 2, 0);
+      //viewHolder.pokeName.setText(spannableString, TextView.BufferType.SPANNABLE);
       viewHolder.pokeGenus.setText(
           String.format(context.getString(R.string.genus_format), pokemon.getGenus()));
 
@@ -214,12 +223,34 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       viewHolder.typeEfficacyLevel.setText(titleId);
 
-      String typeString = "";
+      SpannableStringBuilder spannableString = new SpannableStringBuilder();
+
       for (Pokemon.Type type : types) {
-        typeString += type.getLocalizedName() + ", ";
+        String typeName = type.getLocalizedName().toUpperCase();
+        int color = getTypeColor(type.getId());
+
+        int start = spannableString.length();
+        int end = start + typeName.length();
+        spannableString.append(typeName);
+        spannableString.setSpan(new BackgroundColorSpan(color), start, end, 0);
+        spannableString.append(" ");
       }
 
-      viewHolder.typeAnchor.setText(typeString);
+      //android:textSize="12sp"
+      //android:textStyle="bold"
+      //android:textAllCaps="true"
+      //android:textColor="@android:color/white"
+      //android:shadowColor="@color/shadow_gray"
+      //android:shadowDx="0"
+      //android:shadowDy="2"
+      //android:shadowRadius="4"
+      //android:padding="4dp"
+
+      Resources res = PokedexApp.getInstance().getResources();
+      viewHolder.typeAnchor.setText(spannableString, TextView.BufferType.SPANNABLE);
+      viewHolder.typeAnchor.setTextColor(PokedexApp.getInstance().getResources().getColor(R.color.white));
+      viewHolder.typeAnchor.setShadowLayer(4, 0, 2, res.getColor(R.color.shadow_gray));
+      viewHolder.typeAnchor.setTypeface(viewHolder.typeAnchor.getTypeface(), Typeface.BOLD);
 
       return convertView;
     }
