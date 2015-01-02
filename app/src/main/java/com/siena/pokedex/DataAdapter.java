@@ -123,26 +123,39 @@ public class DataAdapter {
   }
 
   public AllTypeEfficacy getTypeEfficacy(List<Pokemon.Type> types) {
-    Integer id = types.get(0).getId();
-    Cursor cursor = getData(
-        "SELECT * FROM type_efficacy WHERE target_type_id = " + id + " ORDER BY damage_type_id");
+    List<List<SingleTypeEfficacy>> allTypeEfficaciesList = new ArrayList<>();
+    for (Pokemon.Type type : types) {
+      Integer id = type.getId();
+      Cursor cursor = getData(
+          "SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = "
+              + id
+              + " ORDER BY damage_type_id");
 
-    cursor.moveToFirst();
-    ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<SingleTypeEfficacy>();
-    while (!cursor.isAfterLast()) {
-      SingleTypeEfficacy efficacy =
-          new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2));
-      efficacies.add(efficacy);
-      cursor.moveToNext();
+      cursor.moveToFirst();
+      ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<>();
+      while (!cursor.isAfterLast()) {
+        SingleTypeEfficacy efficacy = new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1));
+        efficacies.add(efficacy);
+        cursor.moveToNext();
+      }
+      cursor.close();
+      allTypeEfficaciesList.add(efficacies);
     }
-    cursor.close();
+
+    List<SingleTypeEfficacy> finalEfficacy;
+
+    if (allTypeEfficaciesList.size() > 1) {
+      finalEfficacy = consolidateTypeEfficacy(allTypeEfficaciesList);
+    } else {
+      finalEfficacy = allTypeEfficaciesList.get(0);
+    }
 
     List<Pokemon.Type> weakTo = new ArrayList<>();
     List<Pokemon.Type> immuneTo = new ArrayList<>();
     List<Pokemon.Type> resistantTo = new ArrayList<>();
     List<Pokemon.Type> damagedNormallyBy = new ArrayList<>();
 
-    for (SingleTypeEfficacy efficacy : efficacies) {
+    for (SingleTypeEfficacy efficacy : finalEfficacy) {
       int damageTypeId = efficacy.getDamageTypeId();
       switch (efficacy.getDamageFactor()) {
         case 0:
@@ -170,5 +183,25 @@ public class DataAdapter {
     }
 
     return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
+  }
+
+  private List<SingleTypeEfficacy> consolidateTypeEfficacy(
+      List<List<SingleTypeEfficacy>> allTypeEfficaciesList) {
+    assert(allTypeEfficaciesList.get(0).size() == allTypeEfficaciesList.get(1).size());
+
+    List<SingleTypeEfficacy> finalEfficacy = new ArrayList<>();
+
+    for (int i = 0; i < allTypeEfficaciesList.get(0).size(); i++) {
+      SingleTypeEfficacy damageType1 = allTypeEfficaciesList.get(0).get(i);
+      SingleTypeEfficacy damageType2 = allTypeEfficaciesList.get(1).get(i);
+
+      assert(damageType1.getDamageTypeId() == damageType2.getDamageTypeId());
+      int combinedDamage = damageType1.getDamageFactor() * damageType2.getDamageFactor() / 100;
+      SingleTypeEfficacy combinedTypeEfficacy = new SingleTypeEfficacy(damageType1.getDamageTypeId(),
+          combinedDamage);
+      finalEfficacy.add(combinedTypeEfficacy);
+    }
+
+    return finalEfficacy;
   }
 }

@@ -6,21 +6,15 @@ package com.siena.pokedex.models;
 public class SingleTypeEfficacy {
   //damage_type_id|target_type_id|damage_factor
   private int damageTypeId;
-  private int targetTypeId;
   private int damageFactor;
 
-  public SingleTypeEfficacy(int damageTypeId, int targetTypeId, int damageFactor) {
+  public SingleTypeEfficacy(int damageTypeId, int damageFactor) {
     this.damageTypeId = damageTypeId;
-    this.targetTypeId = targetTypeId;
     this.damageFactor = damageFactor;
   }
 
   public int getDamageTypeId() {
     return damageTypeId;
-  }
-
-  public int getTargetTypeId() {
-    return targetTypeId;
   }
 
   public int getDamageFactor() {
