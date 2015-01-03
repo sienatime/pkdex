@@ -226,7 +226,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       SpannableStringBuilder spannableString = new SpannableStringBuilder();
 
       for (Pokemon.Type type : types) {
-        String typeName = type.getLocalizedName().toUpperCase();
+        String typeName = " " + type.getLocalizedName().toUpperCase() + " ";
         int color = getTypeColor(type.getId());
 
         int start = spannableString.length();
@@ -247,6 +247,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       //android:padding="4dp"
 
       Resources res = PokedexApp.getInstance().getResources();
+      viewHolder.typeAnchor.setTextSize(12);
       viewHolder.typeAnchor.setText(spannableString, TextView.BufferType.SPANNABLE);
       viewHolder.typeAnchor.setTextColor(PokedexApp.getInstance().getResources().getColor(R.color.white));
       viewHolder.typeAnchor.setShadowLayer(4, 0, 2, res.getColor(R.color.shadow_gray));
