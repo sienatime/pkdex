@@ -11,6 +11,7 @@
   <string name="normal_damage">Damaged normally by</string>
   <string name="resistant_to">Resistant to</string>
   <string name="immune_to">Immune to</string>
+  <string name="locations">Locations</string>
 
   <string name="bulbasaur">Bulbasaur</string>
   <string name="ivysaur">Ivysaur</string>

@@ -18,6 +18,7 @@ import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
+import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -33,9 +34,10 @@ import static com.siena.pokedex.PokemonUtil.getTypeColor;
 public class PokemonInfoAdapter extends BaseAdapter {
   private List<Row> rows = new ArrayList<>();
   private Pokemon pokemon;
-  private final int HEADER_ROW = 100;
-  private final int SECTION_HEADER_ROW = 101;
-  private final int TYPE_EFFICACY_ROW = 102;
+  private final int HEADER_ROW = 0;
+  private final int SECTION_HEADER_ROW = 1;
+  private final int TYPE_EFFICACY_ROW = 2;
+  private final int TYPE_ENCOUNTER_ROW = 3;
   private Context context;
 
   public PokemonInfoAdapter(Context context, Pokemon pokemon) {
@@ -52,12 +54,17 @@ public class PokemonInfoAdapter extends BaseAdapter {
     mDbHelper.createDatabase();
     mDbHelper.open();
     AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
+    List<Encounter> encounters = mDbHelper.getEncounters(pokemon.getId());
     mDbHelper.close();
 
     addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
     addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
     addTypeEfficacy(typeEfficacy.getResistantTo(), R.string.resistant_to);
     addTypeEfficacy(typeEfficacy.getImmuneTo(), R.string.immune_to);
+
+    rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
+
+    addEncounterRows(encounters);
   }
 
   @Override public int getCount() {
@@ -81,7 +88,24 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   @Override public int getViewTypeCount() {
-    return 3;
+    return 4;
+  }
+
+  private static void setType(TextView textView, Pokemon.Type type) {
+    textView.setText(type.getLocalizedName());
+    textView.setBackgroundColor(getTypeColor(type.getId()));
+  }
+
+  private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
+    if (types.size() > 0) {
+      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
+    }
+  }
+
+  private void addEncounterRows(List<Encounter> encounters) {
+    for (Encounter encounter : encounters) {
+      rows.add(new EncounterRow(TYPE_ENCOUNTER_ROW, encounter));
+    }
   }
 
   public static class HeaderRow implements Row {
@@ -266,14 +290,47 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
   }
 
-  private static void setType(TextView textView, Pokemon.Type type) {
-    textView.setText(type.getLocalizedName());
-    textView.setBackgroundColor(getTypeColor(type.getId()));
-  }
+  public static class EncounterRow implements Row {
+    private int rowType;
+    private Encounter encounter;
 
-  private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
-    if (types.size() > 0) {
-      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
+    public EncounterRow(int rowType, Encounter encounter) {
+      this.rowType = rowType;
+      this.encounter = encounter;
+    }
+
+    @Override public int getType() {
+      return rowType;
+    }
+
+    @Override public View getView(View convertView, ViewGroup parent) {
+      ViewHolder viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(PokedexApp.getInstance())
+            .inflate(R.layout.row_encounter, parent, false);
+        viewHolder = new ViewHolder(convertView);
+        convertView.setTag(viewHolder);
+      } else {
+        viewHolder = (ViewHolder) convertView.getTag();
+      }
+
+      viewHolder.encounterLevels.setText(encounter.getLevelRange());
+      viewHolder.encounterLocation.setText(encounter.getLocationName());
+      viewHolder.encounterMethod.setText(encounter.getMethod());
+      viewHolder.encounterRate.setText(String.format("%s%%", Integer.toString(encounter.getRate())));
+
+      return convertView;
+    }
+
+    static class ViewHolder {
+      @InjectView(R.id.encounter_location) TextView encounterLocation;
+      @InjectView(R.id.encounter_method) TextView encounterMethod;
+      @InjectView(R.id.encounter_rate) TextView encounterRate;
+      @InjectView(R.id.encounter_levels) TextView encounterLevels;
+
+      public ViewHolder(View source) {
+        ButterKnife.inject(this, source);
+      }
     }
   }
 }

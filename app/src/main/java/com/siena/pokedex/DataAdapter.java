@@ -6,10 +6,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.siena.pokedex.models.AllTypeEfficacy;
+import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.SingleTypeEfficacy;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -187,7 +191,7 @@ public class DataAdapter {
 
   private List<SingleTypeEfficacy> consolidateTypeEfficacy(
       List<List<SingleTypeEfficacy>> allTypeEfficaciesList) {
-    assert(allTypeEfficaciesList.get(0).size() == allTypeEfficaciesList.get(1).size());
+    assert (allTypeEfficaciesList.get(0).size() == allTypeEfficaciesList.get(1).size());
 
     List<SingleTypeEfficacy> finalEfficacy = new ArrayList<>();
 
@@ -195,13 +199,100 @@ public class DataAdapter {
       SingleTypeEfficacy damageType1 = allTypeEfficaciesList.get(0).get(i);
       SingleTypeEfficacy damageType2 = allTypeEfficaciesList.get(1).get(i);
 
-      assert(damageType1.getDamageTypeId() == damageType2.getDamageTypeId());
+      assert (damageType1.getDamageTypeId() == damageType2.getDamageTypeId());
       int combinedDamage = damageType1.getDamageFactor() * damageType2.getDamageFactor() / 100;
-      SingleTypeEfficacy combinedTypeEfficacy = new SingleTypeEfficacy(damageType1.getDamageTypeId(),
-          combinedDamage);
+      SingleTypeEfficacy combinedTypeEfficacy =
+          new SingleTypeEfficacy(damageType1.getDamageTypeId(), combinedDamage);
       finalEfficacy.add(combinedTypeEfficacy);
     }
 
     return finalEfficacy;
+  }
+
+  public List<Encounter> getEncounters(int id) {
+    String intString = Integer.toString(id);
+
+    Cursor cursor = getData(
+        "select v_encounter.version_id, location_names.name, location_area_prose.name, v_encounter.min_level, v_encounter.max_level, v_encounter.rarity, encounter_method_prose.name, v_encounter._id from v_encounter \n"
+            + "join location_names on v_encounter.location_id = location_names.location_id "
+            + "join location_area_prose on v_encounter.location_area_id = location_area_prose.location_area_id "
+            + "join encounter_method_prose on v_encounter.methodId = encounter_method_prose.encounter_method_id "
+            + "where v_encounter.pokemon_id = "
+            + intString
+            + " and location_names.local_language_id = "
+            + ENGLISH_ID
+            + " and location_area_prose.local_language_id = "
+            + ENGLISH_ID
+            + " and encounter_method_prose.local_language_id = "
+            + ENGLISH_ID
+            + ";");
+
+    cursor.moveToFirst();
+    HashMap<Integer, Encounter> encounterMap = new HashMap<>();
+    while (!cursor.isAfterLast()) {
+      int versionId = cursor.getInt(0);
+      String locationName = cursor.getString(1);
+      String locationArea = cursor.getString(2);
+
+      //calculate levels
+      int minLevel = cursor.getInt(3);
+      int maxLevel = cursor.getInt(4);
+      String levels = null;
+      if (minLevel != maxLevel) {
+        levels = Integer.toString(minLevel) + "-" + Integer.toString(maxLevel);
+      } else {
+        levels = Integer.toString(minLevel);
+      }
+      int rate = cursor.getInt(5);
+      String method = cursor.getString(6);
+      Integer encounterId = cursor.getInt(7);
+      Encounter encounter =
+          new Encounter(versionId, locationName, method, levels, rate, locationArea);
+      encounterMap.put(encounterId, encounter);
+      cursor.moveToNext();
+    }
+    cursor.close();
+
+    encounterMap = addEncounterConditions(intString, encounterMap);
+    ArrayList<Encounter> encounters = new ArrayList<>(encounterMap.values());
+    Collections.sort(encounters, new Comparator<Encounter>() {
+      @Override public int compare(Encounter e1, Encounter e2) {
+        return e1.getVersionId() - e2.getVersionId(); // Ascending
+      }
+    });
+    return encounters;
+  }
+
+  private HashMap<Integer, Encounter> addEncounterConditions(String idString,
+      HashMap<Integer, Encounter> encounterMap) {
+    Cursor cursor = getData(
+        "select encounters._id, encounter_condition_value_prose.name from encounters\n"
+            + "join encounter_condition_value_map on encounters._id = encounter_condition_value_map.encounter_id\n"
+            + "join encounter_condition_value_prose on encounter_condition_value_prose.encounter_condition_value_id = encounter_condition_value_map.encounter_condition_value_id\n"
+            + "where encounters.pokemon_id = "
+            + idString
+            + " and encounter_condition_value_prose.local_language_id = "
+            + ENGLISH_ID
+            + ";");
+    cursor.moveToFirst();
+    while (!cursor.isAfterLast()) {
+      Integer encounterId = cursor.getInt(0);
+      String encounterCondition = cursor.getString(1);
+
+      Encounter encounter = encounterMap.get(encounterId);
+      if (encounter != null) {
+        encounter.setCondition(encounterCondition);
+      } else {
+        Log.e("encounter condition", "encounter "
+            + Integer.toString(encounterId)
+            + " was not in map for encounter condition "
+            + encounterCondition);
+      }
+
+      cursor.moveToNext();
+    }
+    cursor.close();
+
+    return encounterMap;
   }
 }
