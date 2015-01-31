@@ -1,7 +1,10 @@
 package com.siena.pokedex.adapters;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
+import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
-import com.siena.pokedex.bus.ShowPokemonInfoEvent;
+import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso;
@@ -47,7 +51,7 @@ public class PokemonListAdapter extends BaseAdapter {
 
     Cursor testdata = mDbHelper.getAllPokemonData();
 
-    for (int i = 0; i < 719; i++ ) {
+    for (int i = 0; i < 719; i++) {
       Pokemon poke = new Pokemon(testdata.getInt(0), testdata.getString(1));
       rows.add(new PokeRow(POKEMON_ROW, poke, context, bus));
       testdata.moveToNext();
@@ -102,7 +106,8 @@ public class PokemonListAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.row_pokemon_item, parent, false);
+        convertView =
+            LayoutInflater.from(context).inflate(R.layout.row_pokemon_item, parent, false);
         viewHolder = new ViewHolder(convertView);
         convertView.setTag(viewHolder);
       } else {
@@ -111,7 +116,16 @@ public class PokemonListAdapter extends BaseAdapter {
 
       viewHolder.container.setOnClickListener(new View.OnClickListener() {
         @Override public void onClick(View v) {
-          bus.post(new ShowPokemonInfoEvent(pokemon.getId()));
+          Fragment fragment = new PokeInfoFragment();
+          Bundle bundle = new Bundle();
+          bundle.putInt(PokemonUtil.POKEMON_ID_KEY, pokemon.getId());
+          fragment.setArguments(bundle);
+          ((Activity) context).getFragmentManager()
+              .beginTransaction()
+              .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+              .replace(R.id.container, fragment)
+              .addToBackStack(null)
+              .commit();
         }
       });
 
@@ -121,8 +135,7 @@ public class PokemonListAdapter extends BaseAdapter {
       int imageId = getPokemonImageId(pokemon);
       if (imageId > 0) {
         viewHolder.pokeImage.setVisibility(View.VISIBLE);
-        picasso.load(getPokemonImageId(pokemon))
-            .into(viewHolder.pokeImage);
+        picasso.load(getPokemonImageId(pokemon)).into(viewHolder.pokeImage);
       } else {
         Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
         viewHolder.pokeImage.setVisibility(View.INVISIBLE);

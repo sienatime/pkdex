@@ -1,19 +1,13 @@
 package com.siena.pokedex.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.siena.pokedex.PokedexApp;
-import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
-import com.siena.pokedex.bus.ShowPokemonInfoEvent;
-import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.fragments.PokeListFragment;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 
 public class MainFragmentActivity extends Activity {
@@ -62,18 +56,6 @@ public class MainFragmentActivity extends Activity {
   @Override protected void onPause() {
     bus.unregister(this);
     super.onPause();
-  }
-
-  @Subscribe public void onShowInfoEvent(ShowPokemonInfoEvent event) {
-    Fragment fragment = new PokeInfoFragment();
-    Bundle bundle = new Bundle();
-    bundle.putInt(PokemonUtil.POKEMON_ID_KEY, event.getId());
-    fragment.setArguments(bundle);
-    FragmentTransaction transaction =
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment);
-    transaction.setCustomAnimations(R.anim.slide_right, R.anim.slide_left);
-    transaction.addToBackStack(null);
-    transaction.commit();
   }
 
   @Override public void onBackPressed() {
