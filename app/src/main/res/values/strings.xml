@@ -12,6 +12,9 @@
   <string name="resistant_to">Resistant to</string>
   <string name="immune_to">Immune to</string>
   <string name="locations">Locations</string>
+  <string name="no_known_locations">No known locations.</string>
+  <string name="encounter_rate">%s%%</string>
+  <string name="level">Lv. %s</string>
 
   <string name="bulbasaur">Bulbasaur</string>
   <string name="ivysaur">Ivysaur</string>

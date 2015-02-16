@@ -38,6 +38,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private final int SECTION_HEADER_ROW = 1;
   private final int TYPE_EFFICACY_ROW = 2;
   private final int TYPE_ENCOUNTER_ROW = 3;
+  private final int TYPE_NO_KNOWN_LOCATIONS_ROW = 4;
   private Context context;
 
   public PokemonInfoAdapter(Context context, Pokemon pokemon) {
@@ -88,7 +89,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   @Override public int getViewTypeCount() {
-    return 4;
+    return 5;
   }
 
   private static void setType(TextView textView, Pokemon.Type type) {
@@ -103,8 +104,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   private void addEncounterRows(List<Encounter> encounters) {
-    for (Encounter encounter : encounters) {
-      rows.add(new EncounterRow(TYPE_ENCOUNTER_ROW, encounter));
+    if (encounters.size() > 0) {
+      for (Encounter encounter : encounters) {
+        rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter));
+      }
+    } else {
+      rows.add(new NoKnownLocationsRow(TYPE_NO_KNOWN_LOCATIONS_ROW));
     }
   }
 
@@ -273,7 +278,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
       Resources res = PokedexApp.getInstance().getResources();
       viewHolder.typeAnchor.setTextSize(12);
       viewHolder.typeAnchor.setText(spannableString, TextView.BufferType.SPANNABLE);
-      viewHolder.typeAnchor.setTextColor(PokedexApp.getInstance().getResources().getColor(R.color.white));
+      viewHolder.typeAnchor.setTextColor(
+          PokedexApp.getInstance().getResources().getColor(R.color.white));
       viewHolder.typeAnchor.setShadowLayer(4, 0, 2, res.getColor(R.color.shadow_gray));
       viewHolder.typeAnchor.setTypeface(viewHolder.typeAnchor.getTypeface(), Typeface.BOLD);
 
@@ -291,10 +297,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   public static class EncounterRow implements Row {
+    private Resources res;
     private int rowType;
     private Encounter encounter;
 
-    public EncounterRow(int rowType, Encounter encounter) {
+    public EncounterRow(Resources res, int rowType, Encounter encounter) {
+      this.res = res;
       this.rowType = rowType;
       this.encounter = encounter;
     }
@@ -314,10 +322,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.encounterLevels.setText(encounter.getLevelRange());
+      viewHolder.encounterLevels.setText(
+          String.format(res.getString(R.string.level), encounter.getLevelRange()));
       viewHolder.encounterLocation.setText(encounter.getLocationName());
       viewHolder.encounterMethod.setText(encounter.getMethod());
-      viewHolder.encounterRate.setText(String.format("%s%%", Integer.toString(encounter.getRate())));
+      viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
+          Integer.toString(encounter.getRate())));
 
       return convertView;
     }
@@ -331,6 +341,27 @@ public class PokemonInfoAdapter extends BaseAdapter {
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
       }
+    }
+  }
+
+  public static class NoKnownLocationsRow implements Row {
+    private int rowType;
+
+    public NoKnownLocationsRow(int rowType) {
+      this.rowType = rowType;
+    }
+
+    @Override public int getType() {
+      return rowType;
+    }
+
+    @Override public View getView(View convertView, ViewGroup parent) {
+      if (convertView == null) {
+        convertView = LayoutInflater.from(PokedexApp.getInstance())
+            .inflate(R.layout.row_no_known_locations, parent, false);
+      }
+
+      return convertView;
     }
   }
 }
