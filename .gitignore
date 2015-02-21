@@ -5,3 +5,5 @@
 .DS_Store
 /build
 pokedex.sketch
+*.iml
+app/*.iml
