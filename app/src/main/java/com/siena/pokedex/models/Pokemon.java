@@ -1,73 +1,101 @@
 package com.siena.pokedex.models;
 
-import java.util.List;
+import io.realm.RealmObject;
 
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
-public class Pokemon {
+public class Pokemon extends RealmObject {
   private int id;
+  private String identifier;
+  private int speciesId;
+  private int height;
+  private int weight;
+  private int baseExperience;
+  private int order;
+  private boolean isDefault;
+
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
-  private String name;
-  private String genus;
-  private List<Type> types; //localized
+  //private String name;
+  //private String genus;
+  public Pokemon() {
+
+  }
 
   public Pokemon(int id, String name) {
     this.id = id;
-    this.name = name;
+    //this.name = name;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  public int getSpeciesId() {
+    return speciesId;
+  }
+
+  public void setSpeciesId(int speciesId) {
+    this.speciesId = speciesId;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
+  }
+
+  public int getWeight() {
+    return weight;
+  }
+
+  public void setWeight(int weight) {
+    this.weight = weight;
+  }
+
+  public int getBaseExperience() {
+    return baseExperience;
+  }
+
+  public void setBaseExperience(int baseExperience) {
+    this.baseExperience = baseExperience;
+  }
+
+  public int getOrder() {
+    return order;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
+  }
+
+  public boolean isDefault() {
+    return isDefault;
+  }
+
+  public void setDefault(boolean isDefault) {
+    this.isDefault = isDefault;
   }
 
   public int getId() {
     return id;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public List<Type> getTypes() {
-    return types;
-  }
-
-  public void setTypes(List<Type> types) {
-    this.types = types;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getGenus() {
-    return genus;
-  }
-
-  public void setGenus(String genus) {
-    this.genus = genus;
-  }
-
-  public String nameToKey() {
-    return name.replace("-", "_");
-  }
-
-  public String getImageName() {
-    return "sprite_" + Integer.toString(id);
-  }
-
-  public static class Type {
-    private Integer id;
-    private String localizedName;
-
-    public Type(Integer id, String localizedName) {
-      this.id = id;
-      this.localizedName = localizedName;
-    }
-
-    public Integer getId() {
-      return id;
-    }
-
-    public String getLocalizedName() {
-      return localizedName;
-    }
-  }
+  //public String getGenus() {
+  //  return genus;
+  //}
+  //
+  //public void setGenus(String genus) {
+  //  this.genus = genus;
+  //}
 }

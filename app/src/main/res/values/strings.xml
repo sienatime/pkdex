@@ -265,7 +265,7 @@
   <string name="pupitar">Pupitar</string>
   <string name="tyranitar">Tyranitar</string>
   <string name="lugia">Lugia</string>
-  <string name="ho_oh">Ho_Oh</string>
+  <string name="ho_oh">Ho-Oh</string>
   <string name="celebi">Celebi</string>
   <string name="treecko">Treecko</string>
   <string name="grovyle">Grovyle</string>
@@ -454,7 +454,7 @@
   <string name="bronzor">Bronzor</string>
   <string name="bronzong">Bronzong</string>
   <string name="bonsly">Bonsly</string>
-  <string name="mime_jr">Mime_Jr</string>
+  <string name="mime_jr">Mime Jr.</string>
   <string name="happiny">Happiny</string>
   <string name="chatot">Chatot</string>
   <string name="spiritomb">Spiritomb</string>
@@ -489,7 +489,7 @@
   <string name="glaceon">Glaceon</string>
   <string name="gliscor">Gliscor</string>
   <string name="mamoswine">Mamoswine</string>
-  <string name="porygon_z">Porygon_Z</string>
+  <string name="porygon_z">Porygon-Z</string>
   <string name="gallade">Gallade</string>
   <string name="probopass">Probopass</string>
   <string name="dusknoir">Dusknoir</string>

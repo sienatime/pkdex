@@ -2,12 +2,11 @@ package com.siena.pokedex;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
-import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.SingleTypeEfficacy;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +60,11 @@ public class DataAdapter {
 
   public void close() {
     mDbHelper.close();
+  }
+
+  public long getNumberOfRows(String table, String selection, String[] selectionArgs) {
+    return DatabaseUtils.queryNumEntries(mDb, table, selection,
+        selectionArgs);
   }
 
   public Cursor getData(String sql) {
@@ -126,68 +130,68 @@ public class DataAdapter {
     return result;
   }
 
-  public AllTypeEfficacy getTypeEfficacy(List<Pokemon.Type> types) {
-    List<List<SingleTypeEfficacy>> allTypeEfficaciesList = new ArrayList<>();
-    for (Pokemon.Type type : types) {
-      Integer id = type.getId();
-      Cursor cursor = getData(
-          "SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = "
-              + id
-              + " ORDER BY damage_type_id");
-
-      cursor.moveToFirst();
-      ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<>();
-      while (!cursor.isAfterLast()) {
-        SingleTypeEfficacy efficacy = new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1));
-        efficacies.add(efficacy);
-        cursor.moveToNext();
-      }
-      cursor.close();
-      allTypeEfficaciesList.add(efficacies);
-    }
-
-    List<SingleTypeEfficacy> finalEfficacy;
-
-    if (allTypeEfficaciesList.size() > 1) {
-      finalEfficacy = consolidateTypeEfficacy(allTypeEfficaciesList);
-    } else {
-      finalEfficacy = allTypeEfficaciesList.get(0);
-    }
-
-    List<Pokemon.Type> weakTo = new ArrayList<>();
-    List<Pokemon.Type> immuneTo = new ArrayList<>();
-    List<Pokemon.Type> resistantTo = new ArrayList<>();
-    List<Pokemon.Type> damagedNormallyBy = new ArrayList<>();
-
-    for (SingleTypeEfficacy efficacy : finalEfficacy) {
-      int damageTypeId = efficacy.getDamageTypeId();
-      switch (efficacy.getDamageFactor()) {
-        case 0:
-          immuneTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        case 25:
-          resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        case 50:
-          resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        case 100:
-          damagedNormallyBy.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        case 200:
-          weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        case 400:
-          weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-          break;
-        default:
-          Log.v("type efficacy",
-              "unknown damage factor: " + Integer.toString(efficacy.getDamageFactor()));
-      }
-    }
-
-    return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
-  }
+  //public AllTypeEfficacy getTypeEfficacy(List<Pokemon.Type> types) {
+  //  List<List<SingleTypeEfficacy>> allTypeEfficaciesList = new ArrayList<>();
+  //  for (Pokemon.Type type : types) {
+  //    Integer id = type.getId();
+  //    Cursor cursor = getData(
+  //        "SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = "
+  //            + id
+  //            + " ORDER BY damage_type_id");
+  //
+  //    cursor.moveToFirst();
+  //    ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<>();
+  //    while (!cursor.isAfterLast()) {
+  //      SingleTypeEfficacy efficacy = new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1));
+  //      efficacies.add(efficacy);
+  //      cursor.moveToNext();
+  //    }
+  //    cursor.close();
+  //    allTypeEfficaciesList.add(efficacies);
+  //  }
+  //
+  //  List<SingleTypeEfficacy> finalEfficacy;
+  //
+  //  if (allTypeEfficaciesList.size() > 1) {
+  //    finalEfficacy = consolidateTypeEfficacy(allTypeEfficaciesList);
+  //  } else {
+  //    finalEfficacy = allTypeEfficaciesList.get(0);
+  //  }
+  //
+  //  List<Pokemon.Type> weakTo = new ArrayList<>();
+  //  List<Pokemon.Type> immuneTo = new ArrayList<>();
+  //  List<Pokemon.Type> resistantTo = new ArrayList<>();
+  //  List<Pokemon.Type> damagedNormallyBy = new ArrayList<>();
+  //
+  //  for (SingleTypeEfficacy efficacy : finalEfficacy) {
+  //    int damageTypeId = efficacy.getDamageTypeId();
+  //    switch (efficacy.getDamageFactor()) {
+  //      case 0:
+  //        immuneTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      case 25:
+  //        resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      case 50:
+  //        resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      case 100:
+  //        damagedNormallyBy.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      case 200:
+  //        weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      case 400:
+  //        weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
+  //        break;
+  //      default:
+  //        Log.v("type efficacy",
+  //            "unknown damage factor: " + Integer.toString(efficacy.getDamageFactor()));
+  //    }
+  //  }
+  //
+  //  return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
+  //}
 
   private List<SingleTypeEfficacy> consolidateTypeEfficacy(
       List<List<SingleTypeEfficacy>> allTypeEfficaciesList) {

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
-import android.text.style.BackgroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +15,16 @@ import butterknife.InjectView;
 import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
-import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.PokemonType;
 import com.squareup.picasso.Picasso;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
-import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
@@ -54,14 +53,14 @@ public class PokemonInfoAdapter extends BaseAdapter {
     DataAdapter mDbHelper = new DataAdapter(context);
     mDbHelper.createDatabase();
     mDbHelper.open();
-    AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
+    //AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
     //List<Encounter> encounters = mDbHelper.getEncounters(pokemon.getId());
     mDbHelper.close();
 
-    addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
-    addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
-    addTypeEfficacy(typeEfficacy.getResistantTo(), R.string.resistant_to);
-    addTypeEfficacy(typeEfficacy.getImmuneTo(), R.string.immune_to);
+    //addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
+    //addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
+    //addTypeEfficacy(typeEfficacy.getResistantTo(), R.string.resistant_to);
+    //addTypeEfficacy(typeEfficacy.getImmuneTo(), R.string.immune_to);
 
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
 
@@ -92,16 +91,16 @@ public class PokemonInfoAdapter extends BaseAdapter {
     return 5;
   }
 
-  private static void setType(TextView textView, Pokemon.Type type) {
-    textView.setText(type.getLocalizedName());
-    textView.setBackgroundColor(getTypeColor(type.getId()));
+  private static void setType(TextView textView, PokemonType type) {
+    //textView.setText(type.getLocalizedName());
+    textView.setBackgroundColor(getTypeColor(type.getTypeId()));
   }
 
-  private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
-    if (types.size() > 0) {
-      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
-    }
-  }
+  //private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
+  //  if (types.size() > 0) {
+  //    rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
+  //  }
+  //}
 
   private void addEncounterRows(List<Encounter> encounters) {
     if (encounters.size() > 0) {
@@ -145,30 +144,33 @@ public class PokemonInfoAdapter extends BaseAdapter {
       //SpannableString spannableString = new SpannableString(name);
       //spannableString.setSpan(new BackgroundColorSpan(R.color.shadow_gray), 0, name.length() / 2, 0);
       //viewHolder.pokeName.setText(spannableString, TextView.BufferType.SPANNABLE);
-      viewHolder.pokeGenus.setText(
-          String.format(context.getString(R.string.genus_format), pokemon.getGenus()));
-
-      int numberOfTypes = pokemon.getTypes().size();
+      //viewHolder.pokeGenus.setText(
+      //    String.format(context.getString(R.string.genus_format), pokemon.getGenus()));
+      //
+      Realm realm = Realm.getInstance(context);
+      RealmResults<PokemonType> types =
+          realm.where(PokemonType.class).equalTo("pokemonId", pokemon.getId()).findAll();
+      int numberOfTypes = types.size();
 
       if (numberOfTypes > 0) {
-        setType(viewHolder.type1, pokemon.getTypes().get(0));
+        setType(viewHolder.type1, types.get(0));
 
         if (numberOfTypes == 2) {
           viewHolder.type2.setVisibility(View.VISIBLE);
-          setType(viewHolder.type2, pokemon.getTypes().get(1));
+          setType(viewHolder.type2, types.get(1));
         } else {
           viewHolder.type2.setVisibility(View.GONE);
         }
       }
 
-      int imageId = getPokemonImageId(pokemon);
-      if (imageId > 0) {
-        viewHolder.pokeImage.setVisibility(View.VISIBLE);
-        picasso.load(getPokemonImageId(pokemon)).into(viewHolder.pokeImage);
-      } else {
-        Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
-        viewHolder.pokeImage.setVisibility(View.INVISIBLE);
-      }
+      //int imageId = getPokemonImageId(pokemon);
+      //if (imageId > 0) {
+      //  viewHolder.pokeImage.setVisibility(View.VISIBLE);
+      //  picasso.load(getPokemonImageId(pokemon)).into(viewHolder.pokeImage);
+      //} else {
+      //  Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
+      //  viewHolder.pokeImage.setVisibility(View.INVISIBLE);
+      //}
 
       return convertView;
     }
@@ -227,13 +229,13 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public static class TypeEfficacyRow implements Row {
     private int rowType;
     private int titleId;
-    private List<Pokemon.Type> types;
+    //private List<Pokemon.Type> types;
 
-    public TypeEfficacyRow(int rowType, int titleId, List<Pokemon.Type> types) {
-      this.rowType = rowType;
-      this.titleId = titleId;
-      this.types = types;
-    }
+    //public TypeEfficacyRow(int rowType, int titleId, List<Pokemon.Type> types) {
+    //  this.rowType = rowType;
+    //  this.titleId = titleId;
+    //  this.types = types;
+    //}
 
     @Override public int getType() {
       return rowType;
@@ -254,16 +256,16 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       SpannableStringBuilder spannableString = new SpannableStringBuilder();
 
-      for (Pokemon.Type type : types) {
-        String typeName = " " + type.getLocalizedName().toUpperCase() + " ";
-        int color = getTypeColor(type.getId());
-
-        int start = spannableString.length();
-        int end = start + typeName.length();
-        spannableString.append(typeName);
-        spannableString.setSpan(new BackgroundColorSpan(color), start, end, 0);
-        spannableString.append(" ");
-      }
+      //for (Pokemon.Type type : types) {
+      //  String typeName = " " + type.getLocalizedName().toUpperCase() + " ";
+      //  int color = getTypeColor(type.getId());
+      //
+      //  int start = spannableString.length();
+      //  int end = start + typeName.length();
+      //  spannableString.append(typeName);
+      //  spannableString.setSpan(new BackgroundColorSpan(color), start, end, 0);
+      //  spannableString.append(" ");
+      //}
 
       //android:textSize="12sp"
       //android:textStyle="bold"

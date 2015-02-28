@@ -13,7 +13,7 @@ import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonInfoAdapter;
 import com.siena.pokedex.models.Pokemon;
-import java.util.ArrayList;
+import io.realm.Realm;
 import java.util.List;
 
 /**
@@ -36,18 +36,19 @@ public class PokeInfoFragment extends Fragment {
     DataAdapter mDbHelper = new DataAdapter(getActivity());
     mDbHelper.createDatabase();
     mDbHelper.open();
-    String name = mDbHelper.getIdentifierById(id);
+    Realm realm = Realm.getInstance(getActivity());
+
     String genus = mDbHelper.getGenusById(id);
     List<Integer> typeIds = mDbHelper.getPokemonTypeData(id);
-    ArrayList<Pokemon.Type> types = new ArrayList<>();
-    for (Integer typeId : typeIds) {
-      Pokemon.Type type = new Pokemon.Type(typeId, mDbHelper.getTypeById(typeId));
-      types.add(type);
-    }
+    //ArrayList<Pokemon.Type> types = new ArrayList<>();
+    //for (Integer typeId : typeIds) {
+    //  Pokemon.Type type = new Pokemon.Type(typeId, mDbHelper.getTypeById(typeId));
+    //  types.add(type);
+    //}
 
-    Pokemon poke = new Pokemon(id, name);
-    poke.setTypes(types);
-    poke.setGenus(genus);
+    Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
+    //poke.setTypes(types);
+    //poke.setGenus(genus);
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;
   }

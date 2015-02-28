@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.siena.pokedex.PokedexApp;
+import com.siena.pokedex.PopulateRealm;
 import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeListFragment;
 import com.squareup.otto.Bus;
@@ -17,6 +18,15 @@ public class MainFragmentActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     PokedexApp.getInstance().inject(this);
+
+    boolean runRealmSetup = false;
+    if (runRealmSetup) {
+      PopulateRealm populate = new PopulateRealm(this);
+      populate.addPokemonData();
+      populate.addTypeData();
+      return;
+    }
+
     setContentView(R.layout.activity_main_fragment);
     if (savedInstanceState == null) {
       getFragmentManager().beginTransaction()

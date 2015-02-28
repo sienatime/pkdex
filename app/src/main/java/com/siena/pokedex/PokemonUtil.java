@@ -13,11 +13,19 @@ public class PokemonUtil {
   public static final String POKEMON_ID_KEY = "pokemonId";
 
   public static int getPokemonImageId(Pokemon pokemon) {
-    return RES.getIdentifier(pokemon.getImageName(), "drawable", PACKAGE_NAME);
+    return RES.getIdentifier(getImageName(pokemon.getId()), "drawable", PACKAGE_NAME);
+  }
+
+  public static String getImageName(int id) {
+    return "sprite_" + Integer.toString(id);
+  }
+
+  public static String nameToKey(String name) {
+    return name.replace("-", "_");
   }
 
   public static String getLocalizedPokeName(Pokemon pokemon) {
-    int nameId = RES.getIdentifier(pokemon.nameToKey(), "string", PACKAGE_NAME);
+    int nameId = RES.getIdentifier(nameToKey(pokemon.getIdentifier()), "string", PACKAGE_NAME);
     return RES.getString(nameId);
   }
 
