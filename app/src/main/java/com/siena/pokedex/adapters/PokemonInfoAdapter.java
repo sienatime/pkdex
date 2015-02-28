@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.TypeName;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
+import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
@@ -91,11 +95,6 @@ public class PokemonInfoAdapter extends BaseAdapter {
     return 5;
   }
 
-  private static void setType(TextView textView, PokemonType type) {
-    //textView.setText(type.getLocalizedName());
-    textView.setBackgroundColor(getTypeColor(type.getTypeId()));
-  }
-
   //private void addTypeEfficacy(List<Pokemon.Type> types, int stringId) {
   //  if (types.size() > 0) {
   //    rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
@@ -139,15 +138,14 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
       viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
-      // this worked for some reason:
-      //String name = getLocalizedPokeName(pokemon);
-      //SpannableString spannableString = new SpannableString(name);
-      //spannableString.setSpan(new BackgroundColorSpan(R.color.shadow_gray), 0, name.length() / 2, 0);
-      //viewHolder.pokeName.setText(spannableString, TextView.BufferType.SPANNABLE);
-      //viewHolder.pokeGenus.setText(
-      //    String.format(context.getString(R.string.genus_format), pokemon.getGenus()));
-      //
       Realm realm = Realm.getInstance(context);
+      PokemonSpeciesName speciesName = realm.where(PokemonSpeciesName.class)
+          .equalTo("pokemonSpeciesId", pokemon.getId())
+          .equalTo("localLanguageId", 9)
+          .findFirst();
+      viewHolder.pokeGenus.setText(
+          String.format(context.getString(R.string.genus_format), speciesName.getGenus()));
+
       RealmResults<PokemonType> types =
           realm.where(PokemonType.class).equalTo("pokemonId", pokemon.getId()).findAll();
       int numberOfTypes = types.size();
@@ -163,16 +161,26 @@ public class PokemonInfoAdapter extends BaseAdapter {
         }
       }
 
-      //int imageId = getPokemonImageId(pokemon);
-      //if (imageId > 0) {
-      //  viewHolder.pokeImage.setVisibility(View.VISIBLE);
-      //  picasso.load(getPokemonImageId(pokemon)).into(viewHolder.pokeImage);
-      //} else {
-      //  Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
-      //  viewHolder.pokeImage.setVisibility(View.INVISIBLE);
-      //}
+      int imageId = getPokemonImageId(pokemon);
+      if (imageId > 0) {
+        viewHolder.pokeImage.setVisibility(View.VISIBLE);
+        picasso.load(imageId).into(viewHolder.pokeImage);
+      } else {
+        Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
+        viewHolder.pokeImage.setVisibility(View.INVISIBLE);
+      }
 
       return convertView;
+    }
+
+    private void setType(TextView textView, PokemonType type) {
+      Realm realm = Realm.getInstance(context);
+      TypeName typeName = realm.where(TypeName.class)
+          .equalTo("typeId", type.getTypeId())
+          .equalTo("localLanguageId", 9)
+          .findFirst();
+      textView.setText(typeName.getName());
+      textView.setBackgroundColor(getTypeColor(type.getTypeId()));
     }
 
     static class ViewHolder {

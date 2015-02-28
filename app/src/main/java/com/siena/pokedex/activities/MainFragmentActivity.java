@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PopulateRealm;
 import com.siena.pokedex.R;
@@ -21,10 +22,10 @@ public class MainFragmentActivity extends Activity {
 
     boolean runRealmSetup = false;
     if (runRealmSetup) {
+      Toast.makeText(this, "Populating data...", Toast.LENGTH_SHORT).show();
       PopulateRealm populate = new PopulateRealm(this);
-      populate.addPokemonData();
-      populate.addTypeData();
-      return;
+      populate.addEverything();
+      Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
     }
 
     setContentView(R.layout.activity_main_fragment);

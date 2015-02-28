@@ -3,7 +3,9 @@ package com.siena.pokedex;
 import android.content.Context;
 import android.database.Cursor;
 import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.TypeName;
 import io.realm.Realm;
 
 /**
@@ -19,6 +21,53 @@ public class PopulateRealm {
     mDbHelper = new DataAdapter(context);
     mDbHelper.createDatabase();
     realm = Realm.getInstance(context);
+  }
+
+  public void addEverything() {
+    addPokemonData();
+    addTypeData();
+    addTypeNames();
+    addSpeciesNames();
+  }
+
+  public void addSpeciesNames() {
+    mDbHelper.open();
+    Cursor cursor = mDbHelper.getData("SELECT pokemon_species_id, local_language_id, name, genus FROM pokemon_species_names");
+    cursor.moveToFirst();
+    for (int i = 0; i < cursor.getCount(); i++ ) {
+      realm.beginTransaction();
+      PokemonSpeciesName pokemonSpeciesName = realm.createObject(PokemonSpeciesName.class);
+      pokemonSpeciesName.setPokemonSpeciesId(cursor.getInt(0));
+      pokemonSpeciesName.setLocalLanguageId(cursor.getInt(1));
+      pokemonSpeciesName.setName(cursor.getString(2) != null ? cursor.getString(2) : "");
+      String genus = cursor.getString(3);
+      if (genus != null) {
+        pokemonSpeciesName.setGenus(genus);
+      } else {
+        pokemonSpeciesName.setGenus("");
+      }
+      realm.commitTransaction();
+      cursor.moveToNext();
+    }
+    cursor.close();
+    mDbHelper.close();
+  }
+
+  public void addTypeNames() {
+    mDbHelper.open();
+    Cursor cursor = mDbHelper.getData("SELECT type_id, local_language_id, name FROM type_names");
+    cursor.moveToFirst();
+    for (int i = 0; i < cursor.getCount(); i++ ) {
+      realm.beginTransaction();
+      TypeName typeName = realm.createObject(TypeName.class);
+      typeName.setTypeId(cursor.getInt(0));
+      typeName.setLocalLanguageId(cursor.getInt(1));
+      typeName.setName(cursor.getString(2));
+      realm.commitTransaction();
+      cursor.moveToNext();
+    }
+    cursor.close();
+    mDbHelper.close();
   }
 
   public void addTypeData() {
