@@ -55,7 +55,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
     mDbHelper.createDatabase();
     mDbHelper.open();
     AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
-    List<Encounter> encounters = mDbHelper.getEncounters(pokemon.getId());
+    //List<Encounter> encounters = mDbHelper.getEncounters(pokemon.getId());
     mDbHelper.close();
 
     addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
@@ -65,7 +65,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
 
-    addEncounterRows(encounters);
+    //addEncounterRows(encounters);
   }
 
   @Override public int getCount() {

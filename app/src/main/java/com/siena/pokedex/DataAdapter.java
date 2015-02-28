@@ -108,7 +108,7 @@ public class DataAdapter {
 
   public String getIdentifierById(int id) {
     String intString = Integer.toString(id);
-    Cursor cursor = getData("SELECT identifier FROM pokemon WHERE _id = " + intString);
+    Cursor cursor = getData("SELECT identifier FROM pokemon WHERE id = " + intString);
     String result = cursor.getString(0);
     cursor.close();
     return result;
@@ -266,8 +266,8 @@ public class DataAdapter {
   private HashMap<Integer, Encounter> addEncounterConditions(String idString,
       HashMap<Integer, Encounter> encounterMap) {
     Cursor cursor = getData(
-        "select encounters._id, encounter_condition_value_prose.name from encounters\n"
-            + "join encounter_condition_value_map on encounters._id = encounter_condition_value_map.encounter_id\n"
+        "select encounters.id, encounter_condition_value_prose.name from encounters\n"
+            + "join encounter_condition_value_map on encounters.id = encounter_condition_value_map.encounter_id\n"
             + "join encounter_condition_value_prose on encounter_condition_value_prose.encounter_condition_value_id = encounter_condition_value_map.encounter_condition_value_id\n"
             + "where encounters.pokemon_id = "
             + idString
