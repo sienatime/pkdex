@@ -1,5 +1,6 @@
 package com.siena.pokedex.models;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -11,6 +12,7 @@ public class Pokemon extends RealmObject {
   private String identifier;
   private int speciesId, height, weight, baseExperience, order;
   private boolean isDefault;
+  private RealmList<PokemonType> types;
 
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   public Pokemon() {
@@ -84,5 +86,13 @@ public class Pokemon extends RealmObject {
 
   public int getId() {
     return id;
+  }
+
+  public RealmList<PokemonType> getTypes() {
+    return types;
+  }
+
+  public void setTypes(RealmList<PokemonType> types) {
+    this.types = types;
   }
 }
