@@ -1,23 +1,18 @@
 package com.siena.pokedex.models;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
 public class Pokemon extends RealmObject {
-  private int id;
+  @PrimaryKey private int id;
   private String identifier;
-  private int speciesId;
-  private int height;
-  private int weight;
-  private int baseExperience;
-  private int order;
+  private int speciesId, height, weight, baseExperience, order;
   private boolean isDefault;
 
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
-  //private String name;
-  //private String genus;
   public Pokemon() {
 
   }
@@ -90,12 +85,4 @@ public class Pokemon extends RealmObject {
   public int getId() {
     return id;
   }
-
-  //public String getGenus() {
-  //  return genus;
-  //}
-  //
-  //public void setGenus(String genus) {
-  //  this.genus = genus;
-  //}
 }

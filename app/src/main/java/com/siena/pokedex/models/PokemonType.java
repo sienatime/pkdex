@@ -1,14 +1,14 @@
 package com.siena.pokedex.models;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Siena Aguayo on 2/28/15.
  */
 public class PokemonType extends RealmObject {
-  private int pokemonId;
-  private int typeId;
-  private int slot;
+  @PrimaryKey private int pokemonId;
+  private int typeId, slot;
 
   public PokemonType() {
   }

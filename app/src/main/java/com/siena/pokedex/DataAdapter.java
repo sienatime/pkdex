@@ -35,14 +35,14 @@ public class DataAdapter {
 
   public Cursor getData(String sql) {
     try {
-      Cursor mCur = db.rawQuery(sql, null);
-      if (mCur != null) {
-        mCur.moveToNext();
+      Cursor cursor = db.rawQuery(sql, null);
+      if (cursor != null) {
+        cursor.moveToNext();
       }
-      return mCur;
-    } catch (SQLException mSQLException) {
-      Log.e(TAG, "getData >>" + mSQLException.toString());
-      throw mSQLException;
+      return cursor;
+    } catch (SQLException exception) {
+      Log.e(TAG, "getData >>" + exception.toString());
+      throw exception;
     }
   }
 
