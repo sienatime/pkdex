@@ -54,12 +54,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     rows.add(new HeaderRow(HEADER_ROW, pokemon, context));
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.type_effectiveness));
 
-    DataAdapter mDbHelper = new DataAdapter(context);
-    mDbHelper.createDatabase();
-    mDbHelper.open();
-    //AllTypeEfficacy typeEfficacy = mDbHelper.getTypeEfficacy(pokemon.getTypes());
-    //List<Encounter> encounters = mDbHelper.getEncounters(pokemon.getId());
-    mDbHelper.close();
+    DataAdapter dataAdapter = new DataAdapter(context);
+    //AllTypeEfficacy typeEfficacy = dataAdapter.getTypeEfficacy(pokemon.getTypes());
+    //List<Encounter> encounters = dataAdapter.getEncounters(pokemon.getId());
 
     //addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
     //addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);

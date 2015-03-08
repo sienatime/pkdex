@@ -2,14 +2,17 @@ package com.siena.pokedex.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PopulateRealm;
 import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeListFragment;
+import com.siena.pokedex.models.Pokemon;
 import com.squareup.otto.Bus;
+import io.realm.Realm;
+import io.realm.internal.Table;
 import javax.inject.Inject;
 
 public class MainFragmentActivity extends Activity {
@@ -19,14 +22,16 @@ public class MainFragmentActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     PokedexApp.getInstance().inject(this);
+    Realm realm = Realm.getInstance(this);
+    Table pokeTable = realm.getTable(Pokemon.class);
 
-    boolean runRealmSetup = false;
-    if (runRealmSetup) {
-      Toast.makeText(this, "Populating data...", Toast.LENGTH_SHORT).show();
+    if (pokeTable.count(1, "bulbasaur") == 0) {
+      // TODO do this on a background thread
       PopulateRealm populate = new PopulateRealm(this);
       populate.addEverything();
-      Toast.makeText(this, "Done!", Toast.LENGTH_SHORT).show();
     }
+
+    Log.i("MainFragmentActivity", realm.getPath());
 
     setContentView(R.layout.activity_main_fragment);
     if (savedInstanceState == null) {

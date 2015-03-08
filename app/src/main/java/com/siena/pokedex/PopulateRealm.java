@@ -12,14 +12,11 @@ import io.realm.Realm;
  * Created by Siena Aguayo on 2/28/15.
  */
 public class PopulateRealm {
-  private Context context;
   private Realm realm;
-  private DataAdapter mDbHelper;
+  private DataAdapter dataAdapter;
 
   public PopulateRealm(Context context) {
-    this.context = context;
-    mDbHelper = new DataAdapter(context);
-    mDbHelper.createDatabase();
+    dataAdapter = new DataAdapter(context);
     realm = Realm.getInstance(context);
   }
 
@@ -31,8 +28,7 @@ public class PopulateRealm {
   }
 
   public void addSpeciesNames() {
-    mDbHelper.open();
-    Cursor cursor = mDbHelper.getData("SELECT pokemon_species_id, local_language_id, name, genus FROM pokemon_species_names");
+    Cursor cursor = dataAdapter.getData("SELECT pokemon_species_id, local_language_id, name, genus FROM pokemon_species_names");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++ ) {
       realm.beginTransaction();
@@ -50,12 +46,10 @@ public class PopulateRealm {
       cursor.moveToNext();
     }
     cursor.close();
-    mDbHelper.close();
   }
 
   public void addTypeNames() {
-    mDbHelper.open();
-    Cursor cursor = mDbHelper.getData("SELECT type_id, local_language_id, name FROM type_names");
+    Cursor cursor = dataAdapter.getData("SELECT type_id, local_language_id, name FROM type_names");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++ ) {
       realm.beginTransaction();
@@ -67,12 +61,10 @@ public class PopulateRealm {
       cursor.moveToNext();
     }
     cursor.close();
-    mDbHelper.close();
   }
 
   public void addTypeData() {
-    mDbHelper.open();
-    Cursor cursor = mDbHelper.getData("SELECT pokemon_id, type_id, slot FROM pokemon_types");
+    Cursor cursor = dataAdapter.getData("SELECT pokemon_id, type_id, slot FROM pokemon_types");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++ ) {
       realm.beginTransaction();
@@ -84,13 +76,10 @@ public class PopulateRealm {
       cursor.moveToNext();
     }
     cursor.close();
-    mDbHelper.close();
   }
 
   public void addPokemonData() {
-    mDbHelper.open();
-
-    final Cursor testdata = mDbHelper.getAllPokemonData();
+    final Cursor testdata = dataAdapter.getAllPokemonData();
     for (int i = 0; i < 719; i++) {
       realm.executeTransaction(new Realm.Transaction() {
         @Override
@@ -110,6 +99,5 @@ public class PopulateRealm {
 
       testdata.moveToNext();
     }
-    mDbHelper.close();
   }
 }

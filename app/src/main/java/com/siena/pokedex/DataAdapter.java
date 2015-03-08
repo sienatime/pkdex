@@ -2,13 +2,11 @@ package com.siena.pokedex;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.SingleTypeEfficacy;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,49 +25,17 @@ public class DataAdapter {
   private final String HEART_GOLD_ID = "15";
   private final String DIAMOND_ID = "12";
 
-  private final Context mContext;
-  private SQLiteDatabase mDb;
-  private DataBaseHelper mDbHelper;
+  private SQLiteDatabase db;
+  private DataBaseHelper dbHelper;
 
   public DataAdapter(Context context) {
-    this.mContext = context;
-    mDbHelper = new DataBaseHelper(mContext);
-  }
-
-  public DataAdapter createDatabase() throws SQLException {
-    try {
-      mDbHelper.createDataBase();
-    } catch (IOException mIOException) {
-      Log.e(TAG, mIOException.toString() + "  UnableToCreateDatabase");
-      throw new Error("UnableToCreateDatabase");
-    }
-    return this;
-  }
-
-  public DataAdapter open() throws SQLException {
-    try {
-      mDbHelper.openDataBase();
-      mDbHelper.close();
-      mDb = mDbHelper.getReadableDatabase();
-    } catch (SQLException mSQLException) {
-      Log.e(TAG, "open >>" + mSQLException.toString());
-      throw mSQLException;
-    }
-    return this;
-  }
-
-  public void close() {
-    mDbHelper.close();
-  }
-
-  public long getNumberOfRows(String table, String selection, String[] selectionArgs) {
-    return DatabaseUtils.queryNumEntries(mDb, table, selection,
-        selectionArgs);
+    dbHelper = new DataBaseHelper(context);
+    db = dbHelper.getReadableDatabase();
   }
 
   public Cursor getData(String sql) {
     try {
-      Cursor mCur = mDb.rawQuery(sql, null);
+      Cursor mCur = db.rawQuery(sql, null);
       if (mCur != null) {
         mCur.moveToNext();
       }

@@ -33,16 +33,14 @@ public class PokeInfoFragment extends Fragment {
     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
 
-    DataAdapter mDbHelper = new DataAdapter(getActivity());
-    mDbHelper.createDatabase();
-    mDbHelper.open();
+    DataAdapter dataAdapter = new DataAdapter(getActivity());
     Realm realm = Realm.getInstance(getActivity());
 
-    String genus = mDbHelper.getGenusById(id);
-    List<Integer> typeIds = mDbHelper.getPokemonTypeData(id);
+    String genus = dataAdapter.getGenusById(id);
+    List<Integer> typeIds = dataAdapter.getPokemonTypeData(id);
     //ArrayList<Pokemon.Type> types = new ArrayList<>();
     //for (Integer typeId : typeIds) {
-    //  Pokemon.Type type = new Pokemon.Type(typeId, mDbHelper.getTypeById(typeId));
+    //  Pokemon.Type type = new Pokemon.Type(typeId, dataAdapter.getTypeById(typeId));
     //  types.add(type);
     //}
 
