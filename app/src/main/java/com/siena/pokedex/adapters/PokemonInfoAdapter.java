@@ -23,7 +23,6 @@ import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeName;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,16 +142,14 @@ public class PokemonInfoAdapter extends BaseAdapter {
       viewHolder.pokeGenus.setText(
           String.format(context.getString(R.string.genus_format), speciesName.getGenus()));
 
-      RealmResults<PokemonType> types =
-          realm.where(PokemonType.class).equalTo("pokemonId", pokemon.getId()).findAll();
-      int numberOfTypes = types.size();
+      int numberOfTypes = pokemon.getTypes().size();
 
       if (numberOfTypes > 0) {
-        setType(viewHolder.type1, types.get(0));
+        setType(viewHolder.type1, pokemon.getTypes().get(0));
 
         if (numberOfTypes == 2) {
           viewHolder.type2.setVisibility(View.VISIBLE);
-          setType(viewHolder.type2, types.get(1));
+          setType(viewHolder.type2, pokemon.getTypes().get(1));
         } else {
           viewHolder.type2.setVisibility(View.GONE);
         }
