@@ -26,7 +26,7 @@ public class MainFragmentActivity extends Activity {
     Table pokeTable = realm.getTable(Pokemon.class);
 
     if (pokeTable.count(1, "bulbasaur") == 0) {
-      // TODO do this on a background thread
+      // TODO instantiate listview on asynctask's callback, right now it just does nothing when it's done
       PopulateRealm populate = new PopulateRealm(this);
       populate.addEverything();
     }

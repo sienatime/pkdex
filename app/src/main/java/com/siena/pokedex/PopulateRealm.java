@@ -3,12 +3,14 @@ package com.siena.pokedex;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeName;
 import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * Created by Siena Aguayo on 2/28/15.
@@ -21,30 +23,19 @@ public class PopulateRealm {
   public PopulateRealm(Context context) {
     this.context = context;
     this.dataAdapter = new DataAdapter(context);
-    this.realm = Realm.getInstance(context);
   }
-
-  //protected Long doInBackground(Context... contexts) {
-  //  Realm = null;
-  //  try {
-  //    realm = Realm.getInstance(contexts[0]);
-  //
-  //    // ... Use the Realm instance
-  //  } finally {
-  //    if (realm != null) {
-  //      realm.close();
-  //    }
-  //  }
-  //}
 
   public void addEverything() {
     new AsyncTask<Context, Integer, Long>() {
       protected Long doInBackground(Context... aParams) {
         // do some expensive work
         // in the background here
+        realm = Realm.getInstance(context);
         addPokemonData();
+        addTypeData();
         addTypeNames();
         addSpeciesNames();
+        realm.close();
         return 100L;
       }
 
@@ -55,6 +46,7 @@ public class PopulateRealm {
         // background work is finished,
         // we can update the UI here
         // including removing the dialog
+        Log.i("PopulateRealm", "Done!");
         Toast.makeText(context, "Done!", Toast.LENGTH_SHORT).show();
       }
     }.execute();
@@ -97,10 +89,8 @@ public class PopulateRealm {
     cursor.close();
   }
 
-  public void addTypeData(Pokemon pokemon) {
-    Cursor cursor = dataAdapter.getData(
-        "SELECT pokemon_id, type_id, slot FROM pokemon_types WHERE pokemon_id = "
-            + pokemon.getId());
+  public void addTypeData() {
+    Cursor cursor = dataAdapter.getData("SELECT pokemon_id, type_id, slot FROM pokemon_types");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++) {
       realm.beginTransaction();
@@ -108,8 +98,17 @@ public class PopulateRealm {
       type.setPokemonId(cursor.getInt(0));
       type.setTypeId(cursor.getInt(1));
       type.setSlot(cursor.getInt(2));
-      pokemon.getTypes().add(type);
       realm.commitTransaction();
+
+      Pokemon pokemon = realm.where(Pokemon.class).equalTo("id", type.getPokemonId()).findFirst();
+
+      if (pokemon != null) {
+        if (pokemon.getTypes() == null) {
+          pokemon.setTypes(new RealmList<PokemonType>());
+        }
+        pokemon.getTypes().add(type);
+      }
+
       cursor.moveToNext();
     }
     cursor.close();
@@ -131,8 +130,6 @@ public class PopulateRealm {
           poke.setBaseExperience(testdata.getInt(5));
           poke.setOrder(testdata.getInt(6));
           poke.setDefault(testdata.getInt(7) == 1);
-
-          addTypeData(poke);
         }
       });
 

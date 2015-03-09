@@ -1,14 +1,12 @@
 package com.siena.pokedex.models;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Siena Aguayo on 2/28/15.
  */
 public class TypeName extends RealmObject {
-  @PrimaryKey private int typeId;
-  private int localLanguageId;
+  private int typeId, localLanguageId;
   private String name;
 
   public int getTypeId() {
