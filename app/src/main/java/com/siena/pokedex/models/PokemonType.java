@@ -11,6 +11,10 @@ public class PokemonType extends RealmObject {
   public PokemonType() {
   }
 
+  public PokemonType(int typeId) {
+    this.typeId = typeId;
+  }
+
   public int getPokemonId() {
     return pokemonId;
   }

@@ -4,6 +4,7 @@ import android.database.Cursor;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.TypeEfficacy;
 import com.siena.pokedex.models.TypeName;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -17,6 +18,7 @@ public class PopulateRealm {
     addTypeData(realm, dataAdapter);
     addTypeNames(realm, dataAdapter);
     addSpeciesNames(realm, dataAdapter);
+    addTypeEfficacy(realm, dataAdapter);
   }
 
   public static void addSpeciesNames(Realm realm, DataAdapter dataAdapter) {
@@ -102,5 +104,22 @@ public class PopulateRealm {
 
       testdata.moveToNext();
     }
+  }
+
+  public static void addTypeEfficacy(Realm realm, DataAdapter dataAdapter) {
+    //damage_type_id|target_type_id|damage_factor
+    Cursor cursor = dataAdapter.getData(
+        "SELECT damage_type_id, target_type_id, damage_factor FROM type_efficacy");
+    cursor.moveToFirst();
+    for (int i = 0; i < cursor.getCount(); i++) {
+      realm.beginTransaction();
+      TypeEfficacy typeEfficacy = realm.createObject(TypeEfficacy.class);
+      typeEfficacy.setDamageTypeId(cursor.getInt(0));
+      typeEfficacy.setTargetTypeId(cursor.getInt(1));
+      typeEfficacy.setDamageFactor(cursor.getInt(2));
+      realm.commitTransaction();
+      cursor.moveToNext();
+    }
+    cursor.close();
   }
 }

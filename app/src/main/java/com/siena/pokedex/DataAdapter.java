@@ -5,8 +5,12 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
-import com.siena.pokedex.models.SingleTypeEfficacy;
+import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.TypeEfficacy;
+import io.realm.Realm;
+import io.realm.RealmList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,83 +100,71 @@ public class DataAdapter {
     return result;
   }
 
-  //public AllTypeEfficacy getTypeEfficacy(List<Pokemon.Type> types) {
-  //  List<List<SingleTypeEfficacy>> allTypeEfficaciesList = new ArrayList<>();
-  //  for (Pokemon.Type type : types) {
-  //    Integer id = type.getId();
-  //    Cursor cursor = getData(
-  //        "SELECT damage_type_id, damage_factor FROM type_efficacy WHERE target_type_id = "
-  //            + id
-  //            + " ORDER BY damage_type_id");
-  //
-  //    cursor.moveToFirst();
-  //    ArrayList<SingleTypeEfficacy> efficacies = new ArrayList<>();
-  //    while (!cursor.isAfterLast()) {
-  //      SingleTypeEfficacy efficacy = new SingleTypeEfficacy(cursor.getInt(0), cursor.getInt(1));
-  //      efficacies.add(efficacy);
-  //      cursor.moveToNext();
-  //    }
-  //    cursor.close();
-  //    allTypeEfficaciesList.add(efficacies);
-  //  }
-  //
-  //  List<SingleTypeEfficacy> finalEfficacy;
-  //
-  //  if (allTypeEfficaciesList.size() > 1) {
-  //    finalEfficacy = consolidateTypeEfficacy(allTypeEfficaciesList);
-  //  } else {
-  //    finalEfficacy = allTypeEfficaciesList.get(0);
-  //  }
-  //
-  //  List<Pokemon.Type> weakTo = new ArrayList<>();
-  //  List<Pokemon.Type> immuneTo = new ArrayList<>();
-  //  List<Pokemon.Type> resistantTo = new ArrayList<>();
-  //  List<Pokemon.Type> damagedNormallyBy = new ArrayList<>();
-  //
-  //  for (SingleTypeEfficacy efficacy : finalEfficacy) {
-  //    int damageTypeId = efficacy.getDamageTypeId();
-  //    switch (efficacy.getDamageFactor()) {
-  //      case 0:
-  //        immuneTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      case 25:
-  //        resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      case 50:
-  //        resistantTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      case 100:
-  //        damagedNormallyBy.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      case 200:
-  //        weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      case 400:
-  //        weakTo.add(new Pokemon.Type(damageTypeId, getTypeById(damageTypeId)));
-  //        break;
-  //      default:
-  //        Log.v("type efficacy",
-  //            "unknown damage factor: " + Integer.toString(efficacy.getDamageFactor()));
-  //    }
-  //  }
-  //
-  //  return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
-  //}
+  public AllTypeEfficacy getTypeEfficacy(RealmList<PokemonType> types, Realm realm) {
+    List<List<TypeEfficacy>> allTypeEfficaciesList = new ArrayList<>();
 
-  private List<SingleTypeEfficacy> consolidateTypeEfficacy(
-      List<List<SingleTypeEfficacy>> allTypeEfficaciesList) {
+    for (PokemonType type : types) {
+      allTypeEfficaciesList.add(
+          realm.where(TypeEfficacy.class).equalTo("targetTypeId", type.getTypeId()).findAll());
+    }
+
+    List<TypeEfficacy> finalEfficacy;
+
+    if (allTypeEfficaciesList.size() > 1) {
+      finalEfficacy = consolidateTypeEfficacy(allTypeEfficaciesList);
+    } else {
+      finalEfficacy = allTypeEfficaciesList.get(0);
+    }
+
+    RealmList<PokemonType> weakTo = new RealmList<>();
+    RealmList<PokemonType> immuneTo = new RealmList<>();
+    RealmList<PokemonType> resistantTo = new RealmList<>();
+    RealmList<PokemonType> damagedNormallyBy = new RealmList<>();
+
+    for (TypeEfficacy efficacy : finalEfficacy) {
+      PokemonType damageType = new PokemonType(efficacy.getDamageTypeId());
+      switch (efficacy.getDamageFactor()) {
+        case 0:
+          immuneTo.add(damageType);
+          break;
+        case 25:
+          resistantTo.add(damageType);
+          break;
+        case 50:
+          resistantTo.add(damageType);
+          break;
+        case 100:
+          damagedNormallyBy.add(damageType);
+          break;
+        case 200:
+          weakTo.add(damageType);
+          break;
+        case 400:
+          weakTo.add(damageType);
+          break;
+        default:
+          Log.v("type efficacy",
+              "unknown damage factor: " + Integer.toString(efficacy.getDamageFactor()));
+      }
+    }
+
+    return new AllTypeEfficacy(weakTo, damagedNormallyBy, resistantTo, immuneTo);
+  }
+
+  private List<TypeEfficacy> consolidateTypeEfficacy(
+      List<List<TypeEfficacy>> allTypeEfficaciesList) {
     assert (allTypeEfficaciesList.get(0).size() == allTypeEfficaciesList.get(1).size());
 
-    List<SingleTypeEfficacy> finalEfficacy = new ArrayList<>();
+    List<TypeEfficacy> finalEfficacy = new ArrayList<>();
 
     for (int i = 0; i < allTypeEfficaciesList.get(0).size(); i++) {
-      SingleTypeEfficacy damageType1 = allTypeEfficaciesList.get(0).get(i);
-      SingleTypeEfficacy damageType2 = allTypeEfficaciesList.get(1).get(i);
+      TypeEfficacy damageType1 = allTypeEfficaciesList.get(0).get(i);
+      TypeEfficacy damageType2 = allTypeEfficaciesList.get(1).get(i);
 
       assert (damageType1.getDamageTypeId() == damageType2.getDamageTypeId());
       int combinedDamage = damageType1.getDamageFactor() * damageType2.getDamageFactor() / 100;
-      SingleTypeEfficacy combinedTypeEfficacy =
-          new SingleTypeEfficacy(damageType1.getDamageTypeId(), combinedDamage);
+      TypeEfficacy combinedTypeEfficacy =
+          new TypeEfficacy(damageType1.getDamageTypeId(), combinedDamage);
       finalEfficacy.add(combinedTypeEfficacy);
     }
 
