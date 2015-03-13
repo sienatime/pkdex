@@ -1,10 +1,14 @@
 package com.siena.pokedex.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PopulateRealm;
 import com.siena.pokedex.R;
@@ -19,25 +23,42 @@ public class MainFragmentActivity extends Activity {
   @Inject Bus bus;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    final Context context = this;
     PokedexApp.getInstance().inject(this);
-    Realm realm = Realm.getInstance(this);
+    final Realm realm = Realm.getInstance(this);
     Table pokeTable = realm.getTable(Pokemon.class);
 
     if (pokeTable.count(1, "bulbasaur") == 0) {
-      // TODO instantiate listview on asynctask's callback, right now it just does nothing when it's done
-      PopulateRealm populate = new PopulateRealm(this);
-      populate.addEverything();
+      new AsyncTask<Context, Integer, Long>() {
+        protected Long doInBackground(Context... aParams) {
+          Realm asyncRealm = Realm.getInstance(context);
+          DataAdapter dataAdapter = new DataAdapter(context);
+          PopulateRealm.addEverything(asyncRealm, dataAdapter);
+          asyncRealm.close();
+          return 100L;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+        }
+
+        protected void onPostExecute(Long aResult) {
+          Log.i("PopulateRealm", "Done!");
+          Toast.makeText(context, "Done!", Toast.LENGTH_SHORT).show();
+          instantiateListFragment(savedInstanceState);
+        }
+      }.execute();
+    } else {
+      instantiateListFragment(savedInstanceState);
     }
+    realm.close();
+  }
 
-    Log.i("MainFragmentActivity", realm.getPath());
-
+  private void instantiateListFragment(Bundle savedInstanceState) {
     setContentView(R.layout.activity_main_fragment);
     if (savedInstanceState == null) {
-      getFragmentManager().beginTransaction()
-          .add(R.id.container, new PokeListFragment())
-          .commit();
+      getFragmentManager().beginTransaction().add(R.id.container, new PokeListFragment()).commit();
     }
   }
 
