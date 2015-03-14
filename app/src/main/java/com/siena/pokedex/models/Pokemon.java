@@ -13,6 +13,7 @@ public class Pokemon extends RealmObject {
   private int speciesId, height, weight, baseExperience, order;
   private boolean isDefault;
   private RealmList<PokemonType> types;
+  private RealmList<Encounter> encounters;
 
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   public Pokemon() {
@@ -94,5 +95,13 @@ public class Pokemon extends RealmObject {
 
   public void setTypes(RealmList<PokemonType> types) {
     this.types = types;
+  }
+
+  public RealmList<Encounter> getEncounters() {
+    return encounters;
+  }
+
+  public void setEncounters(RealmList<Encounter> encounters) {
+    this.encounters = encounters;
   }
 }

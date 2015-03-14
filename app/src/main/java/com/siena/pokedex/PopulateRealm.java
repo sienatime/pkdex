@@ -1,6 +1,7 @@
 package com.siena.pokedex;
 
 import android.database.Cursor;
+import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
@@ -19,6 +20,7 @@ public class PopulateRealm {
     addTypeNames(realm, dataAdapter);
     addSpeciesNames(realm, dataAdapter);
     addTypeEfficacy(realm, dataAdapter);
+    addEncounters(realm, dataAdapter);
   }
 
   public static void addSpeciesNames(Realm realm, DataAdapter dataAdapter) {
@@ -118,6 +120,36 @@ public class PopulateRealm {
       typeEfficacy.setTargetTypeId(cursor.getInt(1));
       typeEfficacy.setDamageFactor(cursor.getInt(2));
       realm.commitTransaction();
+      cursor.moveToNext();
+    }
+    cursor.close();
+  }
+
+  public static void addEncounters(Realm realm, DataAdapter dataAdapter) {
+    //@PrimaryKey private int id;
+    //private int versionId, encounterSlotId, minLevel, maxLevel;
+    Cursor cursor = dataAdapter.getData(
+        "SELECT id, version_id, encounter_slot_id, min_level, max_level, pokemon_id FROM encounters");
+    cursor.moveToFirst();
+    for (int i = 0; i < cursor.getCount(); i++) {
+      realm.beginTransaction();
+      Encounter encounter = realm.createObject(Encounter.class);
+      encounter.setId(cursor.getInt(0));
+      encounter.setVersionId(cursor.getInt(1));
+      encounter.setEncounterSlotId(cursor.getInt(2));
+      encounter.setMinLevel(cursor.getInt(3));
+      encounter.setMaxLevel(cursor.getInt(4));
+      realm.commitTransaction();
+
+      Pokemon pokemon = realm.where(Pokemon.class).equalTo("id", cursor.getInt(5)).findFirst();
+
+      if (pokemon != null) {
+        if (pokemon.getEncounters() == null) {
+          pokemon.setEncounters(new RealmList<Encounter>());
+        }
+        pokemon.getEncounters().add(encounter);
+      }
+
       cursor.moveToNext();
     }
     cursor.close();

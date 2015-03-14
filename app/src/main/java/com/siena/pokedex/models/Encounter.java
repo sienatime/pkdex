@@ -1,56 +1,57 @@
 package com.siena.pokedex.models;
 
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by Siena Aguayo on 1/1/15.
  */
-public class Encounter {
-  private int versionId;
-  private String locationName;
-  private String method;
-  private String levelRange;
-  private int rate;
-  private String areaName;
-  private String condition;
+public class Encounter extends RealmObject {
+  @PrimaryKey private int id;
+  private int versionId, encounterSlotId, minLevel, maxLevel;
+  //private LocationArea locationArea;
+  //private LocationName locationName;
 
-  public Encounter(int versionId, String locationName, String method, String levelRange, int rate,
-      String areaName) {
-    this.versionId = versionId;
-    this.locationName = locationName;
-    this.method = method;
-    this.levelRange = levelRange;
-    this.rate = rate;
-    this.areaName = areaName;
+  public Encounter() {
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public int getVersionId() {
     return versionId;
   }
 
-  public String getLocationName() {
-    return locationName;
+  public void setVersionId(int versionId) {
+    this.versionId = versionId;
   }
 
-  public int getRate() {
-    return rate;
+  public int getEncounterSlotId() {
+    return encounterSlotId;
   }
 
-  public String getLevelRange() {
-    return levelRange;
+  public void setEncounterSlotId(int encounterSlotId) {
+    this.encounterSlotId = encounterSlotId;
   }
 
-  public String getMethod() {
-    return method;
+  public int getMinLevel() {
+    return minLevel;
   }
 
-  public String getAreaName() {
-    return areaName;
+  public void setMinLevel(int minLevel) {
+    this.minLevel = minLevel;
   }
 
-  public String getCondition() {
-    return condition;
+  public int getMaxLevel() {
+    return maxLevel;
   }
 
-  public void setCondition(String condition) {
-    this.condition = condition;
+  public void setMaxLevel(int maxLevel) {
+    this.maxLevel = maxLevel;
   }
 }

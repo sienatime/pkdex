@@ -33,14 +33,30 @@ public class MainFragmentActivity extends Activity {
     if (pokeTable.count(1, "bulbasaur") == 0) {
       new AsyncTask<Context, Integer, Long>() {
         protected Long doInBackground(Context... aParams) {
+          publishProgress(1);
           Realm asyncRealm = Realm.getInstance(context);
           DataAdapter dataAdapter = new DataAdapter(context);
-          PopulateRealm.addEverything(asyncRealm, dataAdapter);
+          publishProgress(5);
+
+          PopulateRealm.addPokemonData(asyncRealm, dataAdapter);
+          publishProgress(16);
+          PopulateRealm.addTypeData(asyncRealm, dataAdapter);
+          publishProgress(32);
+          PopulateRealm.addTypeNames(asyncRealm, dataAdapter);
+          publishProgress(48);
+          PopulateRealm.addSpeciesNames(asyncRealm, dataAdapter);
+          publishProgress(60);
+          PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
+          publishProgress(72);
+          PopulateRealm.addEncounters(asyncRealm, dataAdapter);
+          publishProgress(88);
+
           asyncRealm.close();
           return 100L;
         }
 
         protected void onProgressUpdate(Integer... progress) {
+          Log.i("PopulateRealm", String.format("%s%%", progress));
         }
 
         protected void onPostExecute(Long aResult) {
