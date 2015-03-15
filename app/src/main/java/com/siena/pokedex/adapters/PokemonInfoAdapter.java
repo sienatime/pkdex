@@ -19,6 +19,7 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
@@ -104,7 +105,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private void addEncounterRows(List<Encounter> encounters) {
     if (encounters.size() > 0) {
       for (Encounter encounter : encounters) {
-        rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter));
+        rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter, realm));
       }
     } else {
       rows.add(new NoKnownLocationsRow(TYPE_NO_KNOWN_LOCATIONS_ROW));
@@ -317,11 +318,13 @@ public class PokemonInfoAdapter extends BaseAdapter {
     private Resources res;
     private int rowType;
     private Encounter encounter;
+    private Realm realm;
 
-    public EncounterRow(Resources res, int rowType, Encounter encounter) {
+    public EncounterRow(Resources res, int rowType, Encounter encounter, Realm realm) {
       this.res = res;
       this.rowType = rowType;
       this.encounter = encounter;
+      this.realm = realm;
     }
 
     @Override public int getType() {
@@ -339,12 +342,16 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.encounterLevels.setText(
-          String.format(res.getString(R.string.level), encounter.getLevelRange()));
-      viewHolder.encounterLocation.setText(encounter.getLocationName());
-      viewHolder.encounterMethod.setText(encounter.getMethod());
-      viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
-          Integer.toString(encounter.getRate())));
+      //viewHolder.encounterLevels.setText(
+      //    String.format(res.getString(R.string.level), encounter.getLevelRange()));
+      LocationAreaProse prose = realm.where(LocationAreaProse.class)
+          .equalTo("locationAreaId", encounter.getLocationArea().getId())
+          .equalTo("localLanguageId", 9)
+          .findFirst();
+      viewHolder.encounterLocation.setText(prose.getName());
+      //viewHolder.encounterMethod.setText(encounter.getMethod());
+      //viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
+      //    Integer.toString(encounter.getRate())));
 
       return convertView;
     }
