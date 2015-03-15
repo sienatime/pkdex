@@ -20,6 +20,7 @@ import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.LocationAreaProse;
+import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
@@ -348,8 +349,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
           .equalTo("locationAreaId", encounter.getLocationArea().getId())
           .equalTo("localLanguageId", 9)
           .findFirst();
-      viewHolder.encounterLocation.setText(prose.getName());
-      //viewHolder.encounterMethod.setText(encounter.getMethod());
+      LocationName locationName = realm.where(LocationName.class)
+          .equalTo("locationId", encounter.getLocationArea().getLocation().getId())
+          .equalTo("localLanguageId", 9)
+          .findFirst();
+      viewHolder.encounterLocation.setText(locationName.getName());
+      viewHolder.encounterLocationArea.setText(prose.getName());
       //viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
       //    Integer.toString(encounter.getRate())));
 
@@ -358,6 +363,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     static class ViewHolder {
       @InjectView(R.id.encounter_location) TextView encounterLocation;
+      @InjectView(R.id.encounter_location_area) TextView encounterLocationArea;
       @InjectView(R.id.encounter_method) TextView encounterMethod;
       @InjectView(R.id.encounter_rate) TextView encounterRate;
       @InjectView(R.id.encounter_levels) TextView encounterLevels;

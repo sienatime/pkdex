@@ -50,6 +50,8 @@ public class MainFragmentActivity extends Activity {
           PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
           publishProgress(72);
           PopulateRealm.addLocationAreaProse(asyncRealm, dataAdapter);
+          publishProgress(76);
+          PopulateRealm.addLocationNames(asyncRealm, dataAdapter);
           asyncRealm.commitTransaction();
           publishProgress(80);
           asyncRealm.beginTransaction();
