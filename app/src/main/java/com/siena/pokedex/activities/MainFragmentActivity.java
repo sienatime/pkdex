@@ -38,6 +38,7 @@ public class MainFragmentActivity extends Activity {
           DataAdapter dataAdapter = new DataAdapter(context);
           publishProgress(5);
 
+          asyncRealm.beginTransaction();
           PopulateRealm.addPokemonData(asyncRealm, dataAdapter);
           publishProgress(16);
           PopulateRealm.addTypeData(asyncRealm, dataAdapter);
@@ -48,7 +49,12 @@ public class MainFragmentActivity extends Activity {
           publishProgress(60);
           PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
           publishProgress(72);
+          PopulateRealm.addLocationAreaProse(asyncRealm, dataAdapter);
+          asyncRealm.commitTransaction();
+          publishProgress(80);
+          asyncRealm.beginTransaction();
           PopulateRealm.addEncounters(asyncRealm, dataAdapter);
+          asyncRealm.commitTransaction();
           publishProgress(88);
 
           asyncRealm.close();

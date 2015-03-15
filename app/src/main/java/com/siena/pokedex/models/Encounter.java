@@ -8,9 +8,8 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Encounter extends RealmObject {
   @PrimaryKey private int id;
-  private int versionId, encounterSlotId, minLevel, maxLevel;
-  //private LocationArea locationArea;
-  //private LocationName locationName;
+  private int versionId, encounterSlotId, minLevel, maxLevel, pokemonId;
+  private LocationArea locationArea;
 
   public Encounter() {
   }
@@ -53,5 +52,21 @@ public class Encounter extends RealmObject {
 
   public void setMaxLevel(int maxLevel) {
     this.maxLevel = maxLevel;
+  }
+
+  public LocationArea getLocationArea() {
+    return locationArea;
+  }
+
+  public void setLocationArea(LocationArea locationArea) {
+    this.locationArea = locationArea;
+  }
+
+  public int getPokemonId() {
+    return pokemonId;
+  }
+
+  public void setPokemonId(int pokemonId) {
+    this.pokemonId = pokemonId;
   }
 }

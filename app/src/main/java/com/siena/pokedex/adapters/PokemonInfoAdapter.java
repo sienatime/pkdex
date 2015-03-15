@@ -60,7 +60,6 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     DataAdapter dataAdapter = new DataAdapter(context);
     AllTypeEfficacy typeEfficacy = dataAdapter.getTypeEfficacy(pokemon.getTypes(), realm);
-    //List<Encounter> encounters = dataAdapter.getEncounters(pokemon.getId());
 
     addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
     addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
@@ -69,7 +68,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
 
-    //addEncounterRows(encounters);
+    addEncounterRows(pokemon.getEncounters());
   }
 
   @Override public int getCount() {
