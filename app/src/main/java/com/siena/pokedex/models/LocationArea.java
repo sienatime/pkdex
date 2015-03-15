@@ -12,7 +12,7 @@ public class LocationArea extends RealmObject {
   @PrimaryKey private int id;
   private int locationId, gameIndex;
   private String identifier;
-  //private Location location;
+  private Location location;
 
   public LocationArea() {
   }
@@ -47,5 +47,13 @@ public class LocationArea extends RealmObject {
 
   public void setIdentifier(String identifier) {
     this.identifier = identifier;
+  }
+
+  public Location getLocation() {
+    return location;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
   }
 }

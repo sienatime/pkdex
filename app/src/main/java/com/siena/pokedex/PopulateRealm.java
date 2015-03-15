@@ -2,6 +2,7 @@ package com.siena.pokedex;
 
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
 import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.Pokemon;
@@ -137,8 +138,9 @@ public class PopulateRealm {
         "SELECT encounters.id, encounters.version_id, encounters.encounter_slot_id, "
             + "encounters.min_level, encounters.max_level, encounters.pokemon_id, "
             + "location_areas.id, location_areas.location_id, location_areas.game_index, "
-            + "location_areas.identifier FROM encounters "
-            + "JOIN location_areas on encounters.location_area_id = location_areas.id");
+            + "location_areas.identifier, locations.id, locations.region_id, locations.identifier FROM encounters "
+            + "JOIN location_areas on encounters.location_area_id = location_areas.id "
+            + "JOIN locations on location_areas.location_id = locations.id");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++) {
       Encounter encounter = realm.createObject(Encounter.class);
@@ -158,6 +160,18 @@ public class PopulateRealm {
         locationArea.setLocationId(cursor.getInt(7));
         locationArea.setGameIndex(cursor.getInt(8));
         locationArea.setIdentifier(cursor.getString(9) == null ? "" : cursor.getString(9));
+
+        Location location =
+            realm.where(Location.class).equalTo("id", locationArea.getLocationId()).findFirst();
+
+        if (location == null) {
+          location = realm.createObject(Location.class);
+          location.setId(cursor.getInt(10));
+          location.setRegionId(cursor.getInt(11));
+          location.setIdentifier(cursor.getString(12));
+        }
+
+        locationArea.setLocation(location);
       }
 
       encounter.setLocationArea(locationArea);
