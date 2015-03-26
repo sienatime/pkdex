@@ -2,6 +2,7 @@ package com.siena.pokedex;
 
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.EncounterMethod;
 import com.siena.pokedex.models.EncounterSlot;
 import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
@@ -142,11 +143,13 @@ public class PopulateRealm {
             + "location_areas.id, location_areas.location_id, location_areas.game_index, "
             + "location_areas.identifier, locations.id, locations.region_id, locations.identifier, "
             + "encounter_slots.id, encounter_slots.version_group_id, "
-            + "encounter_slots.encounter_method_id, encounter_slots.slot, encounter_slots.rarity "
+            + "encounter_slots.encounter_method_id, encounter_slots.slot, encounter_slots.rarity, "
+            + "encounter_methods.id, encounter_methods.identifier, encounter_methods.`order` "
             + "FROM encounters "
             + "JOIN location_areas on encounters.location_area_id = location_areas.id "
             + "JOIN locations on location_areas.location_id = locations.id "
-            + "JOIN encounter_slots on encounter_slots.id = encounters.encounter_slot_id");
+            + "JOIN encounter_slots on encounter_slots.id = encounters.encounter_slot_id "
+            + "JOIN encounter_methods on encounter_methods.id = encounter_slots.encounter_method_id");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++) {
       Encounter encounter = realm.createObject(Encounter.class);
@@ -192,6 +195,19 @@ public class PopulateRealm {
         encounterSlot.setEncounterMethodId(cursor.getInt(15));
         encounterSlot.setSlot(cursor.getInt(16));
         encounterSlot.setRarity(cursor.getInt(17));
+
+        EncounterMethod encounterMethod = realm.where(EncounterMethod.class)
+            .equalTo("id", encounterSlot.getEncounterMethodId())
+            .findFirst();
+
+        if (encounterMethod == null) {
+          encounterMethod = realm.createObject(EncounterMethod.class);
+          encounterMethod.setId(cursor.getInt(18));
+          encounterMethod.setIdentifier(cursor.getString(19));
+          encounterMethod.setOrder(cursor.getInt(20));
+        }
+
+        encounterSlot.setEncounterMethod(encounterMethod);
       }
 
       encounter.setEncounterSlot(encounterSlot);

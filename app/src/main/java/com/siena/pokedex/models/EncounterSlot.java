@@ -10,6 +10,7 @@ public class EncounterSlot extends RealmObject {
   // _id	version_group_id	encounter_method_id	slot	rarity
   @PrimaryKey private int id;
   private int versionGroupId, encounterMethodId, slot, rarity;
+  private EncounterMethod encounterMethod;
 
   public EncounterSlot() {
   }
@@ -52,5 +53,13 @@ public class EncounterSlot extends RealmObject {
 
   public void setRarity(int rarity) {
     this.rarity = rarity;
+  }
+
+  public EncounterMethod getEncounterMethod() {
+    return encounterMethod;
+  }
+
+  public void setEncounterMethod(EncounterMethod encounterMethod) {
+    this.encounterMethod = encounterMethod;
   }
 }
