@@ -52,12 +52,10 @@ public class MainFragmentActivity extends Activity {
           PopulateRealm.addLocationAreaProse(asyncRealm, dataAdapter);
           publishProgress(76);
           PopulateRealm.addLocationNames(asyncRealm, dataAdapter);
-          asyncRealm.commitTransaction();
           publishProgress(80);
-          asyncRealm.beginTransaction();
           PopulateRealm.addEncounters(asyncRealm, dataAdapter);
-          asyncRealm.commitTransaction();
           publishProgress(88);
+          asyncRealm.commitTransaction();
 
           asyncRealm.close();
           return 100L;

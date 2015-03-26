@@ -356,8 +356,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
           .findFirst();
       viewHolder.encounterLocation.setText(locationName.getName());
       viewHolder.encounterLocationArea.setText(prose.getName());
-      //viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
-      //    Integer.toString(encounter.getRate())));
+      viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
+          Integer.toString(encounter.getEncounterSlot().getRarity())));
 
       return convertView;
     }

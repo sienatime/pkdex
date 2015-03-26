@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonInfoAdapter;
 import com.siena.pokedex.models.Pokemon;
 import io.realm.Realm;
-import java.util.List;
 
 /**
  * Created by Siena Aguayo on 12/28/14.
@@ -33,20 +31,8 @@ public class PokeInfoFragment extends Fragment {
     getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
 
-    DataAdapter dataAdapter = new DataAdapter(getActivity());
     Realm realm = Realm.getInstance(getActivity());
-
-    String genus = dataAdapter.getGenusById(id);
-    List<Integer> typeIds = dataAdapter.getPokemonTypeData(id);
-    //ArrayList<Pokemon.Type> types = new ArrayList<>();
-    //for (Integer typeId : typeIds) {
-    //  Pokemon.Type type = new Pokemon.Type(typeId, dataAdapter.getTypeById(typeId));
-    //  types.add(type);
-    //}
-
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
-    //poke.setTypes(types);
-    //poke.setGenus(genus);
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;
   }

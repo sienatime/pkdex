@@ -10,6 +10,7 @@ public class Encounter extends RealmObject {
   @PrimaryKey private int id;
   private int versionId, encounterSlotId, minLevel, maxLevel, pokemonId;
   private LocationArea locationArea;
+  private EncounterSlot encounterSlot;
 
   public Encounter() {
   }
@@ -68,5 +69,13 @@ public class Encounter extends RealmObject {
 
   public void setPokemonId(int pokemonId) {
     this.pokemonId = pokemonId;
+  }
+
+  public EncounterSlot getEncounterSlot() {
+    return encounterSlot;
+  }
+
+  public void setEncounterSlot(EncounterSlot encounterSlot) {
+    this.encounterSlot = encounterSlot;
   }
 }

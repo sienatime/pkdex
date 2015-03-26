@@ -2,6 +2,7 @@ package com.siena.pokedex;
 
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.EncounterSlot;
 import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
 import com.siena.pokedex.models.LocationAreaProse;
@@ -139,9 +140,13 @@ public class PopulateRealm {
         "SELECT encounters.id, encounters.version_id, encounters.encounter_slot_id, "
             + "encounters.min_level, encounters.max_level, encounters.pokemon_id, "
             + "location_areas.id, location_areas.location_id, location_areas.game_index, "
-            + "location_areas.identifier, locations.id, locations.region_id, locations.identifier FROM encounters "
+            + "location_areas.identifier, locations.id, locations.region_id, locations.identifier, "
+            + "encounter_slots.id, encounter_slots.version_group_id, "
+            + "encounter_slots.encounter_method_id, encounter_slots.slot, encounter_slots.rarity "
+            + "FROM encounters "
             + "JOIN location_areas on encounters.location_area_id = location_areas.id "
-            + "JOIN locations on location_areas.location_id = locations.id");
+            + "JOIN locations on location_areas.location_id = locations.id "
+            + "JOIN encounter_slots on encounter_slots.id = encounters.encounter_slot_id");
     cursor.moveToFirst();
     for (int i = 0; i < cursor.getCount(); i++) {
       Encounter encounter = realm.createObject(Encounter.class);
@@ -177,6 +182,20 @@ public class PopulateRealm {
 
       encounter.setLocationArea(locationArea);
 
+      EncounterSlot encounterSlot =
+          realm.where(EncounterSlot.class).equalTo("id", cursor.getInt(13)).findFirst();
+
+      if (encounterSlot == null) {
+        encounterSlot = realm.createObject(EncounterSlot.class);
+        encounterSlot.setId(cursor.getInt(13));
+        encounterSlot.setVersionGroupId(cursor.getInt(14));
+        encounterSlot.setEncounterMethodId(cursor.getInt(15));
+        encounterSlot.setSlot(cursor.getInt(16));
+        encounterSlot.setRarity(cursor.getInt(17));
+      }
+
+      encounter.setEncounterSlot(encounterSlot);
+
       Pokemon pokemon = realm.where(Pokemon.class).equalTo("id", cursor.getInt(5)).findFirst();
 
       if (pokemon != null) {
@@ -193,8 +212,8 @@ public class PopulateRealm {
 
   public static void addLocationNames(Realm realm, DataAdapter dataAdapter) {
     // location_id	local_language_id	name
-    Cursor cursor = dataAdapter.getData(
-        "SELECT location_id, local_language_id, name FROM location_names");
+    Cursor cursor =
+        dataAdapter.getData("SELECT location_id, local_language_id, name FROM location_names");
     cursor.moveToFirst();
 
     for (int i = 0; i < cursor.getCount(); i++) {
