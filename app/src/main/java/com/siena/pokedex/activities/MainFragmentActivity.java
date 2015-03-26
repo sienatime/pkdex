@@ -27,7 +27,7 @@ public class MainFragmentActivity extends Activity {
     super.onCreate(savedInstanceState);
     final Context context = this;
     PokedexApp.getInstance().inject(this);
-    final Realm realm = Realm.getInstance(this);
+    Realm realm = Realm.getInstance(this);
     Table pokeTable = realm.getTable(Pokemon.class);
 
     if (pokeTable.count(1, "bulbasaur") == 0) {
@@ -52,6 +52,7 @@ public class MainFragmentActivity extends Activity {
           PopulateRealm.addLocationAreaProse(asyncRealm, dataAdapter);
           publishProgress(76);
           PopulateRealm.addLocationNames(asyncRealm, dataAdapter);
+          PopulateRealm.addEncouterMethodProse(asyncRealm, dataAdapter);
           publishProgress(80);
           PopulateRealm.addEncounters(asyncRealm, dataAdapter);
           publishProgress(88);

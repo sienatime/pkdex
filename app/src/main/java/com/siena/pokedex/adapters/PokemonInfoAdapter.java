@@ -19,6 +19,7 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
@@ -356,6 +357,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
           .findFirst();
       viewHolder.encounterLocation.setText(locationName.getName());
       viewHolder.encounterLocationArea.setText(prose.getName());
+      EncounterMethodProse encounterMethodProse = realm.where(EncounterMethodProse.class)
+          .equalTo("encounterMethodId", encounter.getEncounterSlot().getEncounterMethod().getId())
+          .equalTo("localLanguageId", 9)
+          .findFirst();
+      viewHolder.encounterMethod.setText(encounterMethodProse.getName());
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getEncounterSlot().getRarity())));
 

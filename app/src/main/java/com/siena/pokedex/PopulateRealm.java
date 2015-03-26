@@ -3,6 +3,7 @@ package com.siena.pokedex;
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.EncounterMethod;
+import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.EncounterSlot;
 import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
@@ -237,6 +238,22 @@ public class PopulateRealm {
       locationName.setLocationId(cursor.getInt(0));
       locationName.setLocalLanguageId(cursor.getInt(1));
       locationName.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
+      cursor.moveToNext();
+    }
+    cursor.close();
+  }
+
+  public static void addEncouterMethodProse(Realm realm, DataAdapter dataAdapter) {
+    // encounter_method_id	local_language_id	name
+    Cursor cursor = dataAdapter.getData(
+        "SELECT encounter_method_id, local_language_id, name FROM encounter_method_prose");
+    cursor.moveToFirst();
+
+    for (int i = 0; i < cursor.getCount(); i++) {
+      EncounterMethodProse encounterMethodProse = realm.createObject(EncounterMethodProse.class);
+      encounterMethodProse.setEncounterMethodId(cursor.getInt(0));
+      encounterMethodProse.setLocalLanguageId(cursor.getInt(1));
+      encounterMethodProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
       cursor.moveToNext();
     }
     cursor.close();
