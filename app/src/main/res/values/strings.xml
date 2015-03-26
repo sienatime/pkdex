@@ -14,7 +14,8 @@
   <string name="locations">Locations</string>
   <string name="no_known_locations">No known locations.</string>
   <string name="encounter_rate">%s%%</string>
-  <string name="level">Lv. %s</string>
+  <string name="level_singular">Lv. %1$s</string>
+  <string name="level_range">Lv. %1$s-%2$s</string>
 
   <string name="bulbasaur">Bulbasaur</string>
   <string name="ivysaur">Ivysaur</string>

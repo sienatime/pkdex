@@ -37,4 +37,14 @@ public class PokemonUtil {
   public static String formatId(Pokemon pokemon) {
     return String.format(APP.getString(R.string.number_format), pokemon.getId());
   }
+
+  public static String consolidateLevels(int minLevel, int maxLevel) {
+    Resources res = PokedexApp.getInstance().getResources();
+    if (minLevel == maxLevel) {
+      return String.format(res.getString(R.string.level_singular), Integer.toString(minLevel));
+    } else {
+      return String.format(res.getString(R.string.level_range), Integer.toString(minLevel),
+          Integer.toString(maxLevel));
+    }
+  }
 }

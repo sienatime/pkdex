@@ -31,6 +31,7 @@ import io.realm.RealmList;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.siena.pokedex.PokemonUtil.consolidateLevels;
 import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
@@ -343,8 +344,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      //viewHolder.encounterLevels.setText(
-      //    String.format(res.getString(R.string.level), encounter.getLevelRange()));
+      viewHolder.encounterLevels.setText(
+          consolidateLevels(encounter.getMinLevel(), encounter.getMaxLevel()));
       LocationAreaProse prose = realm.where(LocationAreaProse.class)
           .equalTo("locationAreaId", encounter.getLocationArea().getId())
           .equalTo("localLanguageId", 9)
