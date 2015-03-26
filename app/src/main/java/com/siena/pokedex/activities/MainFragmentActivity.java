@@ -55,6 +55,8 @@ public class MainFragmentActivity extends Activity {
           PopulateRealm.addEncouterMethodProse(asyncRealm, dataAdapter);
           publishProgress(80);
           PopulateRealm.addEncounters(asyncRealm, dataAdapter);
+          PopulateRealm.addEncounterConditionValueId(asyncRealm, dataAdapter);
+          PopulateRealm.addEncounterConditionValueProse(asyncRealm, dataAdapter);
           publishProgress(88);
           asyncRealm.commitTransaction();
 

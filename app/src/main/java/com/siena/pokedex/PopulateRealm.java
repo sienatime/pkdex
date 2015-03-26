@@ -2,6 +2,7 @@ package com.siena.pokedex;
 
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.EncounterConditionValueProse;
 import com.siena.pokedex.models.EncounterMethod;
 import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.EncounterSlot;
@@ -254,6 +255,38 @@ public class PopulateRealm {
       encounterMethodProse.setEncounterMethodId(cursor.getInt(0));
       encounterMethodProse.setLocalLanguageId(cursor.getInt(1));
       encounterMethodProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
+      cursor.moveToNext();
+    }
+    cursor.close();
+  }
+
+  public static void addEncounterConditionValueProse(Realm realm, DataAdapter dataAdapter) {
+    // encounter_method_id	local_language_id	name
+    Cursor cursor = dataAdapter.getData(
+        "SELECT encounter_condition_value_id, local_language_id, name FROM encounter_condition_value_prose");
+    cursor.moveToFirst();
+
+    for (int i = 0; i < cursor.getCount(); i++) {
+      EncounterConditionValueProse encounterConditionValueProse =
+          realm.createObject(EncounterConditionValueProse.class);
+      encounterConditionValueProse.setEncounterConditionValueId(cursor.getInt(0));
+      encounterConditionValueProse.setLocalLanguageId(cursor.getInt(1));
+      encounterConditionValueProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
+      cursor.moveToNext();
+    }
+    cursor.close();
+  }
+
+  public static void addEncounterConditionValueId(Realm realm, DataAdapter dataAdapter) {
+    // encounter_method_id	local_language_id	name
+    Cursor cursor = dataAdapter.getData(
+        "SELECT encounter_id, encounter_condition_value_id FROM encounter_condition_value_map");
+    cursor.moveToFirst();
+
+    for (int i = 0; i < cursor.getCount(); i++) {
+      Encounter encounter =
+          realm.where(Encounter.class).equalTo("id", cursor.getInt(0)).findFirst();
+      encounter.setEncounterConditionId(cursor.getInt(1));
       cursor.moveToNext();
     }
     cursor.close();
