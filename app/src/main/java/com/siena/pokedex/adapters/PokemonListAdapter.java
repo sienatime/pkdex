@@ -1,9 +1,9 @@
 package com.siena.pokedex.adapters;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,9 +102,9 @@ public class PokemonListAdapter extends BaseAdapter {
           Bundle bundle = new Bundle();
           bundle.putInt(PokemonUtil.POKEMON_ID_KEY, pokemon.getId());
           fragment.setArguments(bundle);
-          ((Activity) context).getFragmentManager()
+          ((ActionBarActivity) context).getSupportFragmentManager()
               .beginTransaction()
-              .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+              //.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
               .replace(R.id.container, fragment)
               .addToBackStack(null)
               .commit();

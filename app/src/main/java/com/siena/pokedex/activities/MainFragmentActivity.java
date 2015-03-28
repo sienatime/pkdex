@@ -1,13 +1,16 @@
 package com.siena.pokedex.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PopulateRealm;
@@ -19,12 +22,16 @@ import io.realm.Realm;
 import io.realm.internal.Table;
 import javax.inject.Inject;
 
-public class MainFragmentActivity extends Activity {
+public class MainFragmentActivity extends ActionBarActivity {
   @Inject Bus bus;
+  @InjectView(R.id.toolbar) Toolbar toolbar;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main_fragment);
+    ButterKnife.inject(this);
+    setSupportActionBar(toolbar);
     final Context context = this;
     PokedexApp.getInstance().inject(this);
     Realm realm = Realm.getInstance(this);
@@ -81,9 +88,8 @@ public class MainFragmentActivity extends Activity {
   }
 
   private void instantiateListFragment(Bundle savedInstanceState) {
-    setContentView(R.layout.activity_main_fragment);
     if (savedInstanceState == null) {
-      getFragmentManager().beginTransaction().add(R.id.container, new PokeListFragment()).commit();
+      getSupportFragmentManager().beginTransaction().add(R.id.container, new PokeListFragment()).commit();
     }
   }
 
@@ -104,7 +110,7 @@ public class MainFragmentActivity extends Activity {
     if (id == R.id.action_settings) {
       return true;
     } else if (id == android.R.id.home) {
-      getFragmentManager().popBackStack();
+      getSupportFragmentManager().popBackStack();
     }
 
     return super.onOptionsItemSelected(item);
