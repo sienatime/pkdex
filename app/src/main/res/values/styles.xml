@@ -6,18 +6,12 @@
     <item name="android:textColorPrimary">@android:color/white</item>
   </style>
 
-  <style name="ActionBar.Solid.Pokedex" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="ActionBar.Solid.Pokedex" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
     <item name="android:icon">@drawable/transparent</item>
     <item name="android:background">@color/dark_blue</item>
     <item name="android:textColorPrimary">@android:color/white</item>
     <item name="actionMenuTextColor">@android:color/white</item>
-    <item name="android:titleTextStyle">@style/ActionBar.Title.Text.Pokedex</item>
-  </style>
-
-  <style name="ActionBar.Title.Text.Pokedex"
-      parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
-    <item name="android:textColor">@android:color/white</item>
   </style>
 
   <style name="pokemon_type">
