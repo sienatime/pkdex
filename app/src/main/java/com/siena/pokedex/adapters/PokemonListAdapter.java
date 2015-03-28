@@ -104,7 +104,7 @@ public class PokemonListAdapter extends BaseAdapter {
           fragment.setArguments(bundle);
           ((ActionBarActivity) context).getSupportFragmentManager()
               .beginTransaction()
-              //.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+              .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
               .replace(R.id.container, fragment)
               .addToBackStack(null)
               .commit();
