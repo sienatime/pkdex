@@ -357,13 +357,21 @@ public class PokemonInfoAdapter extends BaseAdapter {
           .equalTo("localLanguageId", 9)
           .findFirst();
       viewHolder.encounterLocation.setText(locationName.getName());
-      viewHolder.encounterLocationArea.setText(prose.getName());
+      if (!prose.getName().equals("")) {
+        viewHolder.encounterLocationArea.setText(prose.getName());
+        viewHolder.encounterLocationArea.setVisibility(View.VISIBLE);
+      } else {
+        viewHolder.encounterLocationArea.setVisibility(View.GONE);
+      }
       EncounterConditionValueProse conditionProse = realm.where(EncounterConditionValueProse.class)
           .equalTo("encounterConditionValueId", encounter.getEncounterConditionId())
           .equalTo("localLanguageId", 9)
           .findFirst();
-      if (conditionProse != null) {
+      if (conditionProse != null && !conditionProse.getName().equals("")) {
         viewHolder.encounterCondition.setText(conditionProse.getName());
+        viewHolder.encounterCondition.setVisibility(View.VISIBLE);
+      } else {
+        viewHolder.encounterCondition.setVisibility(View.GONE);
       }
       EncounterMethodProse encounterMethodProse = realm.where(EncounterMethodProse.class)
           .equalTo("encounterMethodId", encounter.getEncounterSlot().getEncounterMethod().getId())
