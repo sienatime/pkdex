@@ -11,13 +11,13 @@ def connect_to_db():
 def main():
   connect_to_db()
 
-  query = """SELECT encounter_method_id, name FROM encounter_method_prose WHERE local_language_id = 9"""
+  query = """SELECT location_area_id, name FROM location_area_prose WHERE local_language_id = 9"""
   DB.execute(query,)
   rows = DB.fetchall()
 
   for row in rows:
     if row[1]:
-      print "<string name=\"encounter_method_" + str(row[0]) + "\">" + row[1] + "</string>";
+      print "<string name=\"location_area_name_" + str(row[0]) + "\">" + row[1].title() + "</string>";
 
   CONN.close()
 
