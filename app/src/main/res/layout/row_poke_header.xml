@@ -20,15 +20,11 @@
       android:id="@+id/header_poke_genus"/>
 
   <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       style="@style/pokemon_type"
       android:layout_below="@id/header_poke_genus"
       android:id="@+id/pokemon_type_1"/>
 
   <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
       style="@style/pokemon_type"
       android:layout_toRightOf="@id/pokemon_type_1"
       android:layout_alignTop="@id/pokemon_type_1"
