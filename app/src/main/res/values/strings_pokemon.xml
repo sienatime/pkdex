@@ -1445,4 +1445,25 @@
   <string name="pokemon_species_genus_720">Mischief</string>
   <string name="pokemon_species_genus_721">Steam</string>
 
+  <string name="type_1">Normal</string>
+  <string name="type_2">Fighting</string>
+  <string name="type_3">Flying</string>
+  <string name="type_4">Poison</string>
+  <string name="type_5">Ground</string>
+  <string name="type_6">Rock</string>
+  <string name="type_7">Bug</string>
+  <string name="type_8">Ghost</string>
+  <string name="type_9">Steel</string>
+  <string name="type_10">Fire</string>
+  <string name="type_11">Water</string>
+  <string name="type_12">Grass</string>
+  <string name="type_13">Electric</string>
+  <string name="type_14">Psychic</string>
+  <string name="type_15">Ice</string>
+  <string name="type_16">Dragon</string>
+  <string name="type_17">Dark</string>
+  <string name="type_18">Fairy</string>
+  <string name="type_10001">\???</string>
+  <string name="type_10002">Shadow</string>
+
 </resources>

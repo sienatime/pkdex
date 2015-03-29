@@ -50,7 +50,6 @@ public class MainFragmentActivity extends ActionBarActivity {
           publishProgress(16);
           PopulateRealm.addTypeData(asyncRealm, dataAdapter);
           publishProgress(32);
-          PopulateRealm.addTypeNames(asyncRealm, dataAdapter);
           publishProgress(48);
           PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
           publishProgress(60);

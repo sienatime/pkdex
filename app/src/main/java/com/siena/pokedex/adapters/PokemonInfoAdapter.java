@@ -25,7 +25,6 @@ import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
-import com.siena.pokedex.models.TypeName;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -171,12 +170,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
 
     private void setType(TextView textView, PokemonType type) {
-      Realm realm = Realm.getInstance(context);
-      TypeName typeName = realm.where(TypeName.class)
-          .equalTo("typeId", type.getTypeId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
-      textView.setText(typeName.getName());
+      textView.setText(getPokeString(type.getTypeId(), "type_"));
       textView.setBackgroundColor(getTypeColor(type.getTypeId()));
     }
 
@@ -264,13 +258,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       SpannableStringBuilder spannableString = new SpannableStringBuilder();
 
-      Realm innerRealm = Realm.getInstance(context);
       for (PokemonType type : types) {
-        TypeName typeName = innerRealm.where(TypeName.class)
-            .equalTo("typeId", type.getTypeId())
-            .equalTo("localLanguageId", 9)
-            .findFirst();
-        String displayName = " " + typeName.getName().toUpperCase() + " ";
+        String typeName = getPokeString(type.getTypeId(), "type_");
+        String displayName = " " + typeName.toUpperCase() + " ";
         int color = getTypeColor(type.getTypeId());
 
         int start = spannableString.length();
@@ -279,7 +269,6 @@ public class PokemonInfoAdapter extends BaseAdapter {
         spannableString.setSpan(new BackgroundColorSpan(color), start, end, 0);
         spannableString.append(" ");
       }
-      innerRealm.close();
 
       //android:textSize="12sp"
       //android:textStyle="bold"
