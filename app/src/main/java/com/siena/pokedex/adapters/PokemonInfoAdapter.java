@@ -19,9 +19,6 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
-import com.siena.pokedex.models.EncounterConditionValueProse;
-import com.siena.pokedex.models.EncounterMethodProse;
-import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.squareup.picasso.Picasso;
@@ -330,34 +327,29 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       viewHolder.encounterLevels.setText(
           consolidateLevels(encounter.getMinLevel(), encounter.getMaxLevel()));
-
-      LocationName locationName = realm.where(LocationName.class)
-          .equalTo("locationId", encounter.getLocationArea().getLocation().getId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
-      viewHolder.encounterLocation.setText(locationName.getName());
-      String locationAreaName = getPokeString(encounter.getLocationArea().getId(), "location_area_name_");
+      viewHolder.encounterLocation.setText(
+          getPokeString(encounter.getLocationArea().getLocation().getId(), "location_name_"));
+      String locationAreaName =
+          getPokeString(encounter.getLocationArea().getId(), "location_area_name_");
       if (locationAreaName != null) {
         viewHolder.encounterLocationArea.setText(locationAreaName);
         viewHolder.encounterLocationArea.setVisibility(View.VISIBLE);
       } else {
         viewHolder.encounterLocationArea.setVisibility(View.GONE);
       }
-      EncounterConditionValueProse conditionProse = realm.where(EncounterConditionValueProse.class)
-          .equalTo("encounterConditionValueId", encounter.getEncounterConditionId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
-      if (conditionProse != null && !conditionProse.getName().equals("")) {
-        viewHolder.encounterCondition.setText(conditionProse.getName());
+
+      String encounterCondition =
+          getPokeString(encounter.getEncounterConditionId(), "encounter_condition_");
+      if (encounterCondition != null) {
+        viewHolder.encounterCondition.setText(encounterCondition);
         viewHolder.encounterCondition.setVisibility(View.VISIBLE);
       } else {
         viewHolder.encounterCondition.setVisibility(View.GONE);
       }
-      EncounterMethodProse encounterMethodProse = realm.where(EncounterMethodProse.class)
-          .equalTo("encounterMethodId", encounter.getEncounterSlot().getEncounterMethod().getId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
-      viewHolder.encounterMethod.setText(encounterMethodProse.getName());
+
+      viewHolder.encounterMethod.setText(
+          getPokeString(encounter.getEncounterSlot().getEncounterMethod().getId(),
+              "encounter_method_"));
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getEncounterSlot().getRarity())));
 

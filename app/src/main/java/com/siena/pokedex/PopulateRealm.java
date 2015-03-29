@@ -2,13 +2,10 @@ package com.siena.pokedex;
 
 import android.database.Cursor;
 import com.siena.pokedex.models.Encounter;
-import com.siena.pokedex.models.EncounterConditionValueProse;
 import com.siena.pokedex.models.EncounterMethod;
-import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.EncounterSlot;
 import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
-import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeEfficacy;
@@ -162,55 +159,6 @@ public class PopulateRealm {
         pokemon.getEncounters().add(encounter);
       }
 
-      cursor.moveToNext();
-    }
-    cursor.close();
-  }
-
-  public static void addLocationNames(Realm realm, DataAdapter dataAdapter) {
-    // location_id	local_language_id	name
-    Cursor cursor =
-        dataAdapter.getData("SELECT location_id, local_language_id, name FROM location_names");
-    cursor.moveToFirst();
-
-    for (int i = 0; i < cursor.getCount(); i++) {
-      LocationName locationName = realm.createObject(LocationName.class);
-      locationName.setLocationId(cursor.getInt(0));
-      locationName.setLocalLanguageId(cursor.getInt(1));
-      locationName.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
-      cursor.moveToNext();
-    }
-    cursor.close();
-  }
-
-  public static void addEncouterMethodProse(Realm realm, DataAdapter dataAdapter) {
-    // encounter_method_id	local_language_id	name
-    Cursor cursor = dataAdapter.getData(
-        "SELECT encounter_method_id, local_language_id, name FROM encounter_method_prose");
-    cursor.moveToFirst();
-
-    for (int i = 0; i < cursor.getCount(); i++) {
-      EncounterMethodProse encounterMethodProse = realm.createObject(EncounterMethodProse.class);
-      encounterMethodProse.setEncounterMethodId(cursor.getInt(0));
-      encounterMethodProse.setLocalLanguageId(cursor.getInt(1));
-      encounterMethodProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
-      cursor.moveToNext();
-    }
-    cursor.close();
-  }
-
-  public static void addEncounterConditionValueProse(Realm realm, DataAdapter dataAdapter) {
-    // encounter_method_id	local_language_id	name
-    Cursor cursor = dataAdapter.getData(
-        "SELECT encounter_condition_value_id, local_language_id, name FROM encounter_condition_value_prose");
-    cursor.moveToFirst();
-
-    for (int i = 0; i < cursor.getCount(); i++) {
-      EncounterConditionValueProse encounterConditionValueProse =
-          realm.createObject(EncounterConditionValueProse.class);
-      encounterConditionValueProse.setEncounterConditionValueId(cursor.getInt(0));
-      encounterConditionValueProse.setLocalLanguageId(cursor.getInt(1));
-      encounterConditionValueProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
       cursor.moveToNext();
     }
     cursor.close();

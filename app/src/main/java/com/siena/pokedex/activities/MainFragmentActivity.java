@@ -47,20 +47,15 @@ public class MainFragmentActivity extends ActionBarActivity {
 
           asyncRealm.beginTransaction();
           PopulateRealm.addPokemonData(asyncRealm, dataAdapter);
-          publishProgress(16);
+          publishProgress(10);
           PopulateRealm.addTypeData(asyncRealm, dataAdapter);
-          publishProgress(32);
-          publishProgress(48);
+          publishProgress(20);
           PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
-          publishProgress(60);
-          publishProgress(72);
-          PopulateRealm.addLocationNames(asyncRealm, dataAdapter);
-          PopulateRealm.addEncouterMethodProse(asyncRealm, dataAdapter);
-          publishProgress(80);
+          publishProgress(30);
           PopulateRealm.addEncounters(asyncRealm, dataAdapter);
+          publishProgress(80);
           PopulateRealm.addEncounterConditionValueId(asyncRealm, dataAdapter);
-          PopulateRealm.addEncounterConditionValueProse(asyncRealm, dataAdapter);
-          publishProgress(88);
+          publishProgress(90);
           asyncRealm.commitTransaction();
 
           asyncRealm.close();
