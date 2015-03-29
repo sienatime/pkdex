@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-  <item android:state_pressed="true" android:drawable="@color/medium_gray"/>
-  <!-- note: default state must go last, otherwise will overwrite other styles-->
+  <item android:state_selected="true" android:drawable="@color/accent_blue"/>
+  <item android:state_pressed="true" android:drawable="@color/accent_blue"/>
   <item android:drawable="@color/background_blue"/>
-
 </selector>

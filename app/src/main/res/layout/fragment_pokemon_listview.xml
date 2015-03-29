@@ -1,5 +1,4 @@
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/poke_listview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_blue" />
+    android:layout_height="match_parent" />
