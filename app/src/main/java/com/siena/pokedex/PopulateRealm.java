@@ -8,7 +8,6 @@ import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.EncounterSlot;
 import com.siena.pokedex.models.Location;
 import com.siena.pokedex.models.LocationArea;
-import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
@@ -71,22 +70,6 @@ public class PopulateRealm {
       typeEfficacy.setDamageTypeId(cursor.getInt(0));
       typeEfficacy.setTargetTypeId(cursor.getInt(1));
       typeEfficacy.setDamageFactor(cursor.getInt(2));
-      cursor.moveToNext();
-    }
-    cursor.close();
-  }
-
-  public static void addLocationAreaProse(Realm realm, DataAdapter dataAdapter) {
-    Cursor cursor = dataAdapter.getData(
-        "SELECT location_area_prose.location_area_id, location_area_prose.local_language_id, "
-            + "location_area_prose.name FROM location_area_prose");
-    cursor.moveToFirst();
-
-    for (int i = 0; i < cursor.getCount(); i++) {
-      LocationAreaProse locationAreaProse = realm.createObject(LocationAreaProse.class);
-      locationAreaProse.setLocationAreaId(cursor.getInt(0));
-      locationAreaProse.setLocalLanguageId(cursor.getInt(1));
-      locationAreaProse.setName(cursor.getString(2) == null ? "" : cursor.getString(2));
       cursor.moveToNext();
     }
     cursor.close();

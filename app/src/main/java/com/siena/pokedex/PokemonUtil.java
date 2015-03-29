@@ -23,7 +23,7 @@ public class PokemonUtil {
   public static String getPokeString(int id, String identifier) {
     String key = identifier + Integer.toString(id);
     int nameId = RES.getIdentifier(key, "string", PACKAGE_NAME);
-    return RES.getString(nameId);
+    return nameId > 0 ? RES.getString(nameId) : null;
   }
 
   public static int getTypeColor(int id) {

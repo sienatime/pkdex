@@ -21,7 +21,6 @@ import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.EncounterConditionValueProse;
 import com.siena.pokedex.models.EncounterMethodProse;
-import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
@@ -331,17 +330,15 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       viewHolder.encounterLevels.setText(
           consolidateLevels(encounter.getMinLevel(), encounter.getMaxLevel()));
-      LocationAreaProse prose = realm.where(LocationAreaProse.class)
-          .equalTo("locationAreaId", encounter.getLocationArea().getId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
+
       LocationName locationName = realm.where(LocationName.class)
           .equalTo("locationId", encounter.getLocationArea().getLocation().getId())
           .equalTo("localLanguageId", 9)
           .findFirst();
       viewHolder.encounterLocation.setText(locationName.getName());
-      if (!prose.getName().equals("")) {
-        viewHolder.encounterLocationArea.setText(prose.getName());
+      String locationAreaName = getPokeString(encounter.getLocationArea().getId(), "location_area_name_");
+      if (locationAreaName != null) {
+        viewHolder.encounterLocationArea.setText(locationAreaName);
         viewHolder.encounterLocationArea.setVisibility(View.VISIBLE);
       } else {
         viewHolder.encounterLocationArea.setVisibility(View.GONE);
