@@ -2,14 +2,12 @@ package com.siena.pokedex.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Typeface;
-import android.text.SpannableStringBuilder;
-import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -241,9 +239,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
+      LayoutInflater inflater = LayoutInflater.from(PokedexApp.getInstance());
       if (convertView == null) {
-        convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_type_efficacy, parent, false);
+        convertView = inflater.inflate(R.layout.row_type_efficacy, parent, false);
         viewHolder = new ViewHolder(convertView);
         convertView.setTag(viewHolder);
       } else {
@@ -252,44 +250,22 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       viewHolder.typeEfficacyLevel.setText(titleId);
 
-      SpannableStringBuilder spannableString = new SpannableStringBuilder();
-
-      for (PokemonType type : types) {
-        String typeName = getPokeString(type.getTypeId(), "type_");
-        String displayName = " " + typeName.toUpperCase() + " ";
-        int color = getTypeColor(type.getTypeId());
-
-        int start = spannableString.length();
-        int end = start + displayName.length();
-        spannableString.append(displayName);
-        spannableString.setSpan(new BackgroundColorSpan(color), start, end, 0);
-        spannableString.append(" ");
+      if (viewHolder.typeAnchor.getChildCount() == 0) {
+        for (int i = 0; i < types.size(); i++) {
+          PokemonType type = types.get(i);
+          inflater.inflate(R.layout.textview_type, viewHolder.typeAnchor);
+          TextView textView = (TextView)viewHolder.typeAnchor.getChildAt(i);
+          textView.setBackgroundColor(getTypeColor(type.getTypeId()));
+          textView.setText(getPokeString(type.getTypeId(), "type_").toUpperCase());
+        }
       }
-
-      //android:textSize="12sp"
-      //android:textStyle="bold"
-      //android:textAllCaps="true"
-      //android:textColor="@android:color/white"
-      //android:shadowColor="@color/shadow_gray"
-      //android:shadowDx="0"
-      //android:shadowDy="2"
-      //android:shadowRadius="4"
-      //android:padding="4dp"
-
-      Resources res = PokedexApp.getInstance().getResources();
-      viewHolder.typeAnchor.setTextSize(12);
-      viewHolder.typeAnchor.setText(spannableString, TextView.BufferType.SPANNABLE);
-      viewHolder.typeAnchor.setTextColor(
-          PokedexApp.getInstance().getResources().getColor(R.color.white));
-      viewHolder.typeAnchor.setShadowLayer(4, 0, 2, res.getColor(R.color.shadow_gray));
-      viewHolder.typeAnchor.setTypeface(viewHolder.typeAnchor.getTypeface(), Typeface.BOLD);
 
       return convertView;
     }
 
     static class ViewHolder {
       @InjectView(R.id.type_efficacy_level) TextView typeEfficacyLevel;
-      @InjectView(R.id.type_anchor) TextView typeAnchor;
+      @InjectView(R.id.type_anchor) GridLayout typeAnchor;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
