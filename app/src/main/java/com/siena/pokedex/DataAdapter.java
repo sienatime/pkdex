@@ -35,6 +35,10 @@ public class DataAdapter {
     db = dbHelper.getReadableDatabase();
   }
 
+  public void close() {
+    dbHelper.close();
+  }
+
   public Cursor getData(String sql) {
     try {
       Cursor cursor = db.rawQuery(sql, null);

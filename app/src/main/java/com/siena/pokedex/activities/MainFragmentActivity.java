@@ -61,6 +61,7 @@ public class MainFragmentActivity extends ActionBarActivity {
           asyncRealm.commitTransaction();
 
           asyncRealm.close();
+          dataAdapter.close();
           return 100L;
         }
 
