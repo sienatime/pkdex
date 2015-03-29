@@ -24,7 +24,6 @@ import com.siena.pokedex.models.EncounterMethodProse;
 import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
-import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeName;
 import com.squareup.picasso.Picasso;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.consolidateLevels;
-import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
+import static com.siena.pokedex.PokemonUtil.getPokeString;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
@@ -142,14 +141,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
-      viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
-      Realm realm = Realm.getInstance(context);
-      PokemonSpeciesName speciesName = realm.where(PokemonSpeciesName.class)
-          .equalTo("pokemonSpeciesId", pokemon.getId())
-          .equalTo("localLanguageId", 9)
-          .findFirst();
-      viewHolder.pokeGenus.setText(
-          String.format(context.getString(R.string.genus_format), speciesName.getGenus()));
+      viewHolder.pokeName.setText(getPokeString(pokemon.getId(), "pokemon_species_name_"));
+      viewHolder.pokeGenus.setText(String.format(context.getString(R.string.genus_format),
+          getPokeString(pokemon.getId(), "pokemon_species_genus_")));
 
       int numberOfTypes = pokemon.getTypes().size();
 

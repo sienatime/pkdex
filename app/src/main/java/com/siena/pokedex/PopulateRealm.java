@@ -11,7 +11,6 @@ import com.siena.pokedex.models.LocationArea;
 import com.siena.pokedex.models.LocationAreaProse;
 import com.siena.pokedex.models.LocationName;
 import com.siena.pokedex.models.Pokemon;
-import com.siena.pokedex.models.PokemonSpeciesName;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeEfficacy;
 import com.siena.pokedex.models.TypeName;
@@ -26,29 +25,8 @@ public class PopulateRealm {
     addPokemonData(realm, dataAdapter);
     addTypeData(realm, dataAdapter);
     addTypeNames(realm, dataAdapter);
-    addSpeciesNames(realm, dataAdapter);
     addTypeEfficacy(realm, dataAdapter);
     addEncounters(realm, dataAdapter);
-  }
-
-  public static void addSpeciesNames(Realm realm, DataAdapter dataAdapter) {
-    Cursor cursor = dataAdapter.getData(
-        "SELECT pokemon_species_id, local_language_id, name, genus FROM pokemon_species_names");
-    cursor.moveToFirst();
-    for (int i = 0; i < cursor.getCount(); i++) {
-      PokemonSpeciesName pokemonSpeciesName = realm.createObject(PokemonSpeciesName.class);
-      pokemonSpeciesName.setPokemonSpeciesId(cursor.getInt(0));
-      pokemonSpeciesName.setLocalLanguageId(cursor.getInt(1));
-      pokemonSpeciesName.setName(cursor.getString(2) != null ? cursor.getString(2) : "");
-      String genus = cursor.getString(3);
-      if (genus != null) {
-        pokemonSpeciesName.setGenus(genus);
-      } else {
-        pokemonSpeciesName.setGenus("");
-      }
-      cursor.moveToNext();
-    }
-    cursor.close();
   }
 
   public static void addTypeNames(Realm realm, DataAdapter dataAdapter) {

@@ -5,18 +5,18 @@ CONN = None
 
 def connect_to_db(): 
   global DB, CONN
-  CONN = sqlite3.connect("pokedex.db")
+  CONN = sqlite3.connect("app/src/main/assets/databases/pokedex.sqlite")
   DB = CONN.cursor()
 
 def main():
   connect_to_db()
 
-  query = """SELECT * FROM pokemon"""
+  query = """SELECT type_id, name FROM type_names WHERE local_language_id = 9"""
   DB.execute(query,)
   rows = DB.fetchall()
 
-  for pokemon in rows:
-    print "<string name=\"" + pokemon[1] + "\">" + pokemon[1].title() + "</string>";
+  for row in rows:
+    print "<string name=\"type_" + str(row[0]) + "\">" + row[1] + "</string>";
 
   CONN.close()
 

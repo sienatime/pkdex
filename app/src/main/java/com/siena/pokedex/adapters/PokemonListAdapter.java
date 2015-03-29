@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.formatId;
-import static com.siena.pokedex.PokemonUtil.getLocalizedPokeName;
+import static com.siena.pokedex.PokemonUtil.getPokeString;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 
 /**
@@ -112,7 +112,7 @@ public class PokemonListAdapter extends BaseAdapter {
       });
 
       viewHolder.pokeId.setText(formatId(pokemon));
-      viewHolder.pokeName.setText(getLocalizedPokeName(pokemon));
+      viewHolder.pokeName.setText(getPokeString(pokemon.getId(), "pokemon_species_name_"));
 
       int imageId = getPokemonImageId(pokemon);
       if (imageId > 0) {

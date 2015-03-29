@@ -20,12 +20,9 @@ public class PokemonUtil {
     return "sprite_" + Integer.toString(id);
   }
 
-  public static String nameToKey(String name) {
-    return name.replace("-", "_");
-  }
-
-  public static String getLocalizedPokeName(Pokemon pokemon) {
-    int nameId = RES.getIdentifier(nameToKey(pokemon.getIdentifier()), "string", PACKAGE_NAME);
+  public static String getPokeString(int id, String identifier) {
+    String key = identifier + Integer.toString(id);
+    int nameId = RES.getIdentifier(key, "string", PACKAGE_NAME);
     return RES.getString(nameId);
   }
 
