@@ -14,6 +14,7 @@ public class Pokemon extends RealmObject {
   private boolean isDefault;
   private RealmList<PokemonType> types;
   private RealmList<Encounter> encounters;
+  private RealmList<Encounter> consolidatedEncounters;
 
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   public Pokemon() {
@@ -103,5 +104,13 @@ public class Pokemon extends RealmObject {
 
   public void setEncounters(RealmList<Encounter> encounters) {
     this.encounters = encounters;
+  }
+
+  public RealmList<Encounter> getConsolidatedEncounters() {
+    return consolidatedEncounters;
+  }
+
+  public void setConsolidatedEncounters(RealmList<Encounter> consolidatedEncounters) {
+    this.consolidatedEncounters = consolidatedEncounters;
   }
 }

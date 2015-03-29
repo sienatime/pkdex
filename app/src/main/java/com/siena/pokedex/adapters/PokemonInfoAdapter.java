@@ -65,7 +65,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
 
-    addEncounterRows(pokemon.getEncounters());
+    addEncounterRows(pokemon.getConsolidatedEncounters());
   }
 
   @Override public int getCount() {
@@ -329,6 +329,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getEncounterSlot().getRarity())));
 
+      //todo: take this out
+      viewHolder.encounterVersion.setText(Integer.toString(encounter.getVersionId()));
+
       return convertView;
     }
 
@@ -339,6 +342,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       @InjectView(R.id.encounter_method) TextView encounterMethod;
       @InjectView(R.id.encounter_rate) TextView encounterRate;
       @InjectView(R.id.encounter_levels) TextView encounterLevels;
+      @InjectView(R.id.encounter_version) TextView encounterVersion;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);

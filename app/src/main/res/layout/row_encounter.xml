@@ -6,6 +6,14 @@
     android:padding="16dp">
 
   <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="12sp"
+      android:textStyle="bold"
+      android:textAllCaps="true"
+      android:id="@+id/encounter_version"/>
+
+  <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="16sp"

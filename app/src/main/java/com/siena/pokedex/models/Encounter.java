@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Siena Aguayo on 1/1/15.
  */
 public class Encounter extends RealmObject {
-  @PrimaryKey private int id;
+  @PrimaryKey private long id;
   private int versionId, encounterSlotId, minLevel, maxLevel, pokemonId;
   private LocationArea locationArea;
   private EncounterSlot encounterSlot;
@@ -16,11 +16,11 @@ public class Encounter extends RealmObject {
   public Encounter() {
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
 

@@ -8,18 +8,18 @@ import io.realm.annotations.PrimaryKey;
  */
 public class EncounterSlot extends RealmObject {
   // _id	version_group_id	encounter_method_id	slot	rarity
-  @PrimaryKey private int id;
+  @PrimaryKey private long id;
   private int versionGroupId, encounterMethodId, slot, rarity;
   private EncounterMethod encounterMethod;
 
   public EncounterSlot() {
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(long id) {
     this.id = id;
   }
 

@@ -11,6 +11,9 @@ import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeEfficacy;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * Created by Siena Aguayo on 2/28/15.
@@ -162,6 +165,66 @@ public class PopulateRealm {
       cursor.moveToNext();
     }
     cursor.close();
+  }
+
+  public static void consolidateAllEncounters(Realm realm) {
+    RealmResults<Pokemon> allPokemon = realm.allObjects(Pokemon.class);
+
+    for (int i = 0; i < allPokemon.size(); i++) {
+      Pokemon pokemon = allPokemon.get(i);
+      pokemon.setConsolidatedEncounters(consolidateEncounters(realm, pokemon));
+    }
+  }
+
+  public static RealmList<Encounter> consolidateEncounters(Realm realm, Pokemon pokemon) {
+    RealmList<Encounter> consolidatedEncounters = new RealmList<>();
+    HashSet<Long> alreadyConsolidated = new HashSet<>();
+
+    for (Encounter encounter : pokemon.getEncounters()) {
+      if (!alreadyConsolidated.contains(encounter.getId())) {
+        RealmResults<Encounter> similarEncounters = realm.where(Encounter.class)
+            .equalTo("pokemonId", pokemon.getId())
+            .equalTo("versionId", encounter.getVersionId())
+            .equalTo("locationArea.id", encounter.getLocationArea().getId())
+            .equalTo("encounterConditionId", encounter.getEncounterConditionId())
+            .equalTo("encounterSlot.encounterMethodId",
+                encounter.getEncounterSlot().getEncounterMethodId())
+            .findAll();
+
+        int newRarity = 0;
+        int newMinLevel = 1000;
+        int newMaxLevel = 0;
+
+        for (Encounter similarEncounter : similarEncounters) {
+          if (!alreadyConsolidated.contains(similarEncounter.getId())) {
+            alreadyConsolidated.add(similarEncounter.getId());
+            newRarity += similarEncounter.getEncounterSlot().getRarity();
+            newMinLevel = Math.min(newMinLevel, similarEncounter.getMinLevel());
+            newMaxLevel = Math.max(newMaxLevel, similarEncounter.getMaxLevel());
+          }
+        }
+
+        Encounter consolidatedEncounter = realm.createObject(Encounter.class);
+        consolidatedEncounter.setId(UUID.randomUUID().getMostSignificantBits());
+        consolidatedEncounter.setPokemonId(pokemon.getId());
+        consolidatedEncounter.setVersionId(encounter.getVersionId());
+        consolidatedEncounter.setLocationArea(encounter.getLocationArea());
+        consolidatedEncounter.setEncounterConditionId(encounter.getEncounterConditionId());
+        EncounterSlot encounterSlot = realm.createObject(EncounterSlot.class);
+        encounterSlot.setId(UUID.randomUUID().getMostSignificantBits());
+        encounterSlot.setRarity(newRarity);
+        encounterSlot.setSlot(encounter.getEncounterSlot().getSlot());
+        encounterSlot.setEncounterMethod(encounter.getEncounterSlot().getEncounterMethod());
+        encounterSlot.setEncounterMethodId(encounterSlot.getEncounterMethod().getId());
+        consolidatedEncounter.setEncounterSlot(encounterSlot);
+        consolidatedEncounter.setMinLevel(newMinLevel);
+        consolidatedEncounter.setMaxLevel(newMaxLevel);
+
+        consolidatedEncounters.add(consolidatedEncounter);
+      }
+    }
+
+    return consolidatedEncounters;
   }
 
   public static void addEncounterConditionValueId(Realm realm, DataAdapter dataAdapter) {
