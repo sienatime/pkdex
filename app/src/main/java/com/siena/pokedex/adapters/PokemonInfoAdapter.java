@@ -16,7 +16,7 @@ import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
-import com.siena.pokedex.models.Encounter;
+import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.squareup.picasso.Picasso;
@@ -98,9 +98,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
   }
 
-  private void addEncounterRows(List<Encounter> encounters) {
+  private void addEncounterRows(List<ConsolidatedEncounter> encounters) {
     if (encounters.size() > 0) {
-      for (Encounter encounter : encounters) {
+      for (ConsolidatedEncounter encounter : encounters) {
         rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter, realm));
       }
     } else {
@@ -276,10 +276,10 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public static class EncounterRow implements Row {
     private Resources res;
     private int rowType;
-    private Encounter encounter;
+    private ConsolidatedEncounter encounter;
     private Realm realm;
 
-    public EncounterRow(Resources res, int rowType, Encounter encounter, Realm realm) {
+    public EncounterRow(Resources res, int rowType, ConsolidatedEncounter encounter, Realm realm) {
       this.res = res;
       this.rowType = rowType;
       this.encounter = encounter;
@@ -324,10 +324,10 @@ public class PokemonInfoAdapter extends BaseAdapter {
       }
 
       viewHolder.encounterMethod.setText(
-          getPokeString(encounter.getEncounterSlot().getEncounterMethod().getId(),
+          getPokeString(encounter.getEncounterMethodId(),
               "encounter_method_"));
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
-          Integer.toString(encounter.getEncounterSlot().getRarity())));
+          Integer.toString(encounter.getRarity())));
 
       //todo: take this out
       viewHolder.encounterVersion.setText(Integer.toString(encounter.getVersionId()));

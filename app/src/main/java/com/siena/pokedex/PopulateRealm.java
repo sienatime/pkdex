@@ -1,6 +1,7 @@
 package com.siena.pokedex;
 
 import android.database.Cursor;
+import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.EncounterMethod;
 import com.siena.pokedex.models.EncounterSlot;
@@ -13,7 +14,6 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * Created by Siena Aguayo on 2/28/15.
@@ -176,9 +176,9 @@ public class PopulateRealm {
     }
   }
 
-  public static RealmList<Encounter> consolidateEncounters(Realm realm, Pokemon pokemon) {
-    RealmList<Encounter> consolidatedEncounters = new RealmList<>();
+  public static RealmList<ConsolidatedEncounter> consolidateEncounters(Realm realm, Pokemon pokemon) {
     HashSet<Long> alreadyConsolidated = new HashSet<>();
+    RealmList<ConsolidatedEncounter> consolidatedEncounters = new RealmList<>();
 
     for (Encounter encounter : pokemon.getEncounters()) {
       if (!alreadyConsolidated.contains(encounter.getId())) {
@@ -204,21 +204,15 @@ public class PopulateRealm {
           }
         }
 
-        Encounter consolidatedEncounter = realm.createObject(Encounter.class);
-        consolidatedEncounter.setId(UUID.randomUUID().getMostSignificantBits());
+        ConsolidatedEncounter consolidatedEncounter = realm.createObject(ConsolidatedEncounter.class);
         consolidatedEncounter.setPokemonId(pokemon.getId());
         consolidatedEncounter.setVersionId(encounter.getVersionId());
         consolidatedEncounter.setLocationArea(encounter.getLocationArea());
-        consolidatedEncounter.setEncounterConditionId(encounter.getEncounterConditionId());
-        EncounterSlot encounterSlot = realm.createObject(EncounterSlot.class);
-        encounterSlot.setId(UUID.randomUUID().getMostSignificantBits());
-        encounterSlot.setRarity(newRarity);
-        encounterSlot.setSlot(encounter.getEncounterSlot().getSlot());
-        encounterSlot.setEncounterMethod(encounter.getEncounterSlot().getEncounterMethod());
-        encounterSlot.setEncounterMethodId(encounterSlot.getEncounterMethod().getId());
-        consolidatedEncounter.setEncounterSlot(encounterSlot);
+        consolidatedEncounter.setRarity(newRarity);
         consolidatedEncounter.setMinLevel(newMinLevel);
         consolidatedEncounter.setMaxLevel(newMaxLevel);
+        consolidatedEncounter.setEncounterConditionId(encounter.getEncounterConditionId());
+        consolidatedEncounter.setEncounterMethodId(encounter.getEncounterSlot().getEncounterMethodId());
 
         consolidatedEncounters.add(consolidatedEncounter);
       }

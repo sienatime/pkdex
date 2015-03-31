@@ -11,6 +11,7 @@
       android:textSize="12sp"
       android:textStyle="bold"
       android:textAllCaps="true"
+      android:visibility="gone"
       android:id="@+id/encounter_version"/>
 
   <TextView
