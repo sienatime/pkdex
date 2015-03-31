@@ -52,11 +52,11 @@ public class MainFragmentActivity extends ActionBarActivity {
           publishProgress(20);
           PopulateRealm.addTypeEfficacy(asyncRealm, dataAdapter);
           publishProgress(30);
-          PopulateRealm.addEncounters(asyncRealm, dataAdapter);
+          //PopulateRealm.addEncounters(asyncRealm, dataAdapter);
           publishProgress(70);
-          PopulateRealm.addEncounterConditionValueId(asyncRealm, dataAdapter);
+          //PopulateRealm.addEncounterConditionValueId(asyncRealm, dataAdapter);
           publishProgress(80);
-          PopulateRealm.consolidateAllEncounters(asyncRealm);
+          PopulateRealm.consolidateAllEncounters(asyncRealm, dataAdapter);
           publishProgress(90);
           asyncRealm.commitTransaction();
 

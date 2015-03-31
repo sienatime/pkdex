@@ -1,90 +1,58 @@
 package com.siena.pokedex.models;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-
 /**
  * Created by Siena Aguayo on 1/1/15.
  */
-public class Encounter extends RealmObject {
-  @PrimaryKey private long id;
-  private int versionId, encounterSlotId, minLevel, maxLevel, pokemonId;
-  private LocationArea locationArea;
-  private EncounterSlot encounterSlot;
-  private int encounterConditionId;
+public class Encounter {
+  private int id, pokemonId, versionId, locationAreaId, minLevel, maxLevel, rarity,
+      encounterConditionId, encounterMethodId;
 
-  public Encounter() {
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
+  public Encounter(int id, int pokemonId, int versionId, int locationAreaId, int minLevel, int maxLevel,
+      int rarity, int encounterConditionId, int encounterMethodId) {
     this.id = id;
-  }
-
-  public int getVersionId() {
-    return versionId;
-  }
-
-  public void setVersionId(int versionId) {
+    this.pokemonId = pokemonId;
     this.versionId = versionId;
-  }
-
-  public int getEncounterSlotId() {
-    return encounterSlotId;
-  }
-
-  public void setEncounterSlotId(int encounterSlotId) {
-    this.encounterSlotId = encounterSlotId;
-  }
-
-  public int getMinLevel() {
-    return minLevel;
-  }
-
-  public void setMinLevel(int minLevel) {
+    this.locationAreaId = locationAreaId;
     this.minLevel = minLevel;
-  }
-
-  public int getMaxLevel() {
-    return maxLevel;
-  }
-
-  public void setMaxLevel(int maxLevel) {
     this.maxLevel = maxLevel;
+    this.rarity = rarity;
+    this.encounterConditionId = encounterConditionId;
+    this.encounterMethodId = encounterMethodId;
   }
 
-  public LocationArea getLocationArea() {
-    return locationArea;
-  }
-
-  public void setLocationArea(LocationArea locationArea) {
-    this.locationArea = locationArea;
+  public int getId() {
+    return id;
   }
 
   public int getPokemonId() {
     return pokemonId;
   }
 
-  public void setPokemonId(int pokemonId) {
-    this.pokemonId = pokemonId;
+  public int getVersionId() {
+    return versionId;
   }
 
-  public EncounterSlot getEncounterSlot() {
-    return encounterSlot;
+  public int getLocationAreaId() {
+    return locationAreaId;
   }
 
-  public void setEncounterSlot(EncounterSlot encounterSlot) {
-    this.encounterSlot = encounterSlot;
+  public int getMinLevel() {
+    return minLevel;
+  }
+
+  public int getMaxLevel() {
+    return maxLevel;
+  }
+
+  public int getRarity() {
+    return rarity;
   }
 
   public int getEncounterConditionId() {
     return encounterConditionId;
   }
 
-  public void setEncounterConditionId(int encounterConditionId) {
-    this.encounterConditionId = encounterConditionId;
+  public int getEncounterMethodId() {
+    return encounterMethodId;
   }
 }

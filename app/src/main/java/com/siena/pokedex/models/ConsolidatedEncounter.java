@@ -7,7 +7,7 @@ import io.realm.RealmObject;
  */
 public class ConsolidatedEncounter extends RealmObject {
   private int versionId, pokemonId, minLevel, maxLevel, rarity, encounterMethodId,
-      encounterConditionId;
+      encounterConditionId, locationAreaId;
   private LocationArea locationArea;
 
   public ConsolidatedEncounter() {
@@ -27,6 +27,14 @@ public class ConsolidatedEncounter extends RealmObject {
 
   public void setLocationArea(LocationArea locationArea) {
     this.locationArea = locationArea;
+  }
+
+  public int getLocationAreaId() {
+    return locationAreaId;
+  }
+
+  public void setLocationAreaId(int locationAreaId) {
+    this.locationAreaId = locationAreaId;
   }
 
   public int getPokemonId() {

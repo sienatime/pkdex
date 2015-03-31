@@ -260,4 +260,66 @@ public class DataAdapter {
 
     return encounterMap;
   }
+
+  public ArrayList<Encounter> findAllEncounters(int pokemonId) {
+    ArrayList<Encounter> encounters = new ArrayList<>();
+
+    Cursor cursor = getData("select encounters.id, encounters.pokemon_id, encounters.version_id, "
+        + "encounters.location_area_id, encounters.min_level, encounters.max_level, "
+        + "encounter_slots.rarity, encounter_condition_value_map.encounter_condition_value_id, "
+        + "encounter_methods.id from encounters left join encounter_condition_value_map on "
+        + "encounter_condition_value_map.encounter_id = encounters.id join encounter_slots on "
+        + "encounter_slots.id = encounters.encounter_slot_id join encounter_methods on "
+        + "encounter_methods.id = encounter_slots.encounter_method_id where encounters.pokemon_id "
+        + "= "
+        + Integer.toString(pokemonId)
+        + ";");
+
+    while (!cursor.isAfterLast()) {
+      Encounter encounter =
+          new Encounter(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),
+              cursor.getInt(4), cursor.getInt(5), cursor.getInt(6), cursor.getInt(7),
+              cursor.getInt(8));
+      encounters.add(encounter);
+      cursor.moveToNext();
+    }
+
+    cursor.close();
+    return encounters;
+  }
+
+  public ArrayList<Encounter> findSimilarEncounters(Encounter primaryEncounter) {
+    ArrayList<Encounter> encounters = new ArrayList<>();
+
+    Cursor cursor = getData("select encounters.id, encounters.version_id, "
+        + "encounters.location_area_id, encounters.encounter_slot_id, encounters.pokemon_id, "
+        + "encounters.min_level, encounters.max_level, "
+        + "encounter_condition_value_map.encounter_condition_value_id, encounter_methods.id from "
+        + "encounters left join encounter_condition_value_map on "
+        + "encounter_condition_value_map.encounter_id = encounters.id join encounter_slots on "
+        + "encounter_slots.id = encounters.encounter_slot_id join encounter_methods on "
+        + "encounter_methods.id = encounter_slots.encounter_method_id where encounters.pokemon_id "
+        + "= " + s(primaryEncounter.getPokemonId()) + " and encounters.version_id = "
+        + s(primaryEncounter.getVersionId()) + " and encounters.location_area_id = "
+        + s(primaryEncounter.getLocationAreaId()) + " and "
+        + "encounter_condition_value_map.encounter_condition_value_id = "
+        + s(primaryEncounter.getEncounterConditionId()) + " and encounter_methods.id "
+        + "= " + s(primaryEncounter.getEncounterMethodId()) + ";");
+
+    while (!cursor.isAfterLast()) {
+      Encounter encounter =
+          new Encounter(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3),
+              cursor.getInt(4), cursor.getInt(5), cursor.getInt(6), cursor.getInt(7),
+              cursor.getInt(8));
+      encounters.add(encounter);
+      cursor.moveToNext();
+    }
+
+    cursor.close();
+    return encounters;
+  }
+
+  private String s(int i) {
+    return Integer.toString(i);
+  }
 }
