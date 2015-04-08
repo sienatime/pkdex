@@ -19,12 +19,7 @@ public class Pokemon extends RealmObject {
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   public Pokemon() {
 
-  }
-
-  public Pokemon(int id, String name) {
-    this.id = id;
-    //this.name = name;
-  }
+}
 
   public void setId(int id) {
     this.id = id;

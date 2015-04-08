@@ -20,6 +20,10 @@ import com.siena.pokedex.models.Pokemon;
 import com.squareup.otto.Bus;
 import io.realm.Realm;
 import io.realm.internal.Table;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.inject.Inject;
 
 public class MainFragmentActivity extends ActionBarActivity {
@@ -34,6 +38,11 @@ public class MainFragmentActivity extends ActionBarActivity {
     setSupportActionBar(toolbar);
     final Context context = this;
     PokedexApp.getInstance().inject(this);
+
+    //if (true) {
+    //  copyBundledRealmFile(this.getResources().openRawResource(R.raw.pokedex), "pokedex");
+    //}
+
     Realm realm = Realm.getInstance(this);
     Table pokeTable = realm.getTable(Pokemon.class);
 
@@ -123,5 +132,22 @@ public class MainFragmentActivity extends ActionBarActivity {
   @Override public void onBackPressed() {
     super.onBackPressed();
     getFragmentManager().popBackStack();
+  }
+
+  private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
+    try {
+      File file = new File(this.getFilesDir(), outFileName);
+      FileOutputStream outputStream = new FileOutputStream(file);
+      byte[] buf = new byte[1024];
+      int bytesRead;
+      while ((bytesRead = inputStream.read(buf)) > 0) {
+        outputStream.write(buf, 0, bytesRead);
+      }
+      outputStream.close();
+      return file.getAbsolutePath();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }
