@@ -8,6 +8,7 @@ import io.realm.RealmObject;
 public class ConsolidatedEncounter extends RealmObject {
   private int versionId, pokemonId, minLevel, maxLevel, rarity, encounterMethodId,
       encounterConditionId;
+  // key would need to be versionId, pokemonId, locationId (*not* LocationArea id)
   private LocationArea locationArea;
 
   public ConsolidatedEncounter() {
