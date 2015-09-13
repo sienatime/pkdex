@@ -31,6 +31,11 @@ public class PokemonUtil {
     return RES.getColor(colorId);
   }
 
+  public static int getVersionColor(Integer id) {
+    int colorId = RES.getIdentifier("version" + id, "color", PACKAGE_NAME);
+    return RES.getColor(colorId);
+  }
+
   public static String formatId(Pokemon pokemon) {
     return String.format(APP.getString(R.string.number_format), pokemon.getId());
   }

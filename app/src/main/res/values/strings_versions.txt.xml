@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="version_name_1">Red</string>
+  <string name="version_name_2">Blue</string>
+  <string name="version_name_3">Yellow</string>
+  <string name="version_name_4">Gold</string>
+  <string name="version_name_5">Silver</string>
+  <string name="version_name_6">Crystal</string>
+  <string name="version_name_7">Ruby</string>
+  <string name="version_name_8">Sapphire</string>
+  <string name="version_name_9">Emerald</string>
+  <string name="version_name_10">Firered</string>
+  <string name="version_name_11">Leafgreen</string>
+  <string name="version_name_12">Diamond</string>
+  <string name="version_name_13">Pearl</string>
+  <string name="version_name_14">Platinum</string>
+  <string name="version_name_15">Heartgold</string>
+  <string name="version_name_16">Soulsilver</string>
+  <string name="version_name_17">Black</string>
+  <string name="version_name_18">White</string>
+  <string name="version_name_19">Colosseum</string>
+  <string name="version_name_20">XD</string>
+  <string name="version_name_21">Black 2</string>
+  <string name="version_name_22">White 2</string>
+  <string name="version_name_23">X</string>
+  <string name="version_name_24">Y</string>
+</resources>

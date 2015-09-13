@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
+import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
@@ -22,7 +23,10 @@ import com.siena.pokedex.models.PokemonType;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.consolidateLevels;
@@ -41,6 +45,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private final int TYPE_EFFICACY_ROW = 2;
   private final int TYPE_ENCOUNTER_ROW = 3;
   private final int TYPE_NO_KNOWN_LOCATIONS_ROW = 4;
+  private final int TYPE_VERSION_ROW = 5;
   private Context context;
   private Realm realm;
 
@@ -89,7 +94,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   @Override public int getViewTypeCount() {
-    return 5;
+    return 6;
   }
 
   private void addTypeEfficacy(RealmList<PokemonType> types, int stringId) {
@@ -98,10 +103,25 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
   }
 
-  private void addEncounterRows(List<ConsolidatedEncounter> encounters) {
+  private void addEncounterRows(RealmList<ConsolidatedEncounter> encounters) {
     if (encounters.size() > 0) {
+      // map of version ids, sort if needed, then you can add header rows for each version
+      // and iterate through each version
+      HashSet<Integer> versionSet = new HashSet<Integer>();
       for (ConsolidatedEncounter encounter : encounters) {
-        rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter, realm));
+        versionSet.add(encounter.getVersionId());
+      }
+      ArrayList<Integer> sortedVersionIds = new ArrayList<Integer>();
+      sortedVersionIds.addAll(versionSet);
+      Collections.sort(sortedVersionIds);
+
+      for (Integer versionId : sortedVersionIds) {
+        rows.add(new VersionHeaderRow(context.getResources(), TYPE_VERSION_ROW, versionId));
+        RealmResults<ConsolidatedEncounter> encountersByVersion =
+            encounters.where().equalTo("versionId", versionId).findAll();
+        for (ConsolidatedEncounter encounter : encountersByVersion) {
+          rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter, realm));
+        }
       }
     } else {
       rows.add(new NoKnownLocationsRow(TYPE_NO_KNOWN_LOCATIONS_ROW));
@@ -181,13 +201,15 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
   }
 
-  public static class SectionHeaderRow implements Row {
+  public static class VersionHeaderRow implements Row {
     private int rowType;
-    private int titleId;
+    private Integer versionId;
+    private Resources res;
 
-    public SectionHeaderRow(int rowType, int titleId) {
+    public VersionHeaderRow(Resources res, int rowType, Integer versionId) {
+      this.res = res;
       this.rowType = rowType;
-      this.titleId = titleId;
+      this.versionId = versionId;
     }
 
     @Override public int getType() {
@@ -198,20 +220,23 @@ public class PokemonInfoAdapter extends BaseAdapter {
       ViewHolder viewHolder;
       if (convertView == null) {
         convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_section_header, parent, false);
+            .inflate(R.layout.version_header, parent, false);
         viewHolder = new ViewHolder(convertView);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.sectionHeaderTextView.setText(titleId);
+      int versionNameId = res.getIdentifier("version_name_" + versionId, "string",
+          PokedexApp.getInstance().getPackageName());
+      viewHolder.versionHeaderTextView.setText(versionNameId);
+      viewHolder.versionHeaderTextView.setBackgroundColor(PokemonUtil.getVersionColor(versionId));
 
       return convertView;
     }
 
     static class ViewHolder {
-      @InjectView(R.id.section_header) TextView sectionHeaderTextView;
+      @InjectView(R.id.version_header) TextView versionHeaderTextView;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
@@ -254,7 +279,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
         for (int i = 0; i < types.size(); i++) {
           PokemonType type = types.get(i);
           inflater.inflate(R.layout.textview_type, viewHolder.typeAnchor);
-          TextView textView = (TextView)viewHolder.typeAnchor.getChildAt(i);
+          TextView textView = (TextView) viewHolder.typeAnchor.getChildAt(i);
           textView.setBackgroundColor(getTypeColor(type.getTypeId()));
           textView.setText(getPokeString(type.getTypeId(), "type_").toUpperCase());
         }
@@ -266,6 +291,44 @@ public class PokemonInfoAdapter extends BaseAdapter {
     static class ViewHolder {
       @InjectView(R.id.type_efficacy_level) TextView typeEfficacyLevel;
       @InjectView(R.id.type_anchor) GridLayout typeAnchor;
+
+      public ViewHolder(View source) {
+        ButterKnife.inject(this, source);
+      }
+    }
+  }
+
+  public static class SectionHeaderRow implements Row {
+    private int rowType;
+    private int titleId;
+
+    public SectionHeaderRow(int rowType, int titleId) {
+      this.rowType = rowType;
+      this.titleId = titleId;
+    }
+
+    @Override public int getType() {
+      return rowType;
+    }
+
+    @Override public View getView(View convertView, ViewGroup parent) {
+      ViewHolder viewHolder;
+      if (convertView == null) {
+        convertView = LayoutInflater.from(PokedexApp.getInstance())
+            .inflate(R.layout.row_section_header, parent, false);
+        viewHolder = new ViewHolder(convertView);
+        convertView.setTag(viewHolder);
+      } else {
+        viewHolder = (ViewHolder) convertView.getTag();
+      }
+
+      viewHolder.sectionHeaderTextView.setText(titleId);
+
+      return convertView;
+    }
+
+    static class ViewHolder {
+      @InjectView(R.id.section_header) TextView sectionHeaderTextView;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);
@@ -324,8 +387,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       }
 
       viewHolder.encounterMethod.setText(
-          getPokeString(encounter.getEncounterMethodId(),
-              "encounter_method_"));
+          getPokeString(encounter.getEncounterMethodId(), "encounter_method_"));
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getRarity())));
 
