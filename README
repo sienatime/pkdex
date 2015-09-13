@@ -1,0 +1,6 @@
+Updating the databases:
+1. Pull veekun/pokedex from master
+2. Follow instructions at https://github.com/veekun/pokedex/blob/master/doc/installing.rst to regenerate SQLite db (pokedex setup -v)
+3. Copy pokedex/data/pokedex.sqlite to ../pokedex/app/src/main/assets/databases/pokedex.sqlite
+4. Delete app data on the target device
+5. Run the app to remake the Realm db (~1 min)
