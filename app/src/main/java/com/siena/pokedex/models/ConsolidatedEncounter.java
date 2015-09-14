@@ -6,10 +6,11 @@ import io.realm.RealmObject;
  * Created by Siena Aguayo on 1/1/15.
  */
 public class ConsolidatedEncounter extends RealmObject {
-  private int versionId, pokemonId, minLevel, maxLevel, rarity, encounterMethodId,
+  private int versionId, pokemonId, minLevel, maxLevel, rarity,
       encounterConditionId;
   // key would need to be versionId, pokemonId, locationId (*not* LocationArea id)
   private LocationArea locationArea;
+  private EncounterMethod encounterMethod;
 
   public ConsolidatedEncounter() {
   }
@@ -38,12 +39,12 @@ public class ConsolidatedEncounter extends RealmObject {
     this.pokemonId = pokemonId;
   }
 
-  public int getEncounterMethodId() {
-    return encounterMethodId;
+  public EncounterMethod getEncounterMethod() {
+    return encounterMethod;
   }
 
-  public void setEncounterMethodId(int encounterMethodId) {
-    this.encounterMethodId = encounterMethodId;
+  public void setEncounterMethod(EncounterMethod encounterMethod) {
+    this.encounterMethod = encounterMethod;
   }
 
   public int getEncounterConditionId() {

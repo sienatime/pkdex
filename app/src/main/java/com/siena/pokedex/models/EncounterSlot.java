@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 public class EncounterSlot extends RealmObject {
   // _id	version_group_id	encounter_method_id	slot	rarity
   @PrimaryKey private long id;
-  private int versionGroupId, encounterMethodId, slot, rarity;
+  private int versionGroupId, slot, rarity;
   private EncounterMethod encounterMethod;
 
   public EncounterSlot() {
@@ -29,14 +29,6 @@ public class EncounterSlot extends RealmObject {
 
   public void setVersionGroupId(int versionGroupId) {
     this.versionGroupId = versionGroupId;
-  }
-
-  public int getEncounterMethodId() {
-    return encounterMethodId;
-  }
-
-  public void setEncounterMethodId(int encounterMethodId) {
-    this.encounterMethodId = encounterMethodId;
   }
 
   public int getSlot() {
