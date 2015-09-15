@@ -1,7 +1,6 @@
 package com.siena.pokedex;
 
 import android.database.Cursor;
-import android.text.TextUtils;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.EncounterMethod;
@@ -11,10 +10,10 @@ import com.siena.pokedex.models.LocationArea;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.TypeEfficacy;
+import com.siena.pokedex.models.Version;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -138,9 +137,8 @@ public class PopulateRealm {
         encounterSlot.setSlot(cursor.getInt(16));
         encounterSlot.setRarity(cursor.getInt(17));
 
-        EncounterMethod encounterMethod = realm.where(EncounterMethod.class)
-            .equalTo("id", cursor.getInt(15))
-            .findFirst();
+        EncounterMethod encounterMethod =
+            realm.where(EncounterMethod.class).equalTo("id", cursor.getInt(15)).findFirst();
 
         if (encounterMethod == null) {
           encounterMethod = realm.createObject(EncounterMethod.class);
@@ -174,11 +172,12 @@ public class PopulateRealm {
     for (int i = 0; i < allPokemon.size(); i++) {
       Pokemon pokemon = allPokemon.get(i);
       pokemon.setConsolidatedEncounters(consolidateEncounters(realm, pokemon));
-      pokemon.setEncounterVersions(findUniqueVersions(pokemon, dataAdapter));
+      pokemon.setVersions(setPokemonVersions(pokemon, realm, dataAdapter));
     }
   }
 
-  public static RealmList<ConsolidatedEncounter> consolidateEncounters(Realm realm, Pokemon pokemon) {
+  public static RealmList<ConsolidatedEncounter> consolidateEncounters(Realm realm,
+      Pokemon pokemon) {
     HashSet<Long> alreadyConsolidated = new HashSet<>();
     RealmList<ConsolidatedEncounter> consolidatedEncounters = new RealmList<>();
 
@@ -206,7 +205,8 @@ public class PopulateRealm {
           }
         }
 
-        ConsolidatedEncounter consolidatedEncounter = realm.createObject(ConsolidatedEncounter.class);
+        ConsolidatedEncounter consolidatedEncounter =
+            realm.createObject(ConsolidatedEncounter.class);
         consolidatedEncounter.setPokemonId(pokemon.getId());
         consolidatedEncounter.setVersionId(encounter.getVersionId());
         consolidatedEncounter.setLocationArea(encounter.getLocationArea());
@@ -223,29 +223,44 @@ public class PopulateRealm {
     return consolidatedEncounters;
   }
 
-  public static String findUniqueVersions(Pokemon pokemon, DataAdapter dataAdapter) {
+  public static RealmList<Version> setPokemonVersions(Pokemon pokemon, Realm realm, DataAdapter dataAdapter) {
     Cursor cursor = dataAdapter.getData("SELECT DISTINCT encounters.version_id FROM encounters "
         + "WHERE encounters.pokemon_id = "
-        + Integer.toString(pokemon.getId()) + " ORDER BY encounters.version_id ASC");
-    ArrayList<Integer> versions = new ArrayList<>();
+        + Integer.toString(pokemon.getId())
+        + " ORDER BY encounters.version_id ASC");
     cursor.moveToFirst();
 
+    RealmList<Version> versions = new RealmList<>();
+
     for (int i = 0; i < cursor.getCount(); i++) {
-      versions.add(cursor.getInt(0));
+      Version version = realm.createObject(Version.class);
+      version.setId(cursor.getInt(0));
+      version.setPokemonId(pokemon.getId());
+      RealmResults<Encounter> encounters = realm.where(Encounter.class)
+          .equalTo("pokemonId", pokemon.getId())
+          .equalTo("versionId", i)
+          .findAll();
+      RealmList<Location> locations = new RealmList<>();
+      for (Encounter encounter : encounters) {
+        locations.add(encounter.getLocationArea().getLocation());
+      }
+      version.setLocations(locations);
+      versions.add(version);
       cursor.moveToNext();
     }
     cursor.close();
-
-    return TextUtils.join("-", versions);
+    return versions;
   }
 
   public static void addEncounterConditionValueId(Realm realm, DataAdapter dataAdapter) {
     // encounter_method_id     local_language_id       name
-    Cursor cursor = dataAdapter.getData("SELECT encounter_id, encounter_condition_value_id FROM encounter_condition_value_map");
+    Cursor cursor = dataAdapter.getData(
+        "SELECT encounter_id, encounter_condition_value_id FROM encounter_condition_value_map");
     cursor.moveToFirst();
 
     for (int i = 0; i < cursor.getCount(); i++) {
-      Encounter encounter = realm.where(Encounter.class).equalTo("id", cursor.getInt(0)).findFirst();
+      Encounter encounter =
+          realm.where(Encounter.class).equalTo("id", cursor.getInt(0)).findFirst();
       encounter.setEncounterConditionId(cursor.getInt(1));
       cursor.moveToNext();
     }

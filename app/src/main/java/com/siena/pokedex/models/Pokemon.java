@@ -16,7 +16,9 @@ public class Pokemon extends RealmObject {
   private RealmList<Encounter> encounters;
   private RealmList<ConsolidatedEncounter> consolidatedEncounters;
   // dumb workaround until i can get unique values from Realm
-  private String encounterVersions;
+  private RealmList<Version> versions;
+
+  // has many Versions, which have many Locations
 
   //_id|identifier|species_id|height|weight|base_experience|order|is_default
   public Pokemon() {
@@ -111,11 +113,11 @@ public class Pokemon extends RealmObject {
     this.consolidatedEncounters = consolidatedEncounters;
   }
 
-  public String getEncounterVersions() {
-    return encounterVersions;
+  public RealmList<Version> getVersions() {
+    return versions;
   }
 
-  public void setEncounterVersions(String encounterVersions) {
-    this.encounterVersions = encounterVersions;
+  public void setVersions(RealmList<Version> versions) {
+    this.versions = versions;
   }
 }

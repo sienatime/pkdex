@@ -2,6 +2,7 @@ package com.siena.pokedex.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,14 @@ import com.siena.pokedex.adapters.PokemonInfoAdapter;
 import com.siena.pokedex.models.Pokemon;
 import io.realm.Realm;
 
+import static com.siena.pokedex.PokemonUtil.getPokeString;
+
 /**
  * Created by Siena Aguayo on 12/28/14.
  */
 public class PokeInfoFragment extends Fragment {
   @InjectView(R.id.poke_info_listview) ListView listView;
+  private ActionBar actionBar;
 
   public PokeInfoFragment() {
   }
@@ -29,12 +33,19 @@ public class PokeInfoFragment extends Fragment {
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_poke_info_listview, container, false);
     ButterKnife.inject(this, rootView);
-    ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
 
     Realm realm = Realm.getInstance(getActivity());
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
+    actionBar.setTitle(getPokeString(poke.getId(), "pokemon_species_name_"));
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
     return rootView;
+  }
+
+  @Override public void onDetach() {
+    actionBar.setTitle(R.string.app_name);
+    super.onDetach();
   }
 }

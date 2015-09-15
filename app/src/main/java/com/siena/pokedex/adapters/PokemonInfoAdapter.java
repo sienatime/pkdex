@@ -20,6 +20,7 @@ import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.Version;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -103,13 +104,10 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
   private void addEncounterRows(RealmList<ConsolidatedEncounter> encounters) {
     if (encounters.size() > 0) {
-      String[] splitVersionIds = pokemon.getEncounterVersions().split("-");
-      ArrayList<Integer> sortedVersionIds = new ArrayList<>();
-      for (String versionId : splitVersionIds) {
-        sortedVersionIds.add(Integer.parseInt(versionId));
-      }
+      RealmResults<Version> versions = pokemon.getVersions().where().findAllSorted("id");
 
-      for (Integer versionId : sortedVersionIds) {
+      for (Version version : versions) {
+        Integer versionId = new Integer(version.getId());
         rows.add(new VersionHeaderRow(context.getResources(), TYPE_VERSION_ROW, versionId));
         RealmResults<ConsolidatedEncounter> encountersByVersion =
             encounters.where().equalTo("versionId", versionId).findAll();
@@ -385,9 +383,6 @@ public class PokemonInfoAdapter extends BaseAdapter {
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getRarity())));
 
-      //todo: take this out
-      viewHolder.encounterVersion.setText(Integer.toString(encounter.getVersionId()));
-
       return convertView;
     }
 
@@ -398,7 +393,6 @@ public class PokemonInfoAdapter extends BaseAdapter {
       @InjectView(R.id.encounter_method) TextView encounterMethod;
       @InjectView(R.id.encounter_rate) TextView encounterRate;
       @InjectView(R.id.encounter_levels) TextView encounterLevels;
-      @InjectView(R.id.encounter_version) TextView encounterVersion;
 
       public ViewHolder(View source) {
         ButterKnife.inject(this, source);

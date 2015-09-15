@@ -6,15 +6,6 @@
     android:padding="16dp">
 
   <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textSize="12sp"
-      android:textStyle="bold"
-      android:textAllCaps="true"
-      android:visibility="gone"
-      android:id="@+id/encounter_version"/>
-
-  <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="16sp"
@@ -22,44 +13,6 @@
       android:textColor="@color/default_gray"
       android:id="@+id/encounter_location"/>
 
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textColor="@color/default_gray"
-      android:id="@+id/encounter_location_area"/>
-
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textColor="@color/default_gray"
-      android:id="@+id/encounter_condition"/>
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/default_gray"
-        android:id="@+id/encounter_method"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textColor="@color/default_gray"
-        android:id="@+id/encounter_rate"/>
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/default_gray"
-        android:id="@+id/encounter_levels"/>
-  </LinearLayout>
+  <include layout="@layout/partial_encounter_method" />
 
 </LinearLayout>
