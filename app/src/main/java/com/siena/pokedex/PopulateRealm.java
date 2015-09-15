@@ -1,6 +1,7 @@
 package com.siena.pokedex;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Encounter;
 import com.siena.pokedex.models.EncounterMethod;
@@ -13,6 +14,7 @@ import com.siena.pokedex.models.TypeEfficacy;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -133,12 +135,11 @@ public class PopulateRealm {
         encounterSlot = realm.createObject(EncounterSlot.class);
         encounterSlot.setId(cursor.getInt(13));
         encounterSlot.setVersionGroupId(cursor.getInt(14));
-        encounterSlot.setEncounterMethodId(cursor.getInt(15));
         encounterSlot.setSlot(cursor.getInt(16));
         encounterSlot.setRarity(cursor.getInt(17));
 
         EncounterMethod encounterMethod = realm.where(EncounterMethod.class)
-            .equalTo("id", encounterSlot.getEncounterMethodId())
+            .equalTo("id", cursor.getInt(15))
             .findFirst();
 
         if (encounterMethod == null) {
@@ -167,12 +168,13 @@ public class PopulateRealm {
     cursor.close();
   }
 
-  public static void consolidateAllEncounters(Realm realm) {
+  public static void consolidateAllEncounters(Realm realm, DataAdapter dataAdapter) {
     RealmResults<Pokemon> allPokemon = realm.allObjects(Pokemon.class);
 
     for (int i = 0; i < allPokemon.size(); i++) {
       Pokemon pokemon = allPokemon.get(i);
       pokemon.setConsolidatedEncounters(consolidateEncounters(realm, pokemon));
+      pokemon.setEncounterVersions(findUniqueVersions(pokemon, dataAdapter));
     }
   }
 
@@ -187,8 +189,8 @@ public class PopulateRealm {
             .equalTo("versionId", encounter.getVersionId())
             .equalTo("locationArea.id", encounter.getLocationArea().getId())
             .equalTo("encounterConditionId", encounter.getEncounterConditionId())
-            .equalTo("encounterSlot.encounterMethodId",
-                encounter.getEncounterSlot().getEncounterMethodId())
+            .equalTo("encounterSlot.encounterMethod.id",
+                encounter.getEncounterSlot().getEncounterMethod().getId())
             .findAll();
 
         int newRarity = 0;
@@ -212,7 +214,7 @@ public class PopulateRealm {
         consolidatedEncounter.setMinLevel(newMinLevel);
         consolidatedEncounter.setMaxLevel(newMaxLevel);
         consolidatedEncounter.setEncounterConditionId(encounter.getEncounterConditionId());
-        consolidatedEncounter.setEncounterMethodId(encounter.getEncounterSlot().getEncounterMethodId());
+        consolidatedEncounter.setEncounterMethod(encounter.getEncounterSlot().getEncounterMethod());
 
         consolidatedEncounters.add(consolidatedEncounter);
       }
@@ -221,15 +223,29 @@ public class PopulateRealm {
     return consolidatedEncounters;
   }
 
-  public static void addEncounterConditionValueId(Realm realm, DataAdapter dataAdapter) {
-    // encounter_method_id	local_language_id	name
-    Cursor cursor = dataAdapter.getData(
-        "SELECT encounter_id, encounter_condition_value_id FROM encounter_condition_value_map");
+  public static String findUniqueVersions(Pokemon pokemon, DataAdapter dataAdapter) {
+    Cursor cursor = dataAdapter.getData("SELECT DISTINCT encounters.version_id FROM encounters "
+        + "WHERE encounters.pokemon_id = "
+        + Integer.toString(pokemon.getId()) + " ORDER BY encounters.version_id ASC");
+    ArrayList<Integer> versions = new ArrayList<>();
     cursor.moveToFirst();
 
     for (int i = 0; i < cursor.getCount(); i++) {
-      Encounter encounter =
-          realm.where(Encounter.class).equalTo("id", cursor.getInt(0)).findFirst();
+      versions.add(cursor.getInt(0));
+      cursor.moveToNext();
+    }
+    cursor.close();
+
+    return TextUtils.join("-", versions);
+  }
+
+  public static void addEncounterConditionValueId(Realm realm, DataAdapter dataAdapter) {
+    // encounter_method_id     local_language_id       name
+    Cursor cursor = dataAdapter.getData("SELECT encounter_id, encounter_condition_value_id FROM encounter_condition_value_map");
+    cursor.moveToFirst();
+
+    for (int i = 0; i < cursor.getCount(); i++) {
+      Encounter encounter = realm.where(Encounter.class).equalTo("id", cursor.getInt(0)).findFirst();
       encounter.setEncounterConditionId(cursor.getInt(1));
       cursor.moveToNext();
     }

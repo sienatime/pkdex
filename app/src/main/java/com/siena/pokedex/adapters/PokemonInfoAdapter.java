@@ -25,8 +25,6 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.consolidateLevels;
@@ -105,15 +103,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
   private void addEncounterRows(RealmList<ConsolidatedEncounter> encounters) {
     if (encounters.size() > 0) {
-      // map of version ids, sort if needed, then you can add header rows for each version
-      // and iterate through each version
-      HashSet<Integer> versionSet = new HashSet<Integer>();
-      for (ConsolidatedEncounter encounter : encounters) {
-        versionSet.add(encounter.getVersionId());
+      String[] splitVersionIds = pokemon.getEncounterVersions().split("-");
+      ArrayList<Integer> sortedVersionIds = new ArrayList<>();
+      for (String versionId : splitVersionIds) {
+        sortedVersionIds.add(Integer.parseInt(versionId));
       }
-      ArrayList<Integer> sortedVersionIds = new ArrayList<Integer>();
-      sortedVersionIds.addAll(versionSet);
-      Collections.sort(sortedVersionIds);
 
       for (Integer versionId : sortedVersionIds) {
         rows.add(new VersionHeaderRow(context.getResources(), TYPE_VERSION_ROW, versionId));
@@ -387,7 +381,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       }
 
       viewHolder.encounterMethod.setText(
-          getPokeString(encounter.getEncounterMethodId(), "encounter_method_"));
+          getPokeString(encounter.getEncounterMethod().getId(), "encounter_method_"));
       viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
           Integer.toString(encounter.getRarity())));
 

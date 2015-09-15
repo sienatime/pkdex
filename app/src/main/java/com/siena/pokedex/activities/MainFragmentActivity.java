@@ -65,7 +65,7 @@ public class MainFragmentActivity extends ActionBarActivity {
           publishProgress(70);
           PopulateRealm.addEncounterConditionValueId(asyncRealm, dataAdapter);
           publishProgress(80);
-          PopulateRealm.consolidateAllEncounters(asyncRealm);
+          PopulateRealm.consolidateAllEncounters(asyncRealm, dataAdapter);
           publishProgress(90);
           asyncRealm.commitTransaction();
 
