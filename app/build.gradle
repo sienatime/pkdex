@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 
 android {
   compileSdkVersion 21
-  buildToolsVersion "21.1.2"
+  buildToolsVersion '23.0.2'
 
   defaultConfig {
     applicationId "com.siena.pokedex"
@@ -21,6 +21,7 @@ android {
 
   packagingOptions {
     exclude 'META-INF/services/javax.annotation.processing.Processor'
+    exclude "lib/arm64-v8a/librealm-jni.so"
   }
 }
 
@@ -37,5 +38,4 @@ dependencies {
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
-  compile 'com.github.thorbenprimke:realm-searchview:0.9.1'
 }

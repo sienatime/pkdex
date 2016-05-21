@@ -51,7 +51,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public PokemonInfoAdapter(Context context, Pokemon pokemon) {
     this.pokemon = pokemon;
     this.context = context;
-    this.realm = Realm.getInstance(context);
+    this.realm = Realm.getDefaultInstance();
     setupRows();
   }
 
@@ -107,7 +107,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
       RealmResults<Version> versions = pokemon.getVersions().where().findAllSorted("id");
 
       for (Version version : versions) {
-        Integer versionId = new Integer(version.getId());
+        Integer versionId = new Integer(version.id);
         rows.add(new VersionHeaderRow(context.getResources(), TYPE_VERSION_ROW, versionId));
         RealmResults<ConsolidatedEncounter> encountersByVersion =
             encounters.where().equalTo("versionId", versionId).findAll();

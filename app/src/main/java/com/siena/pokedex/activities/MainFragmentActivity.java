@@ -19,7 +19,7 @@ import com.siena.pokedex.fragments.PokeListFragment;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.otto.Bus;
 import io.realm.Realm;
-import io.realm.internal.Table;
+import io.realm.RealmConfiguration;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,14 +43,16 @@ public class MainFragmentActivity extends ActionBarActivity {
     //  copyBundledRealmFile(this.getResources().openRawResource(R.raw.pokedex), "pokedex");
     //}
 
-    Realm realm = Realm.getInstance(this);
-    Table pokeTable = realm.getTable(Pokemon.class);
+    RealmConfiguration config = new RealmConfiguration.Builder(this).build();
+    Realm.setDefaultConfiguration(config);
+    Realm realm = Realm.getDefaultInstance();
+    Pokemon bulbasaur = realm.where(Pokemon.class).equalTo("id", 1).findFirst();
 
-    if (pokeTable.count(1, "bulbasaur") == 0) {
+    if (bulbasaur == null) {
       new AsyncTask<Context, Integer, Long>() {
         protected Long doInBackground(Context... aParams) {
           publishProgress(1);
-          Realm asyncRealm = Realm.getInstance(context);
+          Realm asyncRealm = Realm.getDefaultInstance();
           DataAdapter dataAdapter = new DataAdapter(context);
           publishProgress(5);
 

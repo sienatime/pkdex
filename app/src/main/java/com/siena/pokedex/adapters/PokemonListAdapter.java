@@ -21,6 +21,7 @@ import com.siena.pokedex.models.Pokemon;
 import com.squareup.picasso.Picasso;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class PokemonListAdapter extends BaseAdapter {
   private final int POKEMON_ROW = 100;
 
   public PokemonListAdapter(Context context) {
-    Realm realm = Realm.getInstance(context);
-    RealmResults<Pokemon> pokes = realm.allObjectsSorted(Pokemon.class, "id", true);
+    Realm realm = Realm.getDefaultInstance();
+    RealmResults<Pokemon> pokes = realm.allObjectsSorted(Pokemon.class, "id", Sort.ASCENDING);
 
     for (Pokemon poke : pokes) {
       rows.add(new PokeRow(POKEMON_ROW, poke, context));

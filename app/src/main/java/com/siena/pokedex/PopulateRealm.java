@@ -234,8 +234,8 @@ public class PopulateRealm {
 
     for (int i = 0; i < cursor.getCount(); i++) {
       Version version = realm.createObject(Version.class);
-      version.setId(cursor.getInt(0));
-      version.setPokemonId(pokemon.getId());
+      version.id = cursor.getInt(0);
+      version.pokemonId = pokemon.getId();
       RealmResults<Encounter> encounters = realm.where(Encounter.class)
           .equalTo("pokemonId", pokemon.getId())
           .equalTo("versionId", i)
@@ -244,7 +244,7 @@ public class PopulateRealm {
       for (Encounter encounter : encounters) {
         locations.add(encounter.getLocationArea().getLocation());
       }
-      version.setLocations(locations);
+      version.locations = locations;
       versions.add(version);
       cursor.moveToNext();
     }

@@ -37,7 +37,7 @@ public class PokeInfoFragment extends Fragment {
     actionBar.setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
 
-    Realm realm = Realm.getInstance(getActivity());
+    Realm realm = Realm.getDefaultInstance();
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
     actionBar.setTitle(getPokeString(poke.getId(), "pokemon_species_name_"));
     listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
