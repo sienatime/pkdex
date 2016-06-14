@@ -1,12 +1,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
   <data>
-    <variable name="pokemon" type="com.siena.pokedex.models.Pokemon"/>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.RowPokemonViewModel"/>
   </data>
 
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/list_item_with_selected"
+      android:onClick="@{viewModel.onClickListener}"
       android:id="@+id/poke_row">
 
     <ImageView
@@ -14,6 +15,8 @@
         android:layout_height="80dp"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+        android:visibility="@{viewModel.imageVisibility}"
+        android:imageResource="@{viewModel.imageResourceId}"
         android:id="@+id/row_poke_image"/>
 
     <TextView
@@ -23,7 +26,7 @@
         android:layout_alignTop="@id/row_poke_image"
         android:layout_marginTop="16dp"
         android:textColor="@color/default_gray"
-        android:text="@{@string/number_format(pokemon.getId())}"
+        android:text="@{viewModel.pokeId}"
         android:id="@+id/row_poke_id"/>
 
     <TextView
@@ -34,6 +37,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/default_gray"
+        android:text="@{viewModel.pokeName}"
         android:id="@+id/row_poke_name"/>
 
   </RelativeLayout>

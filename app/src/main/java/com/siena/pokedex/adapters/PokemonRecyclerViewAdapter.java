@@ -2,29 +2,14 @@ package com.siena.pokedex.adapters;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.databinding.RowPokemonBinding;
-import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.Pokemon;
-import com.squareup.picasso.Picasso;
+import com.siena.pokedex.viewModels.RowPokemonViewModel;
 import io.realm.RealmResults;
-
-import static com.siena.pokedex.PokemonUtil.getPokeString;
-import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 
 /**
  * Created by Siena Aguayo on 12/27/14.
@@ -32,12 +17,10 @@ import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 public class PokemonRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
   private RealmResults<Pokemon> pokemon;
   private Context context;
-  private Picasso picasso;
 
   public PokemonRecyclerViewAdapter(Context context, RealmResults<Pokemon> pokes) {
     this.pokemon = pokes;
     this.context = context;
-    this.picasso = Picasso.with(context);
   }
 
   @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,35 +31,9 @@ public class PokemonRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
   }
 
   @Override public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
-    final PokeRowViewHolder pokeRowViewHolder = (PokeRowViewHolder) viewHolder;
-    final Pokemon pokemon = this.pokemon.get(position);
-    pokeRowViewHolder.binding.setPokemon(pokemon);
-
-    pokeRowViewHolder.container.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        Fragment fragment = new PokeInfoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(PokemonUtil.POKEMON_ID_KEY, pokemon.getId());
-        fragment.setArguments(bundle);
-        ((ActionBarActivity) context).getSupportFragmentManager()
-            .beginTransaction()
-            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            .replace(R.id.container, fragment)
-            .addToBackStack(null)
-            .commit();
-      }
-    });
-
-    pokeRowViewHolder.pokeName.setText(getPokeString(pokemon.getId(), "pokemon_species_name_"));
-
-    int imageId = getPokemonImageId(pokemon);
-    if (imageId > 0) {
-      pokeRowViewHolder.pokeImage.setVisibility(View.VISIBLE);
-      picasso.load(imageId).into(pokeRowViewHolder.pokeImage);
-    } else {
-      Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
-      pokeRowViewHolder.pokeImage.setVisibility(View.INVISIBLE);
-    }
+    Pokemon pokemon = this.pokemon.get(position);
+    RowPokemonViewModel viewModel = new RowPokemonViewModel(pokemon, context);
+    ((PokeRowViewHolder) viewHolder).binding.setViewModel(viewModel);
   }
 
   @Override public int getItemCount() {
@@ -84,15 +41,11 @@ public class PokemonRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
   }
 
   public static class PokeRowViewHolder extends RecyclerView.ViewHolder {
-    @InjectView(R.id.row_poke_name) TextView pokeName;
-    @InjectView(R.id.row_poke_image) ImageView pokeImage;
-    @InjectView(R.id.poke_row) RelativeLayout container;
     public RowPokemonBinding binding;
 
     public PokeRowViewHolder(RowPokemonBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
-      ButterKnife.inject(this, binding.getRoot());
     }
   }
 }
