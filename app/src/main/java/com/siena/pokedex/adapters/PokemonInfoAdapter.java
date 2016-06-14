@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.siena.pokedex.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
@@ -59,8 +58,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
     rows.add(new HeaderRow(HEADER_ROW, pokemon, context));
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.type_effectiveness));
 
-    DataAdapter dataAdapter = new DataAdapter(context);
-    AllTypeEfficacy typeEfficacy = dataAdapter.getTypeEfficacy(pokemon.getTypes(), realm);
+    AllTypeEfficacy typeEfficacy = AllTypeEfficacy.createAllTypeEfficacy(pokemon.getTypes());
 
     addTypeEfficacy(typeEfficacy.getWeakTo(), R.string.weak_to);
     addTypeEfficacy(typeEfficacy.getDamagedNormallyBy(), R.string.normal_damage);
