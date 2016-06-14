@@ -1,33 +1,40 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/list_item_with_selected"
-    android:id="@+id/poke_row">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <variable name="pokemon" type="com.siena.pokedex.models.Pokemon"/>
+  </data>
 
-  <ImageView
-      android:layout_width="80dp"
-      android:layout_height="80dp"
-      android:layout_marginRight="8dp"
-      android:layout_marginLeft="8dp"
-      android:id="@+id/row_poke_image"/>
-
-  <TextView
-      android:layout_width="wrap_content"
+  <RelativeLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/row_poke_image"
-      android:layout_alignTop="@id/row_poke_image"
-      android:layout_marginTop="16dp"
-      android:textColor="@color/default_gray"
-      android:id="@+id/row_poke_id"/>
+      android:background="@drawable/list_item_with_selected"
+      android:id="@+id/poke_row">
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/row_poke_image"
-      android:layout_below="@id/row_poke_id"
-      android:textSize="16sp"
-      android:textStyle="bold"
-      android:textColor="@color/default_gray"
-      android:id="@+id/row_poke_name"/>
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/row_poke_image"/>
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/row_poke_image"
+        android:layout_alignTop="@id/row_poke_image"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/default_gray"
+        android:text="@{@string/number_format(pokemon.getId())}"
+        android:id="@+id/row_poke_id"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/row_poke_image"
+        android:layout_below="@id/row_poke_id"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/default_gray"
+        android:id="@+id/row_poke_name"/>
+
+  </RelativeLayout>
+</layout>

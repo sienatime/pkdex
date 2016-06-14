@@ -5,6 +5,10 @@ android {
   compileSdkVersion 21
   buildToolsVersion '23.0.2'
 
+  dataBinding {
+    enabled = true
+  }
+
   defaultConfig {
     applicationId "com.siena.pokedex"
     minSdkVersion 16

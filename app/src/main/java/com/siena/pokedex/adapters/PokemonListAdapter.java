@@ -1,6 +1,7 @@
 package com.siena.pokedex.adapters;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -16,12 +17,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
+import com.siena.pokedex.databinding.RowPokemonItemBinding;
 import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.picasso.Picasso;
 import io.realm.RealmResults;
 
-import static com.siena.pokedex.PokemonUtil.formatId;
 import static com.siena.pokedex.PokemonUtil.getPokeString;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 
@@ -40,15 +41,17 @@ public class PokemonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   }
 
   @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View v = LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.row_pokemon_item, parent, false);
-    PokeRowViewHolder vh = new PokeRowViewHolder(v);
-    return vh;
+    RowPokemonItemBinding binding =
+        DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_pokemon_item,
+            parent, false);
+    return new PokeRowViewHolder(binding);
   }
 
   @Override public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int position) {
     final PokeRowViewHolder pokeRowViewHolder = (PokeRowViewHolder) viewHolder;
     final Pokemon pokemon = this.pokemon.get(position);
+    pokeRowViewHolder.binding.setPokemon(pokemon);
+
     pokeRowViewHolder.container.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         Fragment fragment = new PokeInfoFragment();
@@ -64,7 +67,6 @@ public class PokemonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
       }
     });
 
-    pokeRowViewHolder.pokeId.setText(formatId(pokemon));
     pokeRowViewHolder.pokeName.setText(getPokeString(pokemon.getId(), "pokemon_species_name_"));
 
     int imageId = getPokemonImageId(pokemon);
@@ -82,14 +84,15 @@ public class PokemonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
   }
 
   public static class PokeRowViewHolder extends RecyclerView.ViewHolder {
-    @InjectView(R.id.row_poke_id) TextView pokeId;
     @InjectView(R.id.row_poke_name) TextView pokeName;
     @InjectView(R.id.row_poke_image) ImageView pokeImage;
     @InjectView(R.id.poke_row) RelativeLayout container;
+    public RowPokemonItemBinding binding;
 
-    public PokeRowViewHolder(View source) {
-      super(source);
-      ButterKnife.inject(this, source);
+    public PokeRowViewHolder(RowPokemonItemBinding binding) {
+      super(binding.getRoot());
+      this.binding = binding;
+      ButterKnife.inject(this, binding.getRoot());
     }
   }
 }
