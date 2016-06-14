@@ -5,14 +5,14 @@ package com.siena.pokedex;
  */
 
 import com.siena.pokedex.activities.MainFragmentActivity;
-import com.siena.pokedex.adapters.PokemonListAdapter;
+import com.siena.pokedex.adapters.PokemonRecyclerViewAdapter;
 import com.squareup.otto.Bus;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
 @Module(
-    injects = { PokedexApp.class, MainFragmentActivity.class, PokemonListAdapter.class }
+    injects = { PokedexApp.class, MainFragmentActivity.class, PokemonRecyclerViewAdapter.class }
 )
 public class PokedexModule {
   @Provides @Singleton Bus provideBus() {

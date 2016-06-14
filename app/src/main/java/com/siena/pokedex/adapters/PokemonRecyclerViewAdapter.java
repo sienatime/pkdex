@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
-import com.siena.pokedex.databinding.RowPokemonItemBinding;
+import com.siena.pokedex.databinding.RowPokemonBinding;
 import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.Pokemon;
 import com.squareup.picasso.Picasso;
@@ -29,20 +29,20 @@ import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
-public class PokemonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PokemonRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
   private RealmResults<Pokemon> pokemon;
   private Context context;
   private Picasso picasso;
 
-  public PokemonListAdapter(Context context, RealmResults<Pokemon> pokes) {
+  public PokemonRecyclerViewAdapter(Context context, RealmResults<Pokemon> pokes) {
     this.pokemon = pokes;
     this.context = context;
     this.picasso = Picasso.with(context);
   }
 
   @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    RowPokemonItemBinding binding =
-        DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_pokemon_item,
+    RowPokemonBinding binding =
+        DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.row_pokemon,
             parent, false);
     return new PokeRowViewHolder(binding);
   }
@@ -87,9 +87,9 @@ public class PokemonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @InjectView(R.id.row_poke_name) TextView pokeName;
     @InjectView(R.id.row_poke_image) ImageView pokeImage;
     @InjectView(R.id.poke_row) RelativeLayout container;
-    public RowPokemonItemBinding binding;
+    public RowPokemonBinding binding;
 
-    public PokeRowViewHolder(RowPokemonItemBinding binding) {
+    public PokeRowViewHolder(RowPokemonBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
       ButterKnife.inject(this, binding.getRoot());
