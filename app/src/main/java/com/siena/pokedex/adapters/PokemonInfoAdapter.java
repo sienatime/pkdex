@@ -2,25 +2,25 @@ package com.siena.pokedex.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
+import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
+import com.siena.pokedex.databinding.RowPokeHeaderBinding;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.Version;
-import com.squareup.picasso.Picasso;
+import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -29,7 +29,6 @@ import java.util.List;
 
 import static com.siena.pokedex.PokemonUtil.consolidateLevels;
 import static com.siena.pokedex.PokemonUtil.getPokeString;
-import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
@@ -55,7 +54,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   private void setupRows() {
-    rows.add(new HeaderRow(HEADER_ROW, pokemon, context));
+    rows.add(new HeaderRow(HEADER_ROW, pokemon));
     rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.type_effectiveness));
 
     AllTypeEfficacy typeEfficacy = AllTypeEfficacy.createAllTypeEfficacy(pokemon.getTypes());
@@ -121,14 +120,10 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public static class HeaderRow implements Row {
     private Pokemon pokemon;
     private int rowType;
-    private Context context;
-    private Picasso picasso;
 
-    public HeaderRow(int rowType, Pokemon pokemon, Context context) {
+    public HeaderRow(int rowType, Pokemon pokemon) {
       this.pokemon = pokemon;
       this.rowType = rowType;
-      this.context = context;
-      this.picasso = Picasso.with(context);
     }
 
     @Override public int getType() {
@@ -138,55 +133,28 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.row_poke_header, parent, false);
-        viewHolder = new ViewHolder(convertView);
+        RowPokeHeaderBinding binding =
+            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.row_poke_header, parent, false);
+        convertView = binding.getRoot();
+
+        viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
-      viewHolder.pokeName.setText(getPokeString(pokemon.getId(), "pokemon_species_name_"));
-      viewHolder.pokeGenus.setText(String.format(context.getString(R.string.genus_format),
-          getPokeString(pokemon.getId(), "pokemon_species_genus_")));
 
-      int numberOfTypes = pokemon.getTypes().size();
-
-      if (numberOfTypes > 0) {
-        setType(viewHolder.type1, pokemon.getTypes().get(0));
-
-        if (numberOfTypes == 2) {
-          viewHolder.type2.setVisibility(View.VISIBLE);
-          setType(viewHolder.type2, pokemon.getTypes().get(1));
-        } else {
-          viewHolder.type2.setVisibility(View.GONE);
-        }
-      }
-
-      int imageId = getPokemonImageId(pokemon);
-      if (imageId > 0) {
-        viewHolder.pokeImage.setVisibility(View.VISIBLE);
-        picasso.load(imageId).into(viewHolder.pokeImage);
-      } else {
-        Log.e("listadapter", "couldn't find image for id " + Integer.toString(pokemon.getId()));
-        viewHolder.pokeImage.setVisibility(View.INVISIBLE);
-      }
+      viewHolder.binding.setViewModel(
+          new PokeInfoHeaderViewModel(this.pokemon, parent.getContext()));
 
       return convertView;
     }
 
-    private void setType(TextView textView, PokemonType type) {
-      textView.setText(getPokeString(type.getTypeId(), "type_"));
-      textView.setBackgroundColor(getTypeColor(type.getTypeId()));
-    }
-
     static class ViewHolder {
-      @InjectView(R.id.header_poke_name) TextView pokeName;
-      @InjectView(R.id.header_poke_genus) TextView pokeGenus;
-      @InjectView(R.id.pokemon_type_1) TextView type1;
-      @InjectView(R.id.pokemon_type_2) TextView type2;
-      @InjectView(R.id.header_poke_image) ImageView pokeImage;
+      public RowPokeHeaderBinding binding;
 
-      public ViewHolder(View source) {
-        ButterKnife.inject(this, source);
+      public ViewHolder(RowPokeHeaderBinding binding) {
+        this.binding = binding;
       }
     }
   }

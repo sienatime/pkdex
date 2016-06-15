@@ -1,40 +1,55 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <TextView
-      android:layout_width="wrap_content"
+  <data>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.PokeInfoHeaderViewModel"/>
+  </data>
+
+  <RelativeLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="24sp"
-      android:textStyle="bold"
-      android:id="@+id/header_poke_name"/>
+      android:padding="16dp">
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/header_poke_name"
-      android:text="@string/genus_format"
-      android:textSize="12sp"
-      android:layout_marginBottom="16dp"
-      android:id="@+id/header_poke_genus"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="@{viewModel.pokeName}"
+        android:id="@+id/header_poke_name"/>
 
-  <TextView
-      style="@style/pokemon_type"
-      android:layout_below="@id/header_poke_genus"
-      android:id="@+id/pokemon_type_1"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_poke_name"
+        android:text="@{viewModel.pokeGenus}"
+        android:textSize="12sp"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/header_poke_genus"/>
 
-  <TextView
-      style="@style/pokemon_type"
-      android:layout_toRightOf="@id/pokemon_type_1"
-      android:layout_alignTop="@id/pokemon_type_1"
-      android:id="@+id/pokemon_type_2"/>
+    <TextView
+        style="@style/pokemon_type"
+        android:layout_below="@id/header_poke_genus"
+        android:text="@{viewModel.firstTypeViewHolder.name}"
+        android:background="@{viewModel.firstTypeViewHolder.color}"
+        android:id="@+id/pokemon_type_1"/>
 
-  <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="16dp"
-      android:layout_alignParentRight="true"
-      android:id="@+id/header_poke_image"/>
+    <TextView
+        style="@style/pokemon_type"
+        android:layout_toRightOf="@id/pokemon_type_1"
+        android:layout_alignTop="@id/pokemon_type_1"
+        android:visibility="@{viewModel.secondTypeVisibility}"
+        android:text='@{viewModel.secondTypeViewHolder.name}'
+        android:background="@{viewModel.secondTypeViewHolder.color}"
+        android:id="@+id/pokemon_type_2"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_alignParentRight="true"
+        android:imageResource="@{viewModel.imageResourceId}"
+        android:visibility="@{viewModel.imageVisibility}"
+        android:id="@+id/header_poke_image"/>
 
   </RelativeLayout>
+</layout>
