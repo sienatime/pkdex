@@ -15,12 +15,14 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.databinding.RowPokeHeaderBinding;
+import com.siena.pokedex.databinding.RowSectionHeaderBinding;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.Version;
 import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
+import com.siena.pokedex.viewModels.SectionHeaderViewHolder;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -95,7 +97,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
   private void addTypeEfficacy(RealmList<PokemonType> types, int stringId) {
     if (types.size() > 0) {
-      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, context, types));
+      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
     }
   }
 
@@ -205,14 +207,11 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public static class TypeEfficacyRow implements Row {
     private int rowType;
     private int titleId;
-    private Context context;
     private RealmList<PokemonType> types;
 
-    public TypeEfficacyRow(int rowType, int titleId, Context context,
-        RealmList<PokemonType> types) {
+    public TypeEfficacyRow(int rowType, int titleId, RealmList<PokemonType> types) {
       this.rowType = rowType;
       this.titleId = titleId;
-      this.context = context;
       this.types = types;
     }
 
@@ -272,24 +271,26 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_section_header, parent, false);
-        viewHolder = new ViewHolder(convertView);
+        RowSectionHeaderBinding binding =
+            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.row_section_header, parent, false);
+        convertView = binding.getRoot();
+        viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.sectionHeaderTextView.setText(titleId);
+      viewHolder.binding.setViewModel(new SectionHeaderViewHolder(titleId));
 
       return convertView;
     }
 
     static class ViewHolder {
-      @InjectView(R.id.section_header) TextView sectionHeaderTextView;
+      public RowSectionHeaderBinding binding;
 
-      public ViewHolder(View source) {
-        ButterKnife.inject(this, source);
+      public ViewHolder(RowSectionHeaderBinding binding) {
+        this.binding = binding;
       }
     }
   }
