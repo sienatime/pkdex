@@ -40,7 +40,7 @@ public class PokeInfoFragment extends Fragment {
     Realm realm = Realm.getDefaultInstance();
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
     actionBar.setTitle(getPokeString(poke.getId(), "pokemon_species_name_"));
-    listView.setAdapter(new PokemonInfoAdapter(getActivity(), poke));
+    listView.setAdapter(new PokemonInfoAdapter(poke));
     return rootView;
   }
 

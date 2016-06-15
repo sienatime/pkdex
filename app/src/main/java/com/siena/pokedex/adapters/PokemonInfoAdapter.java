@@ -1,7 +1,5 @@
 package com.siena.pokedex.adapters;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
+import com.siena.pokedex.databinding.RowEncounterBinding;
 import com.siena.pokedex.databinding.RowPokeHeaderBinding;
 import com.siena.pokedex.databinding.RowSectionHeaderBinding;
 import com.siena.pokedex.databinding.RowVersionHeaderBinding;
@@ -21,16 +20,15 @@ import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
 import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.Version;
+import com.siena.pokedex.viewModels.EncounterViewModel;
 import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
 import com.siena.pokedex.viewModels.SectionHeaderViewHolder;
 import com.siena.pokedex.viewModels.VersionHeaderViewModel;
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.siena.pokedex.PokemonUtil.consolidateLevels;
 import static com.siena.pokedex.PokemonUtil.getPokeString;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
@@ -46,13 +44,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private final int TYPE_ENCOUNTER_ROW = 3;
   private final int TYPE_NO_KNOWN_LOCATIONS_ROW = 4;
   private final int TYPE_VERSION_ROW = 5;
-  private Context context;
-  private Realm realm;
 
-  public PokemonInfoAdapter(Context context, Pokemon pokemon) {
+  public PokemonInfoAdapter(Pokemon pokemon) {
     this.pokemon = pokemon;
-    this.context = context;
-    this.realm = Realm.getDefaultInstance();
     setupRows();
   }
 
@@ -112,7 +106,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
         RealmResults<ConsolidatedEncounter> encountersByVersion =
             encounters.where().equalTo("versionId", versionId).findAll();
         for (ConsolidatedEncounter encounter : encountersByVersion) {
-          rows.add(new EncounterRow(context.getResources(), TYPE_ENCOUNTER_ROW, encounter, realm));
+          rows.add(new EncounterRow(TYPE_ENCOUNTER_ROW, encounter));
         }
       }
     } else {
@@ -293,16 +287,12 @@ public class PokemonInfoAdapter extends BaseAdapter {
   }
 
   public static class EncounterRow implements Row {
-    private Resources res;
     private int rowType;
     private ConsolidatedEncounter encounter;
-    private Realm realm;
 
-    public EncounterRow(Resources res, int rowType, ConsolidatedEncounter encounter, Realm realm) {
-      this.res = res;
+    public EncounterRow(int rowType, ConsolidatedEncounter encounter) {
       this.rowType = rowType;
       this.encounter = encounter;
-      this.realm = realm;
     }
 
     @Override public int getType() {
@@ -312,54 +302,26 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_encounter, parent, false);
-        viewHolder = new ViewHolder(convertView);
+        RowEncounterBinding binding =
+            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.row_encounter, parent, false);
+        convertView = binding.getRoot();
+        viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.encounterLevels.setText(
-          consolidateLevels(encounter.getMinLevel(), encounter.getMaxLevel()));
-      viewHolder.encounterLocation.setText(
-          getPokeString(encounter.getLocationArea().getLocation().getId(), "location_name_"));
-      String locationAreaName =
-          getPokeString(encounter.getLocationArea().getId(), "location_area_name_");
-      if (locationAreaName != null) {
-        viewHolder.encounterLocationArea.setText(locationAreaName);
-        viewHolder.encounterLocationArea.setVisibility(View.VISIBLE);
-      } else {
-        viewHolder.encounterLocationArea.setVisibility(View.GONE);
-      }
-
-      String encounterCondition =
-          getPokeString(encounter.getEncounterConditionId(), "encounter_condition_");
-      if (encounterCondition != null) {
-        viewHolder.encounterCondition.setText(encounterCondition);
-        viewHolder.encounterCondition.setVisibility(View.VISIBLE);
-      } else {
-        viewHolder.encounterCondition.setVisibility(View.GONE);
-      }
-
-      viewHolder.encounterMethod.setText(
-          getPokeString(encounter.getEncounterMethod().getId(), "encounter_method_"));
-      viewHolder.encounterRate.setText(String.format(res.getString(R.string.encounter_rate),
-          Integer.toString(encounter.getRarity())));
+      viewHolder.binding.setViewModel(new EncounterViewModel(encounter));
 
       return convertView;
     }
 
     static class ViewHolder {
-      @InjectView(R.id.encounter_location) TextView encounterLocation;
-      @InjectView(R.id.encounter_location_area) TextView encounterLocationArea;
-      @InjectView(R.id.encounter_condition) TextView encounterCondition;
-      @InjectView(R.id.encounter_method) TextView encounterMethod;
-      @InjectView(R.id.encounter_rate) TextView encounterRate;
-      @InjectView(R.id.encounter_levels) TextView encounterLevels;
+      RowEncounterBinding binding;
 
-      public ViewHolder(View source) {
-        ButterKnife.inject(this, source);
+      public ViewHolder(RowEncounterBinding binding) {
+        this.binding = binding;
       }
     }
   }

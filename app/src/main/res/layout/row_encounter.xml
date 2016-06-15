@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.EncounterViewModel"/>
+  </data>
 
-  <TextView
+  <LinearLayout
+      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="16sp"
-      android:textStyle="bold"
-      android:textColor="@color/default_gray"
-      android:id="@+id/encounter_location"/>
+      android:layout_height="match_parent"
+      android:padding="16dp">
 
-  <include layout="@layout/partial_encounter_method" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/default_gray"
+        android:text="@{viewModel.location}"
+        android:id="@+id/encounter_location"/>
 
-</LinearLayout>
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/default_gray"
+          android:visibility="@{viewModel.locationAreaVisibility}"
+          android:text="@{viewModel.locationAreaName}"
+          android:id="@+id/encounter_location_area"/>
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textColor="@color/default_gray"
+          android:textStyle="italic"
+          android:text="@{viewModel.encounterCondition}"
+          android:visibility="@{viewModel.encounterConditionVisibility}"
+          android:id="@+id/encounter_condition"/>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/default_gray"
+            android:text="@{viewModel.encounterMethod}"
+            android:id="@+id/encounter_method"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/default_gray"
+            android:text="@{viewModel.encounterRate}"
+            android:id="@+id/encounter_rate"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/default_gray"
+            android:text="@{viewModel.encounterLevels}"
+            android:id="@+id/encounter_levels"/>
+      </LinearLayout>
+
+  </LinearLayout>
+</layout>
