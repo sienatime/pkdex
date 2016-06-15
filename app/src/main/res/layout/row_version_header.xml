@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+  <data>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.VersionHeaderViewModel"/>
+  </data>
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      style="@style/small_padding"
+      android:id="@+id/version_header"
+      android:textSize="12sp"
+      android:textStyle="bold"
+      android:textAllCaps="true"
+      android:shadowColor="@color/shadow_gray"
+      android:shadowDx="0"
+      android:shadowDy="2"
+      android:shadowRadius="4"
+      android:textColor="@android:color/white"
+      android:text="@{viewModel.versionNameId}"
+      android:background="@{viewModel.color}"/>
+
+</layout>

@@ -12,10 +12,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokedexApp;
-import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
 import com.siena.pokedex.databinding.RowPokeHeaderBinding;
 import com.siena.pokedex.databinding.RowSectionHeaderBinding;
+import com.siena.pokedex.databinding.RowVersionHeaderBinding;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
 import com.siena.pokedex.models.Pokemon;
@@ -23,6 +23,7 @@ import com.siena.pokedex.models.PokemonType;
 import com.siena.pokedex.models.Version;
 import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
 import com.siena.pokedex.viewModels.SectionHeaderViewHolder;
+import com.siena.pokedex.viewModels.VersionHeaderViewModel;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -107,7 +108,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
       for (Version version : versions) {
         Integer versionId = new Integer(version.id);
-        rows.add(new VersionHeaderRow(context.getResources(), TYPE_VERSION_ROW, versionId));
+        rows.add(new VersionHeaderRow(TYPE_VERSION_ROW, versionId));
         RealmResults<ConsolidatedEncounter> encountersByVersion =
             encounters.where().equalTo("versionId", versionId).findAll();
         for (ConsolidatedEncounter encounter : encountersByVersion) {
@@ -164,10 +165,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
   public static class VersionHeaderRow implements Row {
     private int rowType;
     private Integer versionId;
-    private Resources res;
 
-    public VersionHeaderRow(Resources res, int rowType, Integer versionId) {
-      this.res = res;
+    public VersionHeaderRow(int rowType, Integer versionId) {
       this.rowType = rowType;
       this.versionId = versionId;
     }
@@ -179,27 +178,25 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.version_header, parent, false);
-        viewHolder = new ViewHolder(convertView);
+        RowVersionHeaderBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+            R.layout.row_version_header, parent, false);
+        convertView = binding.getRoot();
+        viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      int versionNameId = res.getIdentifier("version_name_" + versionId, "string",
-          PokedexApp.getInstance().getPackageName());
-      viewHolder.versionHeaderTextView.setText(versionNameId);
-      viewHolder.versionHeaderTextView.setBackgroundColor(PokemonUtil.getVersionColor(versionId));
+      viewHolder.binding.setViewModel(new VersionHeaderViewModel(versionId));
 
       return convertView;
     }
 
     static class ViewHolder {
-      @InjectView(R.id.version_header) TextView versionHeaderTextView;
+      RowVersionHeaderBinding binding;
 
-      public ViewHolder(View source) {
-        ButterKnife.inject(this, source);
+      public ViewHolder(RowVersionHeaderBinding binding) {
+        this.binding = binding;
       }
     }
   }
