@@ -8,7 +8,7 @@ import com.siena.pokedex.R;
 import com.siena.pokedex.models.persisted.PokemonType;
 import io.realm.RealmList;
 
-import static com.siena.pokedex.PokemonUtil.getPokeString;
+import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
@@ -28,7 +28,7 @@ public class TypeEfficacyViewModel {
         inflater.inflate(R.layout.textview_type, typeAnchor);
         TextView textView = (TextView) typeAnchor.getChildAt(i);
         textView.setBackgroundColor(getTypeColor(type.getTypeId()));
-        textView.setText(getPokeString(type.getTypeId(), "type_").toUpperCase());
+        textView.setText(getStringForIdentifier(type.getTypeId(), "type_").toUpperCase());
       }
     }
   }

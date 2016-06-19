@@ -10,23 +10,22 @@ import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
 
-import static com.siena.pokedex.PokemonUtil.formatId;
-import static com.siena.pokedex.PokemonUtil.getPokeString;
+import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
 import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
 
 /**
  * Created by Siena Aguayo on 6/14/16.
  */
 public class PokemonViewModel {
-  public String pokeId;
+  public int pokeId;
   public String pokeName;
   public int imageResourceId;
   public int imageVisibility;
   public View.OnClickListener onClickListener;
 
   public PokemonViewModel(final Pokemon pokemon, final Context context) {
-    this.pokeId = formatId(pokemon);
-    this.pokeName = getPokeString(pokemon.getId(), "pokemon_species_name_");
+    this.pokeId = pokemon.getId();
+    this.pokeName = getStringForIdentifier(pokemon.getId(), "pokemon_species_name_");
     this.imageResourceId = getPokemonImageId(pokemon);
     this.imageVisibility = imageResourceId > 0 ? View.VISIBLE : View.INVISIBLE;
 

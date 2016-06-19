@@ -2,7 +2,7 @@ package com.siena.pokedex.viewModels.show;
 
 import com.siena.pokedex.models.persisted.PokemonType;
 
-import static com.siena.pokedex.PokemonUtil.getPokeString;
+import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
 import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
@@ -13,7 +13,7 @@ public class TypeViewModel {
   public String name;
 
   public TypeViewModel(PokemonType type) {
-    this.name = getPokeString(type.getTypeId(), "type_");
+    this.name = getStringForIdentifier(type.getTypeId(), "type_");
     this.color = getTypeColor(type.getTypeId());
   }
 }

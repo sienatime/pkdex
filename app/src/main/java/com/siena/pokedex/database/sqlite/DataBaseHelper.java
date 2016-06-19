@@ -1,4 +1,4 @@
-package com.siena.pokedex;
+package com.siena.pokedex.database.sqlite;
 
 import android.content.Context;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;

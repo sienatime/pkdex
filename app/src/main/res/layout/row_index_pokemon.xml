@@ -26,7 +26,7 @@
         android:layout_alignTop="@id/row_poke_image"
         android:layout_marginTop="16dp"
         android:textColor="@color/default_gray"
-        android:text="@{viewModel.pokeId}"
+        android:text="@{@string/number_format(viewModel.pokeId)}"
         android:id="@+id/row_poke_id"/>
 
     <TextView

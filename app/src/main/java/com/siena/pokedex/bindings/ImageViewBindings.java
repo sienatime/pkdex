@@ -1,7 +1,8 @@
-package com.siena.pokedex;
+package com.siena.pokedex.bindings;
 
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
+import com.siena.pokedex.PokedexApp;
 import com.squareup.picasso.Picasso;
 
 /**

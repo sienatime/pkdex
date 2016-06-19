@@ -1,6 +1,7 @@
-package com.siena.pokedex;
+package com.siena.pokedex.database.realm;
 
 import android.database.Cursor;
+import com.siena.pokedex.database.sqlite.DataAdapter;
 import com.siena.pokedex.models.persisted.ConsolidatedEncounter;
 import com.siena.pokedex.models.persisted.Encounter;
 import com.siena.pokedex.models.persisted.EncounterMethod;
