@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import com.siena.pokedex.PokemonUtil;
+import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeInfoFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
 
-import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
-import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
+import static com.siena.pokedex.ResourceUtil.getPokemonImageId;
+import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
 
 /**
  * Created by Siena Aguayo on 6/14/16.
@@ -25,7 +25,7 @@ public class PokemonViewModel {
 
   public PokemonViewModel(final Pokemon pokemon, final Context context) {
     this.pokeId = pokemon.getId();
-    this.pokeName = getStringForIdentifier(pokemon.getId(), "pokemon_species_name_");
+    this.pokeName = getStringForIdentifier("pokemon_species_name_", pokemon.getId());
     this.imageResourceId = getPokemonImageId(pokemon);
     this.imageVisibility = imageResourceId > 0 ? View.VISIBLE : View.INVISIBLE;
 
@@ -33,7 +33,7 @@ public class PokemonViewModel {
       @Override public void onClick(View v) {
         Fragment fragment = new PokeInfoFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(PokemonUtil.POKEMON_ID_KEY, pokemon.getId());
+        bundle.putInt(PokedexApp.BUNDLE_KEY_POKEMON_ID, pokemon.getId());
         fragment.setArguments(bundle);
         ((ActionBarActivity) context).getSupportFragmentManager()
             .beginTransaction()

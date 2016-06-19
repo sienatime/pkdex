@@ -5,8 +5,8 @@ import android.view.View;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.persisted.Pokemon;
 
-import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
-import static com.siena.pokedex.PokemonUtil.getPokemonImageId;
+import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
+import static com.siena.pokedex.ResourceUtil.getPokemonImageId;
 
 /**
  * Created by Siena Aguayo on 6/14/16.
@@ -23,9 +23,9 @@ public class HeaderViewModel {
   public int imageVisibility;
 
   public HeaderViewModel(Pokemon pokemon, Context context) {
-    this.pokeName = getStringForIdentifier(pokemon.getId(), "pokemon_species_name_");
+    this.pokeName = getStringForIdentifier("pokemon_species_name_", pokemon.getId());
     this.pokeGenus = String.format(context.getString(R.string.genus_format),
-        getStringForIdentifier(pokemon.getId(), "pokemon_species_genus_"));
+        getStringForIdentifier("pokemon_species_genus_", pokemon.getId()));
 
     this.numberOfTypes = pokemon.getTypes().size();
     this.secondTypeVisibility = this.numberOfTypes == 2 ? View.VISIBLE : View.INVISIBLE;

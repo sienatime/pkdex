@@ -6,7 +6,7 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.models.persisted.ConsolidatedEncounter;
 
-import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
+import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
 
 /**
  * Created by Siena Aguayo on 6/14/16.
@@ -24,14 +24,18 @@ public class EncounterViewModel {
   public EncounterViewModel(ConsolidatedEncounter encounter) {
     Resources res = PokedexApp.getInstance().getResources();
 
-    this.location = getStringForIdentifier(encounter.getLocationArea().getLocation().getId(), "location_name_");
-    this.locationAreaName = getStringForIdentifier(encounter.getLocationArea().getId(), "location_area_name_");
+    this.location = getStringForIdentifier("location_name_",
+        encounter.getLocationArea().getLocation().getId());
+    this.locationAreaName = getStringForIdentifier("location_area_name_",
+        encounter.getLocationArea().getId());
     this.locationAreaVisibility = locationAreaName != null ? View.VISIBLE : View.GONE;
 
-    this.encounterCondition = getStringForIdentifier(encounter.getEncounterConditionId(), "encounter_condition_");
+    this.encounterCondition = getStringForIdentifier("encounter_condition_",
+        encounter.getEncounterConditionId());
     this.encounterConditionVisibility = encounterCondition != null ? View.VISIBLE : View.GONE;
 
-    this.encounterMethod = getStringForIdentifier(encounter.getEncounterMethod().getId(), "encounter_method_");
+    this.encounterMethod = getStringForIdentifier("encounter_method_",
+        encounter.getEncounterMethod().getId());
     this.encounterRate = String.format(res.getString(R.string.encounter_rate),
         Integer.toString(encounter.getRarity()));
     this.encounterLevels = consolidateLevels(encounter.getMinLevel(), encounter.getMaxLevel());

@@ -11,6 +11,7 @@ import java.util.List;
 public class PokedexApp extends Application {
   private ObjectGraph graph;
   private static PokedexApp instance;
+  public static final String BUNDLE_KEY_POKEMON_ID = "pokemonId";
 
   public static PokedexApp getInstance() {
     return instance;

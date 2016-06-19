@@ -2,8 +2,8 @@ package com.siena.pokedex.viewModels.show;
 
 import com.siena.pokedex.models.persisted.PokemonType;
 
-import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
-import static com.siena.pokedex.PokemonUtil.getTypeColor;
+import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
+import static com.siena.pokedex.ResourceUtil.getTypeColor;
 
 /**
  * Created by Siena Aguayo on 6/14/16.
@@ -13,7 +13,7 @@ public class TypeViewModel {
   public String name;
 
   public TypeViewModel(PokemonType type) {
-    this.name = getStringForIdentifier(type.getTypeId(), "type_");
+    this.name = getStringForIdentifier("type_", type.getTypeId());
     this.color = getTypeColor(type.getTypeId());
   }
 }

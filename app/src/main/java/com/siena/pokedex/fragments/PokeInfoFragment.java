@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.siena.pokedex.PokemonUtil;
+import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonShowAdapter;
 import com.siena.pokedex.models.persisted.Pokemon;
 import io.realm.Realm;
 
-import static com.siena.pokedex.PokemonUtil.getStringForIdentifier;
+import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
 
 /**
  * Created by Siena Aguayo on 12/28/14.
@@ -35,11 +35,11 @@ public class PokeInfoFragment extends Fragment {
     ButterKnife.inject(this, rootView);
     actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
-    int id = getArguments().getInt(PokemonUtil.POKEMON_ID_KEY);
+    int id = getArguments().getInt(PokedexApp.BUNDLE_KEY_POKEMON_ID);
 
     Realm realm = Realm.getDefaultInstance();
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
-    actionBar.setTitle(getStringForIdentifier(poke.getId(), "pokemon_species_name_"));
+    actionBar.setTitle(getStringForIdentifier("pokemon_species_name_", poke.getId()));
     listView.setAdapter(new PokemonShowAdapter(poke));
     return rootView;
   }
