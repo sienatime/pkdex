@@ -15,7 +15,7 @@ import com.siena.pokedex.database.sqlite.DataAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.database.realm.PopulateRealm;
 import com.siena.pokedex.R;
-import com.siena.pokedex.fragments.PokeListFragment;
+import com.siena.pokedex.fragments.PokemonIndexFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
 import com.squareup.otto.Bus;
 import io.realm.Realm;
@@ -94,7 +94,7 @@ public class MainFragmentActivity extends ActionBarActivity {
 
   private void instantiateListFragment(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
-      getSupportFragmentManager().beginTransaction().add(R.id.container, new PokeListFragment()).commit();
+      getSupportFragmentManager().beginTransaction().add(R.id.container, new PokemonIndexFragment()).commit();
     }
   }
 

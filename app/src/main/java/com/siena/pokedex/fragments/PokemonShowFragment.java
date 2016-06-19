@@ -21,11 +21,11 @@ import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
 /**
  * Created by Siena Aguayo on 12/28/14.
  */
-public class PokeInfoFragment extends Fragment {
+public class PokemonShowFragment extends Fragment {
   @InjectView(R.id.poke_info_listview) ListView listView;
   private ActionBar actionBar;
 
-  public PokeInfoFragment() {
+  public PokemonShowFragment() {
   }
 
   @Override

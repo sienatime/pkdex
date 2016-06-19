@@ -19,8 +19,8 @@ import io.realm.Sort;
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
-public class PokeListFragment extends Fragment {
-  public PokeListFragment() {
+public class PokemonIndexFragment extends Fragment {
+  public PokemonIndexFragment() {
   }
 
   @Override

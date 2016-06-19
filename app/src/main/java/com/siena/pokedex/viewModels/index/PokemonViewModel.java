@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
-import com.siena.pokedex.fragments.PokeInfoFragment;
+import com.siena.pokedex.fragments.PokemonShowFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
 
 import static com.siena.pokedex.ResourceUtil.getPokemonImageId;
@@ -31,7 +31,7 @@ public class PokemonViewModel {
 
     this.onClickListener = new View.OnClickListener() {
       @Override public void onClick(View v) {
-        Fragment fragment = new PokeInfoFragment();
+        Fragment fragment = new PokemonShowFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(PokedexApp.BUNDLE_KEY_POKEMON_ID, pokemon.getId());
         fragment.setArguments(bundle);
