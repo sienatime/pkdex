@@ -1,10 +1,10 @@
-package com.siena.pokedex.viewModels;
+package com.siena.pokedex.viewModels.show;
 
 import android.content.res.Resources;
 import android.view.View;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
-import com.siena.pokedex.models.ConsolidatedEncounter;
+import com.siena.pokedex.models.persisted.ConsolidatedEncounter;
 
 import static com.siena.pokedex.PokemonUtil.consolidateLevels;
 import static com.siena.pokedex.PokemonUtil.getPokeString;

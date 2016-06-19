@@ -1,16 +1,16 @@
 package com.siena.pokedex;
 
 import android.database.Cursor;
-import com.siena.pokedex.models.ConsolidatedEncounter;
-import com.siena.pokedex.models.Encounter;
-import com.siena.pokedex.models.EncounterMethod;
-import com.siena.pokedex.models.EncounterSlot;
-import com.siena.pokedex.models.Location;
-import com.siena.pokedex.models.LocationArea;
-import com.siena.pokedex.models.Pokemon;
-import com.siena.pokedex.models.PokemonType;
-import com.siena.pokedex.models.TypeEfficacy;
-import com.siena.pokedex.models.Version;
+import com.siena.pokedex.models.persisted.ConsolidatedEncounter;
+import com.siena.pokedex.models.persisted.Encounter;
+import com.siena.pokedex.models.persisted.EncounterMethod;
+import com.siena.pokedex.models.persisted.EncounterSlot;
+import com.siena.pokedex.models.persisted.Location;
+import com.siena.pokedex.models.persisted.LocationArea;
+import com.siena.pokedex.models.persisted.Pokemon;
+import com.siena.pokedex.models.persisted.PokemonType;
+import com.siena.pokedex.models.persisted.TypeEfficacy;
+import com.siena.pokedex.models.persisted.Version;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;

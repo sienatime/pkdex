@@ -1,4 +1,4 @@
-package com.siena.pokedex.viewModels;
+package com.siena.pokedex.viewModels.show;
 
 import android.content.res.Resources;
 import com.siena.pokedex.PokedexApp;

@@ -1,4 +1,4 @@
-package com.siena.pokedex.models;
+package com.siena.pokedex.models.persisted;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

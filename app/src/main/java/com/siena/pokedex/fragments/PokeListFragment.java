@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.siena.pokedex.R;
-import com.siena.pokedex.adapters.PokemonRecyclerViewAdapter;
-import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.adapters.PokemonIndexAdapter;
+import com.siena.pokedex.models.persisted.Pokemon;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -26,14 +26,14 @@ public class PokeListFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_pokemon_recyclerview, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_pokemon_index, container, false);
     Realm realm = Realm.getDefaultInstance();
     RealmResults<Pokemon> allPokemon = realm.allObjectsSorted(Pokemon.class, "id", Sort.ASCENDING);
     Context activityContext = getActivity();
 
     RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.poke_recyclerview);
     recyclerView.setHasFixedSize(true);
-    recyclerView.setAdapter(new PokemonRecyclerViewAdapter(activityContext, allPokemon));
+    recyclerView.setAdapter(new PokemonIndexAdapter(activityContext, allPokemon));
     recyclerView.setLayoutManager(new LinearLayoutManager(activityContext));
 
     ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);

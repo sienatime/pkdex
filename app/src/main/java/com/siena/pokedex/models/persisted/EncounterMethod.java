@@ -1,18 +1,18 @@
-package com.siena.pokedex.models;
+package com.siena.pokedex.models.persisted;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Siena Aguayo on 3/14/15.
+ * Created by Siena Aguayo on 3/25/15.
  */
-public class Location extends RealmObject {
-  //id, region id, identifier,
+public class EncounterMethod extends RealmObject {
+  // id	identifier	order
   @PrimaryKey private int id;
-  private int regionId;
   private String identifier;
+  private int order;
 
-  public Location() {
+  public EncounterMethod() {
   }
 
   public int getId() {
@@ -23,19 +23,19 @@ public class Location extends RealmObject {
     this.id = id;
   }
 
-  public int getRegionId() {
-    return regionId;
-  }
-
-  public void setRegionId(int regionId) {
-    this.regionId = regionId;
-  }
-
   public String getIdentifier() {
     return identifier;
   }
 
   public void setIdentifier(String identifier) {
     this.identifier = identifier;
+  }
+
+  public int getOrder() {
+    return order;
+  }
+
+  public void setOrder(int order) {
+    this.order = order;
   }
 }

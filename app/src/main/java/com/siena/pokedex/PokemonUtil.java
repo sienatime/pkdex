@@ -1,7 +1,7 @@
 package com.siena.pokedex;
 
 import android.content.res.Resources;
-import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.persisted.Pokemon;
 
 /**
  * Created by Siena Aguayo on 12/28/14.

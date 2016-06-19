@@ -1,6 +1,8 @@
 package com.siena.pokedex.models;
 
 import android.util.Log;
+import com.siena.pokedex.models.persisted.PokemonType;
+import com.siena.pokedex.models.persisted.TypeEfficacy;
 import io.realm.Realm;
 import io.realm.RealmList;
 import java.util.ArrayList;

@@ -1,11 +1,11 @@
-package com.siena.pokedex.viewModels;
+package com.siena.pokedex.viewModels.show;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import com.siena.pokedex.R;
-import com.siena.pokedex.models.PokemonType;
+import com.siena.pokedex.models.persisted.PokemonType;
 import io.realm.RealmList;
 
 import static com.siena.pokedex.PokemonUtil.getPokeString;

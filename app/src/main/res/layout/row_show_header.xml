@@ -1,7 +1,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
-    <variable name="viewModel" type="com.siena.pokedex.viewModels.PokeInfoHeaderViewModel"/>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.show.HeaderViewModel"/>
   </data>
 
   <RelativeLayout
@@ -29,8 +29,8 @@
     <TextView
         style="@style/pokemon_type"
         android:layout_below="@id/header_poke_genus"
-        android:text="@{viewModel.firstTypeViewHolder.name}"
-        android:background="@{viewModel.firstTypeViewHolder.color}"
+        android:text="@{viewModel.firstTypeViewModel.name}"
+        android:background="@{viewModel.firstTypeViewModel.color}"
         android:id="@+id/pokemon_type_1"/>
 
     <TextView
@@ -38,8 +38,8 @@
         android:layout_toRightOf="@id/pokemon_type_1"
         android:layout_alignTop="@id/pokemon_type_1"
         android:visibility="@{viewModel.secondTypeVisibility}"
-        android:text='@{viewModel.secondTypeViewHolder.name}'
-        android:background="@{viewModel.secondTypeViewHolder.color}"
+        android:text='@{viewModel.secondTypeViewModel.name}'
+        android:background="@{viewModel.secondTypeViewModel.color}"
         android:id="@+id/pokemon_type_2"/>
 
     <ImageView

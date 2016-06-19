@@ -7,21 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
-import com.siena.pokedex.databinding.RowEncounterBinding;
-import com.siena.pokedex.databinding.RowPokeHeaderBinding;
-import com.siena.pokedex.databinding.RowSectionHeaderBinding;
-import com.siena.pokedex.databinding.RowTypeEfficacyBinding;
-import com.siena.pokedex.databinding.RowVersionHeaderBinding;
+import com.siena.pokedex.databinding.RowShowEncounterBinding;
+import com.siena.pokedex.databinding.RowShowHeaderBinding;
+import com.siena.pokedex.databinding.RowShowSectionHeaderBinding;
+import com.siena.pokedex.databinding.RowShowTypeEfficacyBinding;
+import com.siena.pokedex.databinding.RowShowVersionHeaderBinding;
 import com.siena.pokedex.models.AllTypeEfficacy;
-import com.siena.pokedex.models.ConsolidatedEncounter;
-import com.siena.pokedex.models.Pokemon;
-import com.siena.pokedex.models.PokemonType;
-import com.siena.pokedex.models.Version;
-import com.siena.pokedex.viewModels.EncounterViewModel;
-import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
-import com.siena.pokedex.viewModels.SectionHeaderViewHolder;
-import com.siena.pokedex.viewModels.TypeEfficacyViewModel;
-import com.siena.pokedex.viewModels.VersionHeaderViewModel;
+import com.siena.pokedex.models.persisted.ConsolidatedEncounter;
+import com.siena.pokedex.models.persisted.Pokemon;
+import com.siena.pokedex.models.persisted.PokemonType;
+import com.siena.pokedex.models.persisted.Version;
+import com.siena.pokedex.viewModels.show.EncounterViewModel;
+import com.siena.pokedex.viewModels.show.HeaderViewModel;
+import com.siena.pokedex.viewModels.show.SectionHeaderViewModel;
+import com.siena.pokedex.viewModels.show.TypeEfficacyViewModel;
+import com.siena.pokedex.viewModels.show.VersionHeaderViewModel;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
-public class PokemonInfoAdapter extends BaseAdapter {
+public class PokemonShowAdapter extends BaseAdapter {
   private List<Row> rows = new ArrayList<>();
   private Pokemon pokemon;
   private final int HEADER_ROW = 0;
@@ -40,7 +40,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
   private final int TYPE_NO_KNOWN_LOCATIONS_ROW = 4;
   private final int TYPE_VERSION_ROW = 5;
 
-  public PokemonInfoAdapter(Pokemon pokemon) {
+  public PokemonShowAdapter(Pokemon pokemon) {
     this.pokemon = pokemon;
     setupRows();
   }
@@ -125,9 +125,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        RowPokeHeaderBinding binding =
+        RowShowHeaderBinding binding =
             DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_poke_header, parent, false);
+                R.layout.row_show_header, parent, false);
         convertView = binding.getRoot();
 
         viewHolder = new ViewHolder(binding);
@@ -137,15 +137,15 @@ public class PokemonInfoAdapter extends BaseAdapter {
       }
 
       viewHolder.binding.setViewModel(
-          new PokeInfoHeaderViewModel(this.pokemon, parent.getContext()));
+          new HeaderViewModel(this.pokemon, parent.getContext()));
 
       return convertView;
     }
 
     static class ViewHolder {
-      public RowPokeHeaderBinding binding;
+      public RowShowHeaderBinding binding;
 
-      public ViewHolder(RowPokeHeaderBinding binding) {
+      public ViewHolder(RowShowHeaderBinding binding) {
         this.binding = binding;
       }
     }
@@ -167,8 +167,8 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        RowVersionHeaderBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-            R.layout.row_version_header, parent, false);
+        RowShowVersionHeaderBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+            R.layout.row_show_version_header, parent, false);
         convertView = binding.getRoot();
         viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
@@ -182,9 +182,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-      RowVersionHeaderBinding binding;
+      RowShowVersionHeaderBinding binding;
 
-      public ViewHolder(RowVersionHeaderBinding binding) {
+      public ViewHolder(RowShowVersionHeaderBinding binding) {
         this.binding = binding;
       }
     }
@@ -208,9 +208,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        RowTypeEfficacyBinding binding =
+        RowShowTypeEfficacyBinding binding =
             DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_type_efficacy, parent, false);
+                R.layout.row_show_type_efficacy, parent, false);
         convertView = binding.getRoot();
         viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
@@ -224,9 +224,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-      public RowTypeEfficacyBinding binding;
+      public RowShowTypeEfficacyBinding binding;
 
-      public ViewHolder(RowTypeEfficacyBinding binding) {
+      public ViewHolder(RowShowTypeEfficacyBinding binding) {
         this.binding = binding;
       }
     }
@@ -248,9 +248,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        RowSectionHeaderBinding binding =
+        RowShowSectionHeaderBinding binding =
             DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_section_header, parent, false);
+                R.layout.row_show_section_header, parent, false);
         convertView = binding.getRoot();
         viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
@@ -258,15 +258,15 @@ public class PokemonInfoAdapter extends BaseAdapter {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.binding.setViewModel(new SectionHeaderViewHolder(titleId));
+      viewHolder.binding.setViewModel(new SectionHeaderViewModel(titleId));
 
       return convertView;
     }
 
     static class ViewHolder {
-      public RowSectionHeaderBinding binding;
+      public RowShowSectionHeaderBinding binding;
 
-      public ViewHolder(RowSectionHeaderBinding binding) {
+      public ViewHolder(RowShowSectionHeaderBinding binding) {
         this.binding = binding;
       }
     }
@@ -288,9 +288,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
       if (convertView == null) {
-        RowEncounterBinding binding =
+        RowShowEncounterBinding binding =
             DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_encounter, parent, false);
+                R.layout.row_show_encounter, parent, false);
         convertView = binding.getRoot();
         viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
@@ -304,9 +304,9 @@ public class PokemonInfoAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-      RowEncounterBinding binding;
+      RowShowEncounterBinding binding;
 
-      public ViewHolder(RowEncounterBinding binding) {
+      public ViewHolder(RowShowEncounterBinding binding) {
         this.binding = binding;
       }
     }
@@ -326,7 +326,7 @@ public class PokemonInfoAdapter extends BaseAdapter {
     @Override public View getView(View convertView, ViewGroup parent) {
       if (convertView == null) {
         convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_no_known_locations, parent, false);
+            .inflate(R.layout.row_show_no_known_locations, parent, false);
       }
 
       return convertView;

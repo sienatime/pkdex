@@ -12,8 +12,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.siena.pokedex.PokemonUtil;
 import com.siena.pokedex.R;
-import com.siena.pokedex.adapters.PokemonInfoAdapter;
-import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.adapters.PokemonShowAdapter;
+import com.siena.pokedex.models.persisted.Pokemon;
 import io.realm.Realm;
 
 import static com.siena.pokedex.PokemonUtil.getPokeString;
@@ -31,7 +31,7 @@ public class PokeInfoFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_poke_info_listview, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_pokemon_show, container, false);
     ButterKnife.inject(this, rootView);
     actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
@@ -40,7 +40,7 @@ public class PokeInfoFragment extends Fragment {
     Realm realm = Realm.getDefaultInstance();
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
     actionBar.setTitle(getPokeString(poke.getId(), "pokemon_species_name_"));
-    listView.setAdapter(new PokemonInfoAdapter(poke));
+    listView.setAdapter(new PokemonShowAdapter(poke));
     return rootView;
   }
 

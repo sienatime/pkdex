@@ -16,7 +16,7 @@ import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.PopulateRealm;
 import com.siena.pokedex.R;
 import com.siena.pokedex.fragments.PokeListFragment;
-import com.siena.pokedex.models.Pokemon;
+import com.siena.pokedex.models.persisted.Pokemon;
 import com.squareup.otto.Bus;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
