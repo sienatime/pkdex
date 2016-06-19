@@ -5,15 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridLayout;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.databinding.RowEncounterBinding;
 import com.siena.pokedex.databinding.RowPokeHeaderBinding;
 import com.siena.pokedex.databinding.RowSectionHeaderBinding;
+import com.siena.pokedex.databinding.RowTypeEfficacyBinding;
 import com.siena.pokedex.databinding.RowVersionHeaderBinding;
 import com.siena.pokedex.models.AllTypeEfficacy;
 import com.siena.pokedex.models.ConsolidatedEncounter;
@@ -23,14 +20,12 @@ import com.siena.pokedex.models.Version;
 import com.siena.pokedex.viewModels.EncounterViewModel;
 import com.siena.pokedex.viewModels.PokeInfoHeaderViewModel;
 import com.siena.pokedex.viewModels.SectionHeaderViewHolder;
+import com.siena.pokedex.viewModels.TypeEfficacyViewModel;
 import com.siena.pokedex.viewModels.VersionHeaderViewModel;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.siena.pokedex.PokemonUtil.getPokeString;
-import static com.siena.pokedex.PokemonUtil.getTypeColor;
 
 /**
  * Created by Siena Aguayo on 12/27/14.
@@ -212,36 +207,27 @@ public class PokemonInfoAdapter extends BaseAdapter {
 
     @Override public View getView(View convertView, ViewGroup parent) {
       ViewHolder viewHolder;
-      LayoutInflater inflater = LayoutInflater.from(PokedexApp.getInstance());
       if (convertView == null) {
-        convertView = inflater.inflate(R.layout.row_type_efficacy, parent, false);
-        viewHolder = new ViewHolder(convertView);
+        RowTypeEfficacyBinding binding =
+            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                R.layout.row_type_efficacy, parent, false);
+        convertView = binding.getRoot();
+        viewHolder = new ViewHolder(binding);
         convertView.setTag(viewHolder);
       } else {
         viewHolder = (ViewHolder) convertView.getTag();
       }
 
-      viewHolder.typeEfficacyLevel.setText(titleId);
-
-      if (viewHolder.typeAnchor.getChildCount() == 0) {
-        for (int i = 0; i < types.size(); i++) {
-          PokemonType type = types.get(i);
-          inflater.inflate(R.layout.textview_type, viewHolder.typeAnchor);
-          TextView textView = (TextView) viewHolder.typeAnchor.getChildAt(i);
-          textView.setBackgroundColor(getTypeColor(type.getTypeId()));
-          textView.setText(getPokeString(type.getTypeId(), "type_").toUpperCase());
-        }
-      }
+      viewHolder.binding.setViewModel(new TypeEfficacyViewModel(convertView, titleId, types));
 
       return convertView;
     }
 
     static class ViewHolder {
-      @InjectView(R.id.type_efficacy_level) TextView typeEfficacyLevel;
-      @InjectView(R.id.type_anchor) GridLayout typeAnchor;
+      public RowTypeEfficacyBinding binding;
 
-      public ViewHolder(View source) {
-        ButterKnife.inject(this, source);
+      public ViewHolder(RowTypeEfficacyBinding binding) {
+        this.binding = binding;
       }
     }
   }

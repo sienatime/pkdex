@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/basic_padding">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <TextView
+  <data>
+    <variable name="viewModel" type="com.siena.pokedex.viewModels.TypeEfficacyViewModel"/>
+  </data>
+
+  <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/type_efficacy_level"
-      android:textColor="@color/default_gray"
-      android:paddingBottom="8dp"
-      android:textSize="12sp"/>
+      style="@style/basic_padding">
 
-  <GridLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/type_anchor"
-      android:columnCount="3"
-      android:layout_below="@id/type_efficacy_level"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/type_efficacy_level"
+        android:text="@{viewModel.efficacyLevel}"
+        android:textColor="@color/default_gray"
+        android:paddingBottom="8dp"
+        android:textSize="12sp"/>
 
-</RelativeLayout>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/type_anchor"
+        android:columnCount="3"
+        android:layout_below="@id/type_efficacy_level"/>
+
+  </RelativeLayout>
+</layout>
