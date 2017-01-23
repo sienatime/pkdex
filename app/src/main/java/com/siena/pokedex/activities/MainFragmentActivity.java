@@ -11,23 +11,19 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.siena.pokedex.database.sqlite.DataAdapter;
-import com.siena.pokedex.PokedexApp;
-import com.siena.pokedex.database.realm.PopulateRealm;
 import com.siena.pokedex.R;
+import com.siena.pokedex.database.realm.PopulateRealm;
+import com.siena.pokedex.database.sqlite.DataAdapter;
 import com.siena.pokedex.fragments.PokemonIndexFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
-import com.squareup.otto.Bus;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.inject.Inject;
 
 public class MainFragmentActivity extends ActionBarActivity {
-  @Inject Bus bus;
   @InjectView(R.id.toolbar) Toolbar toolbar;
 
   @Override
@@ -37,7 +33,6 @@ public class MainFragmentActivity extends ActionBarActivity {
     ButterKnife.inject(this);
     setSupportActionBar(toolbar);
     final Context context = this;
-    PokedexApp.getInstance().inject(this);
 
     //if (true) {
     //  copyBundledRealmFile(this.getResources().openRawResource(R.raw.pokedex), "pokedex");
@@ -119,16 +114,6 @@ public class MainFragmentActivity extends ActionBarActivity {
     }
 
     return super.onOptionsItemSelected(item);
-  }
-
-  @Override protected void onResume() {
-    super.onResume();
-    bus.register(this);
-  }
-
-  @Override protected void onPause() {
-    bus.unregister(this);
-    super.onPause();
   }
 
   @Override public void onBackPressed() {
