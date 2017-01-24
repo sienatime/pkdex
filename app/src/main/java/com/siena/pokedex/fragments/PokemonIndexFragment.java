@@ -28,7 +28,7 @@ public class PokemonIndexFragment extends Fragment {
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_pokemon_index, container, false);
     Realm realm = Realm.getDefaultInstance();
-    RealmResults<Pokemon> allPokemon = realm.allObjectsSorted(Pokemon.class, "id", Sort.ASCENDING);
+    RealmResults<Pokemon> allPokemon = realm.where(Pokemon.class).findAllSorted("id", Sort.ASCENDING);
     Context activityContext = getActivity();
 
     RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.poke_recyclerview);

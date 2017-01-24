@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.adapters.PokemonShowAdapter;
@@ -22,7 +22,7 @@ import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
  * Created by Siena Aguayo on 12/28/14.
  */
 public class PokemonShowFragment extends Fragment {
-  @InjectView(R.id.poke_info_listview) ListView listView;
+  @BindView(R.id.poke_info_listview) ListView listView;
   private ActionBar actionBar;
 
   public PokemonShowFragment() {
@@ -32,7 +32,7 @@ public class PokemonShowFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_pokemon_show, container, false);
-    ButterKnife.inject(this, rootView);
+    ButterKnife.bind(this, rootView);
     actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
     actionBar.setDisplayHomeAsUpEnabled(true);
     int id = getArguments().getInt(PokedexApp.BUNDLE_KEY_POKEMON_ID);

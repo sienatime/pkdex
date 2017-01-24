@@ -9,28 +9,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.siena.pokedex.R;
 import com.siena.pokedex.database.realm.PopulateRealm;
 import com.siena.pokedex.database.sqlite.DataAdapter;
 import com.siena.pokedex.fragments.PokemonIndexFragment;
 import com.siena.pokedex.models.persisted.Pokemon;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class MainFragmentActivity extends ActionBarActivity {
-  @InjectView(R.id.toolbar) Toolbar toolbar;
+  @BindView(R.id.toolbar) Toolbar toolbar;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main_fragment);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
     setSupportActionBar(toolbar);
     final Context context = this;
 
@@ -38,8 +37,7 @@ public class MainFragmentActivity extends ActionBarActivity {
     //  copyBundledRealmFile(this.getResources().openRawResource(R.raw.pokedex), "pokedex");
     //}
 
-    RealmConfiguration config = new RealmConfiguration.Builder(this).build();
-    Realm.setDefaultConfiguration(config);
+    Realm.init(this);
     Realm realm = Realm.getDefaultInstance();
     Pokemon bulbasaur = realm.where(Pokemon.class).equalTo("id", 1).findFirst();
 
