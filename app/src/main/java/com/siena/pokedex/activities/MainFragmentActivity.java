@@ -70,7 +70,7 @@ public class MainFragmentActivity extends ActionBarActivity {
         }
 
         protected void onProgressUpdate(Integer... progress) {
-          Log.i("PopulateRealm", String.format("%s%%", progress));
+          Log.i("PopulateRealm", String.format("%s%%", progress[0]));
         }
 
         protected void onPostExecute(Long aResult) {
