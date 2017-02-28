@@ -40,10 +40,10 @@ public class PokemonIndexAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     return pokemon.size();
   }
 
-  public static class PokeRowViewHolder extends RecyclerView.ViewHolder {
-    public RowIndexPokemonBinding binding;
+  private static class PokeRowViewHolder extends RecyclerView.ViewHolder {
+    RowIndexPokemonBinding binding;
 
-    public PokeRowViewHolder(RowIndexPokemonBinding binding) {
+    PokeRowViewHolder(RowIndexPokemonBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
     }

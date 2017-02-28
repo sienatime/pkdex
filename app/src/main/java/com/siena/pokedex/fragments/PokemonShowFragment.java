@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,7 @@ import static com.siena.pokedex.ResourceUtil.getStringForIdentifier;
  * Created by Siena Aguayo on 12/28/14.
  */
 public class PokemonShowFragment extends Fragment {
-  @BindView(R.id.poke_info_listview) ListView listView;
+  @BindView(R.id.poke_info_listview) RecyclerView recyclerView;
   private ActionBar actionBar;
 
   public PokemonShowFragment() {
@@ -40,7 +42,8 @@ public class PokemonShowFragment extends Fragment {
     Realm realm = Realm.getDefaultInstance();
     Pokemon poke = realm.where(Pokemon.class).equalTo("id", id).findFirst();
     actionBar.setTitle(getStringForIdentifier("pokemon_species_name_", poke.getId()));
-    listView.setAdapter(new PokemonShowAdapter(poke));
+    recyclerView.setAdapter(new PokemonShowAdapter(poke, rootView.getContext()));
+    recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
     return rootView;
   }
 

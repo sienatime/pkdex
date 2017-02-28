@@ -1,10 +1,15 @@
 package com.siena.pokedex.adapters;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
+import android.provider.ContactsContract;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import com.android.databinding.library.baseAdapters.BR;
 import com.siena.pokedex.PokedexApp;
 import com.siena.pokedex.R;
 import com.siena.pokedex.databinding.RowShowEncounterBinding;
@@ -30,9 +35,10 @@ import java.util.List;
 /**
  * Created by Siena Aguayo on 12/27/14.
  */
-public class PokemonShowAdapter extends BaseAdapter {
-  private List<Row> rows = new ArrayList<>();
+public class PokemonShowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+  private List<RecyclerRow> rows = new ArrayList<>();
   private Pokemon pokemon;
+  private Context context;
   private final int HEADER_ROW = 0;
   private final int SECTION_HEADER_ROW = 1;
   private final int TYPE_EFFICACY_ROW = 2;
@@ -40,14 +46,15 @@ public class PokemonShowAdapter extends BaseAdapter {
   private final int TYPE_NO_KNOWN_LOCATIONS_ROW = 4;
   private final int TYPE_VERSION_ROW = 5;
 
-  public PokemonShowAdapter(Pokemon pokemon) {
+  public PokemonShowAdapter(Pokemon pokemon, Context context) {
     this.pokemon = pokemon;
+    this.context = context;
     setupRows();
   }
 
   private void setupRows() {
-    rows.add(new HeaderRow(HEADER_ROW, pokemon));
-    rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.type_effectiveness));
+    rows.add(new HeaderRow());
+    rows.add(new SectionHeaderRow(R.string.type_effectiveness));
 
     AllTypeEfficacy typeEfficacy = AllTypeEfficacy.createAllTypeEfficacy(pokemon.getTypes());
 
@@ -56,38 +63,66 @@ public class PokemonShowAdapter extends BaseAdapter {
     addTypeEfficacy(typeEfficacy.getResistantTo(), R.string.resistant_to);
     addTypeEfficacy(typeEfficacy.getImmuneTo(), R.string.immune_to);
 
-    rows.add(new SectionHeaderRow(SECTION_HEADER_ROW, R.string.locations));
+    rows.add(new SectionHeaderRow(R.string.locations));
 
     addEncounterRows(pokemon.getConsolidatedEncounters());
-  }
-
-  @Override public int getCount() {
-    return rows.size();
-  }
-
-  @Override public Row getItem(int position) {
-    return rows.get(position);
-  }
-
-  @Override public long getItemId(int position) {
-    return position;
-  }
-
-  @Override public View getView(int position, View convertView, ViewGroup parent) {
-    return rows.get(position).getView(convertView, parent);
   }
 
   @Override public int getItemViewType(int position) {
     return rows.get(position).getType();
   }
 
-  @Override public int getViewTypeCount() {
-    return 6;
+  @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    int layout = layoutIdForRowType(viewType);
+    LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+    ViewDataBinding binding = DataBindingUtil.inflate(layoutInflater, layout, parent, false);
+
+    if (viewType == TYPE_NO_KNOWN_LOCATIONS_ROW) {
+      return new BindingViewHolder(layoutInflater.inflate(layout, parent, false));
+    } else {
+      return new BindingViewHolder(binding);
+    }
+  }
+
+  @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    RecyclerRow row = rows.get(position);
+    BindingViewHolder BindingViewHolder = (BindingViewHolder) holder;
+
+    if (row.getType() == TYPE_EFFICACY_ROW) {
+      TypeEfficacyRow typeEfficacyRow = (TypeEfficacyRow) row;
+      BindingViewHolder.bind(new TypeEfficacyViewModel(BindingViewHolder.getView(), typeEfficacyRow.titleId,
+          typeEfficacyRow.types));
+    } else {
+      BindingViewHolder.bind(row.getViewModel());
+    }
+  }
+
+  @Override public int getItemCount() {
+    return rows.size();
+  }
+
+  private int layoutIdForRowType(int viewType) {
+    switch (viewType) {
+      case HEADER_ROW:
+        return R.layout.row_show_header;
+      case SECTION_HEADER_ROW:
+        return R.layout.row_show_section_header;
+      case TYPE_EFFICACY_ROW:
+        return R.layout.row_show_type_efficacy;
+      case TYPE_ENCOUNTER_ROW:
+        return R.layout.row_show_encounter;
+      case TYPE_NO_KNOWN_LOCATIONS_ROW:
+        return R.layout.row_show_no_known_locations;
+      case TYPE_VERSION_ROW:
+        return R.layout.row_show_version_header;
+      default:
+        return -1;
+    }
   }
 
   private void addTypeEfficacy(RealmList<PokemonType> types, int stringId) {
     if (types.size() > 0) {
-      rows.add(new TypeEfficacyRow(TYPE_EFFICACY_ROW, stringId, types));
+      rows.add(new TypeEfficacyRow(stringId, types));
     }
   }
 
@@ -96,240 +131,108 @@ public class PokemonShowAdapter extends BaseAdapter {
       RealmResults<Version> versions = pokemon.getVersions().where().findAllSorted("id");
 
       for (Version version : versions) {
-        Integer versionId = new Integer(version.id);
-        rows.add(new VersionHeaderRow(TYPE_VERSION_ROW, versionId));
+        Integer versionId = version.id;
+        rows.add(new VersionHeaderRow(versionId));
         RealmResults<ConsolidatedEncounter> encountersByVersion =
             encounters.where().equalTo("versionId", versionId).findAll();
         for (ConsolidatedEncounter encounter : encountersByVersion) {
-          rows.add(new EncounterRow(TYPE_ENCOUNTER_ROW, encounter));
+          rows.add(new EncounterRow(encounter));
         }
       }
     } else {
-      rows.add(new NoKnownLocationsRow(TYPE_NO_KNOWN_LOCATIONS_ROW));
+      rows.add(new NoKnownLocationsRow());
     }
   }
 
-  public static class HeaderRow implements Row {
-    private Pokemon pokemon;
-    private int rowType;
-
-    public HeaderRow(int rowType, Pokemon pokemon) {
-      this.pokemon = pokemon;
-      this.rowType = rowType;
+  private class HeaderRow implements RecyclerRow {
+    HeaderRow() {
     }
 
     @Override public int getType() {
-      return rowType;
+      return HEADER_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      ViewHolder viewHolder;
-      if (convertView == null) {
-        RowShowHeaderBinding binding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_show_header, parent, false);
-        convertView = binding.getRoot();
-
-        viewHolder = new ViewHolder(binding);
-        convertView.setTag(viewHolder);
-      } else {
-        viewHolder = (ViewHolder) convertView.getTag();
-      }
-
-      viewHolder.binding.setViewModel(
-          new HeaderViewModel(this.pokemon, parent.getContext()));
-
-      return convertView;
-    }
-
-    static class ViewHolder {
-      public RowShowHeaderBinding binding;
-
-      public ViewHolder(RowShowHeaderBinding binding) {
-        this.binding = binding;
-      }
+    @Override public Object getViewModel() {
+      return new HeaderViewModel(pokemon, context);
     }
   }
 
-  public static class VersionHeaderRow implements Row {
-    private int rowType;
+  private class VersionHeaderRow implements RecyclerRow {
     private Integer versionId;
 
-    public VersionHeaderRow(int rowType, Integer versionId) {
-      this.rowType = rowType;
+    VersionHeaderRow(Integer versionId) {
       this.versionId = versionId;
     }
 
     @Override public int getType() {
-      return rowType;
+      return TYPE_VERSION_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      ViewHolder viewHolder;
-      if (convertView == null) {
-        RowShowVersionHeaderBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-            R.layout.row_show_version_header, parent, false);
-        convertView = binding.getRoot();
-        viewHolder = new ViewHolder(binding);
-        convertView.setTag(viewHolder);
-      } else {
-        viewHolder = (ViewHolder) convertView.getTag();
-      }
-
-      viewHolder.binding.setViewModel(new VersionHeaderViewModel(versionId));
-
-      return convertView;
-    }
-
-    static class ViewHolder {
-      RowShowVersionHeaderBinding binding;
-
-      public ViewHolder(RowShowVersionHeaderBinding binding) {
-        this.binding = binding;
-      }
+    @Override public Object getViewModel() {
+      return new VersionHeaderViewModel(versionId);
     }
   }
 
-  public static class TypeEfficacyRow implements Row {
-    private int rowType;
+  private class TypeEfficacyRow implements RecyclerRow {
     private int titleId;
     private RealmList<PokemonType> types;
 
-    public TypeEfficacyRow(int rowType, int titleId, RealmList<PokemonType> types) {
-      this.rowType = rowType;
+    TypeEfficacyRow(int titleId, RealmList<PokemonType> types) {
       this.titleId = titleId;
       this.types = types;
     }
 
     @Override public int getType() {
-      return rowType;
+      return TYPE_EFFICACY_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      ViewHolder viewHolder;
-      if (convertView == null) {
-        RowShowTypeEfficacyBinding binding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_show_type_efficacy, parent, false);
-        convertView = binding.getRoot();
-        viewHolder = new ViewHolder(binding);
-        convertView.setTag(viewHolder);
-      } else {
-        viewHolder = (ViewHolder) convertView.getTag();
-      }
-
-      viewHolder.binding.setViewModel(new TypeEfficacyViewModel(convertView, titleId, types));
-
-      return convertView;
-    }
-
-    static class ViewHolder {
-      public RowShowTypeEfficacyBinding binding;
-
-      public ViewHolder(RowShowTypeEfficacyBinding binding) {
-        this.binding = binding;
-      }
+    @Override public Object getViewModel() {
+      return null;
     }
   }
 
-  public static class SectionHeaderRow implements Row {
-    private int rowType;
+  private class SectionHeaderRow implements RecyclerRow {
     private int titleId;
 
-    public SectionHeaderRow(int rowType, int titleId) {
-      this.rowType = rowType;
+    SectionHeaderRow(int titleId) {
       this.titleId = titleId;
     }
 
     @Override public int getType() {
-      return rowType;
+      return SECTION_HEADER_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      ViewHolder viewHolder;
-      if (convertView == null) {
-        RowShowSectionHeaderBinding binding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_show_section_header, parent, false);
-        convertView = binding.getRoot();
-        viewHolder = new ViewHolder(binding);
-        convertView.setTag(viewHolder);
-      } else {
-        viewHolder = (ViewHolder) convertView.getTag();
-      }
-
-      viewHolder.binding.setViewModel(new SectionHeaderViewModel(titleId));
-
-      return convertView;
-    }
-
-    static class ViewHolder {
-      public RowShowSectionHeaderBinding binding;
-
-      public ViewHolder(RowShowSectionHeaderBinding binding) {
-        this.binding = binding;
-      }
+    @Override public Object getViewModel() {
+      return new SectionHeaderViewModel(titleId);
     }
   }
 
-  public static class EncounterRow implements Row {
-    private int rowType;
+  private class EncounterRow implements RecyclerRow {
     private ConsolidatedEncounter encounter;
 
-    public EncounterRow(int rowType, ConsolidatedEncounter encounter) {
-      this.rowType = rowType;
+    EncounterRow(ConsolidatedEncounter encounter) {
       this.encounter = encounter;
     }
 
     @Override public int getType() {
-      return rowType;
+      return TYPE_ENCOUNTER_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      ViewHolder viewHolder;
-      if (convertView == null) {
-        RowShowEncounterBinding binding =
-            DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
-                R.layout.row_show_encounter, parent, false);
-        convertView = binding.getRoot();
-        viewHolder = new ViewHolder(binding);
-        convertView.setTag(viewHolder);
-      } else {
-        viewHolder = (ViewHolder) convertView.getTag();
-      }
-
-      viewHolder.binding.setViewModel(new EncounterViewModel(encounter));
-
-      return convertView;
-    }
-
-    static class ViewHolder {
-      RowShowEncounterBinding binding;
-
-      public ViewHolder(RowShowEncounterBinding binding) {
-        this.binding = binding;
-      }
+    @Override public Object getViewModel() {
+      return new EncounterViewModel(encounter);
     }
   }
 
-  public static class NoKnownLocationsRow implements Row {
-    private int rowType;
-
-    public NoKnownLocationsRow(int rowType) {
-      this.rowType = rowType;
+  private class NoKnownLocationsRow implements RecyclerRow {
+    NoKnownLocationsRow() {
     }
 
     @Override public int getType() {
-      return rowType;
+      return TYPE_NO_KNOWN_LOCATIONS_ROW;
     }
 
-    @Override public View getView(View convertView, ViewGroup parent) {
-      if (convertView == null) {
-        convertView = LayoutInflater.from(PokedexApp.getInstance())
-            .inflate(R.layout.row_show_no_known_locations, parent, false);
-      }
-
-      return convertView;
+    @Override public Object getViewModel() {
+      return null;
     }
   }
 }
